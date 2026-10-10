@@ -25,6 +25,7 @@
 #include "../../xrUI/Widgets/UIGamepadLegend.h"
 #include "PdaConstants.h"
 #include "PdaUiSound.h"
+#include "../../xrUI/Widgets/UISoundsShared.h"
 
 CUITaskWnd::CUITaskWnd()
 	: m_background(nullptr), m_background2(nullptr),
@@ -782,6 +783,7 @@ bool CUITaskWnd::OnGamepadKeyAction(int id, EUIMessages gamepad_action)
 			{
 				if (!m_task_wnd->IsShown())
 				{
+					GetSoundsSharedInstance()->PlayAcceptSound();
 					m_pMapWnd->ViewActor();
 					return true;
 				}
@@ -789,11 +791,13 @@ bool CUITaskWnd::OnGamepadKeyAction(int id, EUIMessages gamepad_action)
 			}
 			case kPDA_TASKS_TOGGLE_LIST:
 			{
+				GetSoundsSharedInstance()->PlayAcceptSound();
 				OnShowTaskListWnd(this, nullptr);
 				return true;
 			}
 			case kPDA_TASKS_TOGGLE_LEGEND:
 			{
+				GetSoundsSharedInstance()->PlayAcceptSound();
 				Switch_ShowMapLegend();
 				return true;
 			}
@@ -815,6 +819,7 @@ bool CUITaskWnd::OnGamepadKeyAction(int id, EUIMessages gamepad_action)
 			{
 				if (!m_task_wnd->IsShown())
 				{
+					GetSoundsSharedInstance()->PlayAcceptSound();
 					if (m_cbFilters[m_currentFilterIndex])
 					{
 						CUICheckButton* pChkButton = m_cbFilters[m_currentFilterIndex];
@@ -875,9 +880,13 @@ bool CUITaskWnd::SwitchToNextFilter(bool bLoop)
 		if (m_cbFilters[m_currentFilterIndex])
 		{
 			if (m_pUiSounds)
-	{
-		m_pUiSounds->PlayFilterToggle();
-	}
+			{
+				m_pUiSounds->PlayFilterToggle();
+			}
+			else
+			{
+				GetSoundsSharedInstance()->PlaySwitchSound();
+			}
 			return true;
 		}
 	}
@@ -900,9 +909,13 @@ bool CUITaskWnd::SwitchToPrevFilter(bool bLoop)
 		if (m_cbFilters[m_currentFilterIndex])
 		{
 			if (m_pUiSounds)
-	{
-		m_pUiSounds->PlayFilterToggle();
-	}
+			{
+				m_pUiSounds->PlayFilterToggle();
+			}
+			else
+			{
+				GetSoundsSharedInstance()->PlaySwitchSound();
+			}
 			return true;
 		}
 	}

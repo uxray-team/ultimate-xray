@@ -17,6 +17,7 @@
 #include "../character_reputation.h"
 #include "../relation_registry.h"
 #include "../../xrEngine/string_table.h"
+#include "../../xrUI/Widgets/UISoundsShared.h"
 
 #define				ACTOR_STATISTIC_XML		"actor_statistic.xml"
 #define				ACTOR_CHARACTER_XML		"pda_dialog_character.xml"
@@ -339,6 +340,7 @@ bool CUIActorInfoWnd::MoveSelectionUp(bool bAllowLoop)
 		fIt = --fIt;
 
 	pSelected->SetSelected(false);
+	GetSoundsSharedInstance()->PlaySwitchSound();
 	UIMasterList->SetSelected(*fIt);
 	return true;
 }
@@ -364,6 +366,7 @@ bool CUIActorInfoWnd::MoveSelectionDown(bool bAllowLoop)
 	}
 
 	pSelected->SetSelected(false);
+	GetSoundsSharedInstance()->PlaySwitchSound();
 	UIMasterList->SetSelected(*fIt);
 	return true;
 }

@@ -19,6 +19,7 @@
 #include "UIPdaAux.h"
 #include "../../xrUI/UIHelper.h"
 #include "../../xrUI/Widgets/UIGamepadLegend.h"
+#include "../../xrUI/Widgets/UISoundsShared.h"
 
 extern u32			g_pda_info_state;
 
@@ -330,6 +331,7 @@ bool CUIDiaryWnd::OnGamepadKeyAction(int id, EUIMessages gamepad_action)
 					{
 						pItem = static_cast<CUITreeViewItem*>(m_SrcListWnd->GetItem(m_SrcListWnd->GetSelectedItem()));
 						pItem->UIBkg.TextureOn();
+						GetSoundsSharedInstance()->PlaySwitchSound();
 						if (!pItem->IsRoot())
 						{
 							pItem->MarkArticleAsRead(true);
@@ -352,6 +354,7 @@ bool CUIDiaryWnd::OnGamepadKeyAction(int id, EUIMessages gamepad_action)
 					{
 						pItem = static_cast<CUITreeViewItem*>(m_SrcListWnd->GetItem(m_SrcListWnd->GetSelectedItem()));
 						pItem->UIBkg.TextureOn();
+						GetSoundsSharedInstance()->PlaySwitchSound();
 						if (!pItem->IsRoot())
 						{
 							pItem->MarkArticleAsRead(true);
@@ -366,6 +369,7 @@ bool CUIDiaryWnd::OnGamepadKeyAction(int id, EUIMessages gamepad_action)
 				ActionRepeaters()->SetActionStarted(this, kUI_SECONDARY_UP);
 				if (CUIScrollBar* bar = m_DescrView->ScrollBar())
 				{
+					GetSoundsSharedInstance()->PlaySwitchSound();
 					bar->TryScrollDec();
 				}
 				return true;
@@ -375,12 +379,14 @@ bool CUIDiaryWnd::OnGamepadKeyAction(int id, EUIMessages gamepad_action)
 				ActionRepeaters()->SetActionStarted(this, kUI_SECONDARY_DOWN);
 				if (CUIScrollBar* bar = m_DescrView->ScrollBar())
 				{
+					GetSoundsSharedInstance()->PlaySwitchSound();
 					bar->TryScrollInc();
 				}
 				return true;
 			}
 			else if (is_binded(kUI_LEFT, id) || is_binded(kUI_RIGHT, id) || is_binded(kUI_ACCEPT, id))
 			{
+				GetSoundsSharedInstance()->PlayAcceptSound();
 				CUITreeViewItem* pItem = static_cast<CUITreeViewItem*>(m_SrcListWnd->GetItem(m_SrcListWnd->GetSelectedItem()));
 				if (pItem)
 				{
@@ -426,6 +432,7 @@ bool CUIDiaryWnd::OnGamepadKeyHold(int id)
 			{
 				pItem = static_cast<CUITreeViewItem*>(m_SrcListWnd->GetItem(m_SrcListWnd->GetSelectedItem()));
 				pItem->UIBkg.TextureOn();
+				GetSoundsSharedInstance()->PlaySwitchSound();
 				if (!pItem->IsRoot())
 				{
 					pItem->MarkArticleAsRead(true);
@@ -447,6 +454,7 @@ bool CUIDiaryWnd::OnGamepadKeyHold(int id)
 			{
 				pItem = static_cast<CUITreeViewItem*>(m_SrcListWnd->GetItem(m_SrcListWnd->GetSelectedItem()));
 				pItem->UIBkg.TextureOn();
+				GetSoundsSharedInstance()->PlaySwitchSound();
 				if (!pItem->IsRoot())
 				{
 					pItem->MarkArticleAsRead(true);
@@ -461,6 +469,7 @@ bool CUIDiaryWnd::OnGamepadKeyHold(int id)
 		{
 			if (CUIScrollBar* bar = m_DescrView->ScrollBar())
 			{
+				GetSoundsSharedInstance()->PlaySwitchSound();
 				bar->TryScrollDec();
 			}
 			return true;
@@ -472,6 +481,7 @@ bool CUIDiaryWnd::OnGamepadKeyHold(int id)
 		{
 			if (CUIScrollBar* bar = m_DescrView->ScrollBar())
 			{
+				GetSoundsSharedInstance()->PlaySwitchSound();
 				bar->TryScrollInc();
 			}
 			return true;

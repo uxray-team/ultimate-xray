@@ -34,6 +34,7 @@
 #include "../../xrUI/UICursor.h"
 #include "UIInvUpgradeInfo.h"
 #include "UIMessageBoxEx.h"
+#include "../../xrUI/Widgets/UISoundsShared.h"
 
 void move_item_from_to (u16 from_id, u16 to_id, u16 what_id)
 {
@@ -1067,6 +1068,7 @@ bool CUIActorMenuBase::MoveAreaSelector(eUIDirection4 dir)
 				{
 					if (wsinfo.pWndLeft)
 					{
+						GetSoundsSharedInstance()->PlaySwitchSound();
 						SetAreaSelectionTo(wsinfo.pWndLeft);
 						return true;
 					}
@@ -1076,6 +1078,7 @@ bool CUIActorMenuBase::MoveAreaSelector(eUIDirection4 dir)
 				{
 					if (wsinfo.pWndRight)
 					{
+						GetSoundsSharedInstance()->PlaySwitchSound();
 						SetAreaSelectionTo(wsinfo.pWndRight);
 						return true;
 					}
@@ -1085,6 +1088,7 @@ bool CUIActorMenuBase::MoveAreaSelector(eUIDirection4 dir)
 				{
 					if (wsinfo.pWndTop)
 					{
+						GetSoundsSharedInstance()->PlaySwitchSound();
 						SetAreaSelectionTo(wsinfo.pWndTop);
 						return true;
 					}
@@ -1094,6 +1098,7 @@ bool CUIActorMenuBase::MoveAreaSelector(eUIDirection4 dir)
 				{
 					if (wsinfo.pWndBottom)
 					{
+						GetSoundsSharedInstance()->PlaySwitchSound();
 						SetAreaSelectionTo(wsinfo.pWndBottom);
 						return true;
 					}
@@ -1899,6 +1904,7 @@ bool CUIActorMenuBase::OnGamepadKeyAction(int id, EUIMessages gamepad_action)
 			{
 				if (m_bShowInfoWnds)
 				{
+					GetSoundsSharedInstance()->PlayDeclineSound();
 					m_bShowInfoWnds = false;
 					if (AnyInfoWindowOpen())
 						return true;
@@ -1907,6 +1913,7 @@ bool CUIActorMenuBase::OnGamepadKeyAction(int id, EUIMessages gamepad_action)
 
 				if (m_AuxMode != eAuxMode_None)
 				{
+					GetSoundsSharedInstance()->PlayDeclineSound();
 					SetAuxMode(eAuxMode_None);
 					return true;
 				}
@@ -1948,6 +1955,7 @@ bool CUIActorMenuBase::OnGamepadKeyAction(int id, EUIMessages gamepad_action)
 			if (is_binded(kUI_HINT, id))
 			{
 				VERIFY(m_ItemInfo);
+				GetSoundsSharedInstance()->PlayAcceptSound();
 				m_bShowInfoWnds = !m_bShowInfoWnds;
 				return true;
 			}
@@ -1956,12 +1964,14 @@ bool CUIActorMenuBase::OnGamepadKeyAction(int id, EUIMessages gamepad_action)
 				if (m_AuxMode == eAuxMode_Upgrade && m_pUpgradeWnd->CanApplySelectedUpgrade())
 				{
 					m_bShowInfoWnds = false;
+					GetSoundsSharedInstance()->PlayAcceptSound();
 					m_pUpgradeWnd->ApplySelectedUpgrade();
 				}
 				else if (m_AuxMode == eAuxMode_None)
 				{
 					if (m_pCurrentCellItem)
 					{
+						GetSoundsSharedInstance()->PlayAcceptSound();
 						OnItemDbClick(m_pCurrentCellItem);
 					}
 				}
@@ -2017,6 +2027,7 @@ bool CUIActorMenuBase::OnGamepadKeyAction(int id, EUIMessages gamepad_action)
 
 		if (is_binded(kACTORMENU_ACTION, id))
 		{
+			GetSoundsSharedInstance()->PlayAcceptSound();
 			OnPressUserKey();
 			return true;
 		}
@@ -2042,6 +2053,7 @@ bool CUIActorMenuBase::OnGamepadKeyAction(int id, EUIMessages gamepad_action)
 		{
 			if (!any_binded_key_for_action_pressed_c(kUI_TAB_RIGHT))
 			{
+				GetSoundsSharedInstance()->PlaySwitchSound();
 				SwitchToLeftInventory();
 			}
 			return true;
@@ -2050,6 +2062,7 @@ bool CUIActorMenuBase::OnGamepadKeyAction(int id, EUIMessages gamepad_action)
 		{
 			if (!any_binded_key_for_action_pressed_c(kUI_TAB_LEFT))
 			{
+				GetSoundsSharedInstance()->PlaySwitchSound();
 				SwitchToRightInventory();
 			}
 			return true;
@@ -2059,6 +2072,7 @@ bool CUIActorMenuBase::OnGamepadKeyAction(int id, EUIMessages gamepad_action)
 			ActionRepeaters()->SetActionStarted(this, kUI_TAB_SECONDARY_LEFT);
 			if (!any_binded_key_for_action_pressed_c(kUI_TAB_SECONDARY_RIGHT))
 			{
+				GetSoundsSharedInstance()->PlaySwitchSound();
 				m_ItemInfo->ScrollUp();
 			}
 			return true;
@@ -2068,6 +2082,7 @@ bool CUIActorMenuBase::OnGamepadKeyAction(int id, EUIMessages gamepad_action)
 			ActionRepeaters()->SetActionStarted(this, kUI_TAB_SECONDARY_RIGHT);
 			if (!any_binded_key_for_action_pressed_c(kUI_TAB_SECONDARY_LEFT))
 			{
+				GetSoundsSharedInstance()->PlaySwitchSound();
 				m_ItemInfo->ScrollDown();
 			}
 			return true;
@@ -2145,6 +2160,7 @@ bool CUIActorMenuBase::OnGamepadKeyHold(int id)
 			{
 				if (ActionRepeaters()->CanRepeatActionNow(this, kUI_TAB_SECONDARY_LEFT) && !any_binded_key_for_action_pressed_c(kUI_TAB_SECONDARY_RIGHT))
 				{
+					GetSoundsSharedInstance()->PlaySwitchSound();
 					m_ItemInfo->ScrollUp();
 				}
 				return true;
@@ -2153,6 +2169,7 @@ bool CUIActorMenuBase::OnGamepadKeyHold(int id)
 			{
 				if (ActionRepeaters()->CanRepeatActionNow(this, kUI_TAB_SECONDARY_RIGHT) && !any_binded_key_for_action_pressed_c(kUI_TAB_SECONDARY_LEFT))
 				{
+					GetSoundsSharedInstance()->PlaySwitchSound();
 					m_ItemInfo->ScrollDown();
 				}
 				return true;
@@ -2174,20 +2191,20 @@ void CUIActorMenuBase::MoveSelector(eUIDirection4 dir, bool bAllowAreaExit)
 			{
 				if (MoveAreaSelector(dir))
 				{
-//					PlaySnd(eItemSwitch);
+					GetSoundsSharedInstance()->PlaySwitchSound();
 				}
 			}
 			else
 			{
 				if (pDragDropList->HasCells() && pDragDropList->MoveSelector(dir))
 				{
-//					PlaySnd(eItemSwitch);
+					GetSoundsSharedInstance()->PlaySwitchSound();
 				}
 				else if (bAllowAreaExit)
 				{
 					if (MoveAreaSelector(dir))
 					{
-//						PlaySnd(eItemSwitch);
+						GetSoundsSharedInstance()->PlaySwitchSound();
 					}
 				}
 			}
@@ -2197,7 +2214,7 @@ void CUIActorMenuBase::MoveSelector(eUIDirection4 dir, bool bAllowAreaExit)
 	{
 		if (m_pUpgradeWnd->SelectorMove(dir))
 		{
-//			PlaySnd(eItemSwitch);
+			GetSoundsSharedInstance()->PlaySwitchSound();
 		}
 	}
 

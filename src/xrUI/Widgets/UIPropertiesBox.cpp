@@ -4,6 +4,7 @@
 #include "UIListBoxItem.h"
 #include "../UIXmlInit.h"
 #include "../UIFontDefines.h"
+#include "../../xrUI/Widgets/UISoundsShared.h"
 
 #define OFFSET_X (5.0f)
 #define OFFSET_Y (5.0f)
@@ -332,6 +333,7 @@ bool CUIPropertiesBox::MoveSelectionDown(bool bLoop)
 				return false;
 		}
 	}
+	GetSoundsSharedInstance()->PlaySwitchSound();
 	m_UIListWnd.SetSelectedIDX(currentIdx);
 	return true;
 }
@@ -355,6 +357,7 @@ bool CUIPropertiesBox::MoveSelectionUp(bool bLoop)
 				return false;
 		}
 	}
+	GetSoundsSharedInstance()->PlaySwitchSound();
 	m_UIListWnd.SetSelectedIDX(currentIdx);
 	return true;
 }

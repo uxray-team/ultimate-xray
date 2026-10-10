@@ -11,6 +11,7 @@
 #include "UIInventoryUtilities.h"
 #include "UINewsItemWnd.h"
 #include "../../xrUI/Widgets/UIScrollView.h"
+#include "../../xrUI/Widgets/UISoundsShared.h"
 
 #define				NEWS_XML			"news.xml"
 
@@ -122,11 +123,13 @@ bool CUINewsWnd::OnGamepadKeyAction(int key, EUIMessages gamepad_action)
 		{
 			case kPDA_LOG_TO_START:
 			{
+				GetSoundsSharedInstance()->PlayAcceptSound();
 				UIScrollWnd->ScrollToBegin();
 				return true;
 			}
 			case kPDA_LOG_TO_END:
 			{
+				GetSoundsSharedInstance()->PlayAcceptSound();
 				UIScrollWnd->ScrollToEnd();
 				return true;
 			}

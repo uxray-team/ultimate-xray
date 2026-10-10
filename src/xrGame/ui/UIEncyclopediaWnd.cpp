@@ -21,6 +21,7 @@
 #include "../Actor.h"
 #include "object_broker.h"
 #include "../../xrUI/UIHelper.h"
+#include "../../xrUI/Widgets/UISoundsShared.h"
 
 #define				ENCYCLOPEDIA_DIALOG_XML		"encyclopedia.xml"
 
@@ -309,6 +310,7 @@ bool CUIEncyclopediaWnd::OnGamepadKeyAction(int id, EUIMessages gamepad_action)
 						pItem = static_cast<CUITreeViewItem*>(UIIdxList->GetItem(UIIdxList->GetSelectedItem()));
 						OnTreeViewItemClicked(pItem);
 						pItem->UIBkg.TextureOn();
+						GetSoundsSharedInstance()->PlaySwitchSound();
 						if (!pItem->IsRoot())
 						{
 							pItem->MarkArticleAsRead(true);
@@ -332,6 +334,7 @@ bool CUIEncyclopediaWnd::OnGamepadKeyAction(int id, EUIMessages gamepad_action)
 						pItem = static_cast<CUITreeViewItem*>(UIIdxList->GetItem(UIIdxList->GetSelectedItem()));
 						OnTreeViewItemClicked(pItem);
 						pItem->UIBkg.TextureOn();
+						GetSoundsSharedInstance()->PlaySwitchSound();
 						if (!pItem->IsRoot())
 						{
 							pItem->MarkArticleAsRead(true);
@@ -346,6 +349,7 @@ bool CUIEncyclopediaWnd::OnGamepadKeyAction(int id, EUIMessages gamepad_action)
 				ActionRepeaters()->SetActionStarted(this, kUI_SECONDARY_UP);
 				if (CUIScrollBar* bar = UIInfoList->ScrollBar())
 				{
+					GetSoundsSharedInstance()->PlaySwitchSound();
 					bar->TryScrollDec();
 				}
 				return true;
@@ -355,6 +359,7 @@ bool CUIEncyclopediaWnd::OnGamepadKeyAction(int id, EUIMessages gamepad_action)
 				ActionRepeaters()->SetActionStarted(this, kUI_SECONDARY_DOWN);
 				if (CUIScrollBar* bar = UIInfoList->ScrollBar())
 				{
+					GetSoundsSharedInstance()->PlaySwitchSound();
 					bar->TryScrollInc();
 				}
 				return true;
@@ -364,6 +369,7 @@ bool CUIEncyclopediaWnd::OnGamepadKeyAction(int id, EUIMessages gamepad_action)
 				CUITreeViewItem* pItem = static_cast<CUITreeViewItem*>(UIIdxList->GetItem(UIIdxList->GetSelectedItem()));
 				if (pItem)
 				{
+					GetSoundsSharedInstance()->PlayAcceptSound();
 					if (pItem->IsRoot())
 					{
 						if (pItem->IsOpened())
@@ -408,6 +414,7 @@ bool CUIEncyclopediaWnd::OnGamepadKeyHold(int id)
 				pItem = static_cast<CUITreeViewItem*>(UIIdxList->GetItem(UIIdxList->GetSelectedItem()));
 				OnTreeViewItemClicked(pItem);
 				pItem->UIBkg.TextureOn();
+				GetSoundsSharedInstance()->PlaySwitchSound();
 				if (!pItem->IsRoot())
 				{
 					pItem->MarkArticleAsRead(true);
@@ -430,6 +437,7 @@ bool CUIEncyclopediaWnd::OnGamepadKeyHold(int id)
 				pItem = static_cast<CUITreeViewItem*>(UIIdxList->GetItem(UIIdxList->GetSelectedItem()));
 				OnTreeViewItemClicked(pItem);
 				pItem->UIBkg.TextureOn();
+				GetSoundsSharedInstance()->PlaySwitchSound();
 				if (!pItem->IsRoot())
 				{
 					pItem->MarkArticleAsRead(true);
@@ -445,6 +453,7 @@ bool CUIEncyclopediaWnd::OnGamepadKeyHold(int id)
 			if (CUIScrollBar* bar = UIInfoList->ScrollBar())
 			{
 				bar->TryScrollDec();
+				GetSoundsSharedInstance()->PlaySwitchSound();
 			}
 		}
 		return true;
@@ -456,6 +465,7 @@ bool CUIEncyclopediaWnd::OnGamepadKeyHold(int id)
 			if (CUIScrollBar* bar = UIInfoList->ScrollBar())
 			{
 				bar->TryScrollInc();
+				GetSoundsSharedInstance()->PlaySwitchSound();
 			}
 		}
 		return true;

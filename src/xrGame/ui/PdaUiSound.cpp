@@ -106,12 +106,14 @@ void CPdaUiSounds::LoadSlotWithFallback(CUIXml& xml, const char* primaryPath, co
 	}
 }
 
-void CPdaUiSounds::PlaySlot(ref_sound& slot)
+bool CPdaUiSounds::PlaySlot(ref_sound& slot)
 {
 	if (slot.handle())
 	{
 		slot.play(nullptr, sm_2D);
+		return true;
 	}
+	return false;
 }
 
 bool CPdaUiSounds::CanPlay(EPdaUiSound sound, bool throttled) const
@@ -131,12 +133,12 @@ bool CPdaUiSounds::CanPlay(EPdaUiSound sound, bool throttled) const
 	return (now - m_throttleLast[idx]) >= ThrottleMs;
 }
 
-void CPdaUiSounds::Play(EPdaUiSound sound, bool throttled)
+bool CPdaUiSounds::Play(EPdaUiSound sound, bool throttled)
 {
 	const u32 idx = SoundIndex(sound);
 	if (idx >= static_cast<u32>(EPdaUiSound::Count) || !CanPlay(sound, throttled))
 	{
-		return;
+		return false;
 	}
 
 	if (throttled)
@@ -144,7 +146,7 @@ void CPdaUiSounds::Play(EPdaUiSound sound, bool throttled)
 		m_throttleLast[idx] = Device.dwTimeContinual;
 	}
 
-	PlaySlot(m_sounds[idx]);
+	return PlaySlot(m_sounds[idx]);
 }
 
 void CPdaUiSounds::PlayPanel(bool opening, bool throttled)

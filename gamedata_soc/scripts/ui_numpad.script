@@ -271,6 +271,7 @@ function numpad:TryOffsetSelector(xx, yy, canLoop)
 		self.curBtn = self.focusList[self.focusIndex.y][self.focusIndex.x]
 	end
 	
+	sounds_shared.play_switch_sound()
 	self.curBtn:SetHighlighted(true)
 end
 
@@ -319,10 +320,12 @@ function numpad:OnGamepadKey(key, gamepad_action)  --virtual function
 	if gamepad_action == ui_events.WINDOW_KEY_PRESSED then
 		local bindUI = dik_to_bind(key, action_groups.agUIGeneral)
 		if bindUI == key_bindings.kUI_ACCEPT then
+			sounds_shared.play_accept_sound()
 			self.curBtn:OnClick()
 			return true
 		elseif bindUI == key_bindings.kUI_BACK then
 			-- todo: play sound
+			sounds_shared.play_decline_sound()
 			self:OnButton_CANCEL_clicked()
 			return true
 		elseif bindUI == key_bindings.kUI_DOWN then

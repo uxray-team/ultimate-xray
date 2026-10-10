@@ -61,7 +61,7 @@ public:
 	void LoadMapWindow(CUIXml& xml, const char* mapWndPath);
 	void LoadSubdialog(CUIXml& xml, const char* rootPath);
 
-	void Play(EPdaUiSound sound, bool throttled = false);
+	bool Play(EPdaUiSound sound, bool throttled = false);
 	void PlayMapZoom(bool zoomIn, bool throttled = false);
 	void PlayPanel(bool opening, bool throttled = false);
 	void PlayFilterToggle(bool throttled = false);
@@ -83,7 +83,7 @@ private:
 
 	static void LoadSlot(CUIXml& xml, const char* xmlPath, ref_sound& slot);
 	static void LoadSlotWithFallback(CUIXml& xml, const char* primaryPath, const char* fallbackPath, ref_sound& slot);
-	static void PlaySlot(ref_sound& slot);
+	bool PlaySlot(ref_sound& slot);
 	static void BuildXmlPath(string512& out, const char* root, const char* child);
 
 	ref_sound& Slot(EPdaUiSound sound);

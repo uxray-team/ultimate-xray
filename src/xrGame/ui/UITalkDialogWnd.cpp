@@ -16,6 +16,7 @@
 #include "../../xrUI/UIHelper.h"
 #include "../../xrEngine/xr_input.h"
 #include "../../xrUI/Widgets/UIGamepadLegend.h"
+#include "../../xrUI/Widgets/UISoundsShared.h"
 
 #define				TALK_XML				"talk.xml"
 
@@ -594,7 +595,7 @@ bool CUITalkDialogWnd::OffsetQuestionSelection(bool next, bool bLoop)
 	m_ClickedQuestionID = static_cast<CUIQuestionItem*>(*it)->m_s_value;
 
 	UpdateQuestionSelection();
-
+	GetSoundsSharedInstance()->PlaySwitchSound();
 	ScrollSelectionIntoView();
 	return true;
 }
@@ -717,6 +718,7 @@ bool CUITalkDialogWnd::TryClickFinalizerQuestion()
 		if (pQuestion && pQuestion->IsFinalizer())
 		{
 			m_ClickedQuestionID = pQuestion->m_s_value;
+			GetSoundsSharedInstance()->PlayDeclineSound();
 			GetMessageTarget()->SendMessage(this, TALK_DIALOG_QUESTION_CLICKED);
 			return true;
 		}

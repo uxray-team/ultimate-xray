@@ -15,6 +15,7 @@
 #include "../../xrEngine/xr_input.h"
 #include "UICharacterInfo.h"
 #include "PdaConstants.h"
+#include "../../xrUI/Widgets/UISoundsShared.h"
 
 extern CSE_ALifeTraderAbstract* ch_info_get_from_id(u16 id);
 
@@ -212,6 +213,7 @@ bool CUIPdaContactsWnd::OnGamepadKeyAction(int id, EUIMessages gamepad_action)
 				itm->m_frame_selected->Show(false);
 			}
 			UIListWnd->MoveSelectionUp(true);
+			GetSoundsSharedInstance()->PlaySwitchSound();
 			itm = smart_cast<CUIPdaContactItem*>(UIListWnd->GetSelected());
 			if (itm && itm->m_frame_selected)
 			{
@@ -233,6 +235,7 @@ bool CUIPdaContactsWnd::OnGamepadKeyAction(int id, EUIMessages gamepad_action)
 				itm->m_frame_selected->Show(false);
 			}
 			UIListWnd->MoveSelectionDown(true);
+			GetSoundsSharedInstance()->PlaySwitchSound();
 			itm = smart_cast<CUIPdaContactItem*>(UIListWnd->GetSelected());
 			if (itm && itm->m_frame_selected)
 			{
@@ -262,6 +265,7 @@ bool CUIPdaContactsWnd::OnGamepadKeyHold(int id)
 				itm->m_frame_selected->Show(false);
 			}
 			UIListWnd->MoveSelectionUp(false);
+			GetSoundsSharedInstance()->PlaySwitchSound();
 			itm = smart_cast<CUIPdaContactItem*>(UIListWnd->GetSelected());
 			if (itm && itm->m_frame_selected)
 			{
@@ -285,6 +289,7 @@ bool CUIPdaContactsWnd::OnGamepadKeyHold(int id)
 				itm->m_frame_selected->Show(false);
 			}
 			UIListWnd->MoveSelectionDown(false);
+			GetSoundsSharedInstance()->PlaySwitchSound();
 			itm = smart_cast<CUIPdaContactItem*>(UIListWnd->GetSelected());
 			if (itm && itm->m_frame_selected)
 			{

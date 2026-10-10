@@ -36,6 +36,7 @@
 #include "../../xrUI/UICursor.h"
 #include "../../xrUI/Widgets/UIGamepadLegend.h"
 #include "../HudPdaAnimator.h"
+#include "../../xrUI/Widgets/UISoundsShared.h"
 
 #define PDA_XML		"pda.xml"
 #include "PdaConstants.h"
@@ -1146,6 +1147,7 @@ bool CUIPdaWnd::OnGamepadKeyAction(int key, EUIMessages gamepad_action)
 		{
 			case kACTIVE_JOBS:
 			{
+				GetSoundsSharedInstance()->PlayDeclineSound();
 				HideDialog();
 				break;
 			}
@@ -1155,17 +1157,20 @@ bool CUIPdaWnd::OnGamepadKeyAction(int key, EUIMessages gamepad_action)
 		{
 			case kUI_BACK:
 			{
+				GetSoundsSharedInstance()->PlayDeclineSound();
 				HideDialog();
 				break;
 			}
 			case kUI_TAB_LEFT:
 			{
+				GetSoundsSharedInstance()->PlaySwitchSound();
 				ActionRepeaters()->SetActionStarted(this, kUI_TAB_LEFT);
 				UITabControl->PrevTab(true);
 				break;
 			}
 			case kUI_TAB_RIGHT:
 			{
+				GetSoundsSharedInstance()->PlaySwitchSound();
 				ActionRepeaters()->SetActionStarted(this, kUI_TAB_RIGHT);
 				UITabControl->NextTab(true);
 				break;
@@ -1174,7 +1179,10 @@ bool CUIPdaWnd::OnGamepadKeyAction(int key, EUIMessages gamepad_action)
 			{
 				if (m_pActiveDialog == pUIDiaryWnd)
 				{
-					m_uiSounds.Play(EPdaUiSound::Tab);
+					if (!m_uiSounds.Play(EPdaUiSound::Tab))
+					{
+						GetSoundsSharedInstance()->PlaySwitchSound();
+					}
 					ActionRepeaters()->SetActionStarted(this, kUI_TAB_SECONDARY_LEFT);
 					pUIDiaryWnd->m_FilterTab->PrevTab(true);
 				}
@@ -1184,7 +1192,10 @@ bool CUIPdaWnd::OnGamepadKeyAction(int key, EUIMessages gamepad_action)
 			{
 				if (m_pActiveDialog == pUIDiaryWnd)
 				{
-					m_uiSounds.Play(EPdaUiSound::Tab);
+					if (!m_uiSounds.Play(EPdaUiSound::Tab))
+					{
+						GetSoundsSharedInstance()->PlaySwitchSound();
+					}
 					ActionRepeaters()->SetActionStarted(this, kUI_TAB_SECONDARY_RIGHT);
 					pUIDiaryWnd->m_FilterTab->NextTab(true);
 				}
@@ -1198,6 +1209,7 @@ bool CUIPdaWnd::OnGamepadKeyAction(int key, EUIMessages gamepad_action)
 			{
 				if (m_pActiveDialog == pUIMapWnd)
 				{
+					GetSoundsSharedInstance()->PlayAcceptSound();
 					pUIMapWnd->ViewActor();
 					return true;
 				}
@@ -1217,6 +1229,7 @@ bool CUIPdaWnd::OnGamepadKeyHold(int key)
 		{
 			if (ActionRepeaters()->CanRepeatActionNow(this, kUI_TAB_LEFT) && !any_binded_key_for_action_pressed_c(kUI_TAB_RIGHT))
 			{
+				GetSoundsSharedInstance()->PlaySwitchSound();
 				UITabControl->PrevTab();
 				return true;
 			}
@@ -1226,6 +1239,7 @@ bool CUIPdaWnd::OnGamepadKeyHold(int key)
 		{
 			if (ActionRepeaters()->CanRepeatActionNow(this, kUI_TAB_RIGHT) && !any_binded_key_for_action_pressed_c(kUI_TAB_LEFT))
 			{
+				GetSoundsSharedInstance()->PlaySwitchSound();
 				UITabControl->NextTab();
 				return true;
 			}
@@ -1235,7 +1249,10 @@ bool CUIPdaWnd::OnGamepadKeyHold(int key)
 		{
 			if (m_pActiveDialog == pUIDiaryWnd && ActionRepeaters()->CanRepeatActionNow(this, kUI_TAB_SECONDARY_LEFT) && !any_binded_key_for_action_pressed_c(kUI_TAB_SECONDARY_RIGHT))
 			{
-				m_uiSounds.Play(EPdaUiSound::Tab, true);
+				if (!m_uiSounds.Play(EPdaUiSound::Tab, true))
+				{
+					GetSoundsSharedInstance()->PlaySwitchSound();
+				}
 				pUIDiaryWnd->m_FilterTab->PrevTab();
 				return true;
 			}
@@ -1245,7 +1262,10 @@ bool CUIPdaWnd::OnGamepadKeyHold(int key)
 		{
 			if (m_pActiveDialog == pUIDiaryWnd && ActionRepeaters()->CanRepeatActionNow(this, kUI_TAB_SECONDARY_LEFT) && !any_binded_key_for_action_pressed_c(kUI_TAB_SECONDARY_RIGHT))
 			{
-				m_uiSounds.Play(EPdaUiSound::Tab, true);
+				if (!m_uiSounds.Play(EPdaUiSound::Tab, true))
+				{
+					GetSoundsSharedInstance()->PlaySwitchSound();
+				}
 				pUIDiaryWnd->m_FilterTab->NextTab();
 				return true;
 			}

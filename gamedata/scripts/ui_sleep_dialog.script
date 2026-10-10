@@ -146,11 +146,13 @@ function sleep_dialog:OnGamepadKey(id, gamepad_action)
 		if gamepad_action == ui_events.WINDOW_KEY_PRESSED then
 			local bindUI = dik_to_bind(id, action_groups.agUIGeneral)	
 			if bindUI == key_bindings.kUI_BACK then
+				sounds_shared.play_decline_sound()
 				self:OnButtonCancel()
 				res = true
 				
 			elseif bindUI == key_bindings.kUI_LEFT then
 				if not any_binded_key_for_action_pressed_c(key_bindings.kUI_RIGHT) then
+					sounds_shared.play_switch_sound()
 					self.time_track:StepLeft()
 				end
 				action_repeaters():SetActionStarted(self, key_bindings.kUI_LEFT)
@@ -158,12 +160,14 @@ function sleep_dialog:OnGamepadKey(id, gamepad_action)
 				
 			elseif bindUI == key_bindings.kUI_RIGHT then
 				if not any_binded_key_for_action_pressed_c(key_bindings.kUI_LEFT) then
+					sounds_shared.play_switch_sound()
 					self.time_track:StepRight()
 				end
 				action_repeaters():SetActionStarted(self, key_bindings.kUI_RIGHT)
 				res = true
 			
 			elseif bindUI == key_bindings.kUI_ACCEPT then
+				sounds_shared.play_accept_sound()
 				self:OnButtonSleep()
 				res = true
 				
@@ -179,12 +183,14 @@ function sleep_dialog:OnGamepadKeyHold(id)
 	if bindUI == key_bindings.kUI_LEFT then
 		if action_repeaters():CanRepeatActionNow(self, key_bindings.kUI_LEFT) 
 		and not any_binded_key_for_action_pressed_c(key_bindings.kUI_RIGHT) then
+			sounds_shared.play_switch_sound()
 			self.time_track:StepLeft()
 		end
 		return true		
 	elseif bindUI == key_bindings.kUI_RIGHT then
 		if action_repeaters():CanRepeatActionNow(self, key_bindings.kUI_RIGHT) 
 		and not any_binded_key_for_action_pressed_c(key_bindings.kUI_LEFT) then
+			sounds_shared.play_switch_sound()
 			self.time_track:StepRight()
 		end
 		return true

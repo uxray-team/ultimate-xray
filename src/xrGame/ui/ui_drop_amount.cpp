@@ -25,6 +25,7 @@
 #include "../../xrEngine/xr_input.h"
 #include "UITalkWnd.h"
 #include "UITradeWnd.h"
+#include "../../xrUI/Widgets/UISoundsShared.h"
 
 namespace
 {
@@ -582,21 +583,25 @@ bool CUIItemDropAmountWnd::OnGamepadKeyAction(int id, EUIMessages gamepadAction)
         {
             case kUI_ACCEPT:
             {
+                GetSoundsSharedInstance()->PlayAcceptSound();
                 OnBtnAcceptClicked(this, nullptr);
                 return true;
             }
             case kUI_BACK:
             {
+                GetSoundsSharedInstance()->PlayDeclineSound();
                 OnBtnCancelClicked(this, nullptr);
                 return true;
             }
             case kUI_ACTION_1:
             {
+                GetSoundsSharedInstance()->PlayAcceptSound();
                 OnBtnHalfClicked(this, nullptr);
                 return true;
             }
             case kUI_ACTION_2:
             {
+                GetSoundsSharedInstance()->PlayAcceptSound();
                 OnBtnAllClicked(this, nullptr);
                 return true;
             }
@@ -604,14 +609,20 @@ bool CUIItemDropAmountWnd::OnGamepadKeyAction(int id, EUIMessages gamepadAction)
             {
                 ActionRepeaters()->SetActionStarted(this, kUI_LEFT);
                 if (!any_binded_key_for_action_pressed_c(kUI_RIGHT))
+                {
+                    GetSoundsSharedInstance()->PlaySwitchSound();
                     _trackBar->StepLeft();
+                }
                 return true;
             }
             case kUI_RIGHT:
             {
                 ActionRepeaters()->SetActionStarted(this, kUI_RIGHT);
                 if (!any_binded_key_for_action_pressed_c(kUI_LEFT))
+                {
+                    GetSoundsSharedInstance()->PlaySwitchSound();
                     _trackBar->StepRight();
+                }
                 return true;
             }
         }
@@ -632,13 +643,19 @@ bool CUIItemDropAmountWnd::OnGamepadKeyHold(int id)
         case kUI_LEFT:
         {
             if (ActionRepeaters()->CanRepeatActionNow(this, kUI_LEFT) && !any_binded_key_for_action_pressed_c(kUI_RIGHT))
+            {
+                GetSoundsSharedInstance()->PlaySwitchSound();
                 _trackBar->StepLeft();
+            }
             return true;
         }
         case kUI_RIGHT:
         {
             if (ActionRepeaters()->CanRepeatActionNow(this, kUI_RIGHT) && !any_binded_key_for_action_pressed_c(kUI_LEFT))
+            {
+                GetSoundsSharedInstance()->PlaySwitchSound();
                 _trackBar->StepRight();
+            }
             return true;
         }
     }

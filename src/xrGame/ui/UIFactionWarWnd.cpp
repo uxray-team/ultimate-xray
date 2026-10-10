@@ -19,7 +19,7 @@
 #include "UICharacterInfo.h"
 #include "PdaConstants.h"
 #include "PdaScriptBridge.h"
-
+#include "../../xrUI/Widgets/UISoundsShared.h"
 #include "../Actor.h"
 #include "../ai_space.h"
 #include "../../xrScripts/script_engine.h"
@@ -427,6 +427,7 @@ bool CUIFactionWarWnd::OnGamepadKeyAction(int id, EUIMessages gamepad_action)
 					ActionRepeaters()->SetActionStarted(this, kUI_RIGHT);
 					return true;
 				case kUI_HINT:
+					GetSoundsSharedInstance()->PlayAcceptSound();
 					Fvector2 pos;
 					m_war_state[m_current_window]->GetAbsolutePos(pos);
 					pos.add(m_war_state[m_current_window]->GetWndSize());
@@ -489,6 +490,7 @@ void CUIFactionWarWnd::TurnLeft(bool loop)
 	{
 		frame->Show(false);
 	}
+	GetSoundsSharedInstance()->PlaySwitchSound();
 	m_current_window = nextWindow;
 	if (showHint)
 	{
@@ -529,6 +531,7 @@ void CUIFactionWarWnd::TurnRight(bool loop)
 	{
 		frame->Show(false);
 	}
+	GetSoundsSharedInstance()->PlaySwitchSound();
 	m_current_window = nextWindow;
 	if (showHint)
 	{

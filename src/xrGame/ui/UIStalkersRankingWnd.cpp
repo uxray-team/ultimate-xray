@@ -17,6 +17,7 @@
 #include "../../xrUI/Widgets/UIHint.h"
 #include "../../xrUI/UICursor.h"
 #include "../../xrEngine/string_table.h"
+#include "../../xrUI/Widgets/UISoundsShared.h"
 
 #define		STALKERS_RANKING_XML			"stalkers_ranking.xml"
 #define		STALKERS_RANKING_CHARACTER_XML	"stalkers_ranking_character.xml"
@@ -247,6 +248,7 @@ bool CUIStalkersRankingWnd::OnGamepadKeyAction(int id, EUIMessages gamepad_actio
 		{
 			ActionRepeaters()->SetActionStarted(this, kUI_UP);
 			UIList->MoveSelectionUp(true);
+			GetSoundsSharedInstance()->PlaySwitchSound();
 			if (smart_cast<CUIStalkerRankingElipsisItem*>(UIList->GetSelected()))
 			{
 				UIList->MoveSelectionUp(true);
@@ -257,6 +259,7 @@ bool CUIStalkersRankingWnd::OnGamepadKeyAction(int id, EUIMessages gamepad_actio
 		{
 			ActionRepeaters()->SetActionStarted(this, kUI_DOWN);
 			UIList->MoveSelectionDown(true);
+			GetSoundsSharedInstance()->PlaySwitchSound();
 			if (smart_cast<CUIStalkerRankingElipsisItem*>(UIList->GetSelected()))
 			{
 				UIList->MoveSelectionDown(true);
@@ -275,6 +278,7 @@ bool CUIStalkersRankingWnd::OnGamepadKeyHold(int id)
 		if (ActionRepeaters()->CanRepeatActionNow(this, kUI_UP))
 		{
 			UIList->MoveSelectionUp(false);
+			GetSoundsSharedInstance()->PlaySwitchSound();
 			if (smart_cast<CUIStalkerRankingElipsisItem*>(UIList->GetSelected()))
 			{
 				UIList->MoveSelectionUp(false);
@@ -287,6 +291,7 @@ bool CUIStalkersRankingWnd::OnGamepadKeyHold(int id)
 		if (ActionRepeaters()->CanRepeatActionNow(this, kUI_DOWN))
 		{
 			UIList->MoveSelectionDown(false);
+			GetSoundsSharedInstance()->PlaySwitchSound();
 			if (smart_cast<CUIStalkerRankingElipsisItem*>(UIList->GetSelected()))
 			{
 				UIList->MoveSelectionDown(true);

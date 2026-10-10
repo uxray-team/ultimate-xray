@@ -11,7 +11,7 @@
 #include "../../xrUI/xrUIXmlParser.h"
 #include "../../xrUI/UIXmlInit.h"
 #include "../../xrUI/UIHelper.h"
-
+#include "../../xrUI/Widgets/UISoundsShared.h"
 #include "../../xrUI/Widgets/UIFrameWindow.h"
 #include "../../xrUI/Widgets/UIScrollView.h"
 #include "../../xrUI/Widgets/UIStatic.h"
@@ -32,6 +32,7 @@
 #include "PdaConstants.h"
 #include "PdaUiSound.h"
 #include "../../xrUI/Widgets/UIMessages.h"
+#include "../../xrEngine/xr_input.h"
 
 namespace
 {
@@ -399,6 +400,10 @@ bool UITaskListWnd::SelectNextToSelected(bool bNext)
 						{
 							m_pUiSounds->Play(EPdaUiSound::ListSelect);
 						}
+						else
+						{
+							GetSoundsSharedInstance()->PlaySwitchSound();
+						}
 						return true;
 					}
 				}
@@ -413,6 +418,10 @@ bool UITaskListWnd::SelectNextToSelected(bool bNext)
 						if (m_pUiSounds)
 						{
 							m_pUiSounds->Play(EPdaUiSound::ListSelect);
+						}
+						else
+						{
+							GetSoundsSharedInstance()->PlaySwitchSound();
 						}
 						return true;
 					}
@@ -448,6 +457,7 @@ bool UITaskListWnd::OnGamepadKeyAction(int id, EUIMessages gamepad_action)
 			CGameTask* pActiveTask = taskManager->ActiveTask(taskType);
 			if (pActiveTask)
 			{
+				GetSoundsSharedInstance()->PlayAcceptSound();
 				GetMessageTarget()->SendMessage(this, PDA_TASK_SET_TARGET_MAP, (void*)pActiveTask);
 			}
 			return true;
@@ -464,6 +474,7 @@ bool UITaskListWnd::OnGamepadKeyAction(int id, EUIMessages gamepad_action)
 					UITaskListWndItem* item = static_cast<UITaskListWndItem*>(*it);
 					if (item->get_task() == pActiveTask)
 					{
+						GetSoundsSharedInstance()->PlayAcceptSound();
 						if (item->show_hint)
 						{
 							item->hide_hint();
@@ -600,13 +611,10 @@ void UITaskListWndItem::Update()
 	inherited::Update();
 	update_view();
 
-	if ( m_task && m_name->CursorOverWindow() && show_hint_can )
+	bool needToShow = pInput->GetControllerMode() ? true : (m_name->CursorOverWindow() && Device.dwTimeContinual > (m_name->FocusReceiveTime() + 700));
+	if ( m_task && needToShow && show_hint_can )
 	{
-		if ( Device.dwTimeContinual > ( m_name->FocusReceiveTime() + 700 ) )
-		{
-			showHint();
-			return;
-		}
+		showHint();
 	}
 }
 

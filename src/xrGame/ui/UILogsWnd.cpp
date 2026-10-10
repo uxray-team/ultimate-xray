@@ -26,7 +26,7 @@
 #include "UICharacterInfo.h"
 #include "UIInventoryUtilities.h"
 #include "CUICalendar.h"
-
+#include "../../xrUI/Widgets/UISoundsShared.h"
 #include "../Actor.h"
 #include "../game_news.h"
 #include "../alife_registry_wrappers.h"
@@ -1050,11 +1050,13 @@ bool CUILogsWnd::OnGamepadKeyAction(int key, EUIMessages gamepad_action)
 		{
 			case kPDA_LOG_TO_START:
 			{
+				GetSoundsSharedInstance()->PlayAcceptSound();
 				ScrollAllListsToBegin();
 				break;
 			}
 			case kPDA_LOG_TO_END:
 			{
+				GetSoundsSharedInstance()->PlayAcceptSound();
 				ScrollAllListsToEnd();
 				break;
 			}
@@ -1062,6 +1064,7 @@ bool CUILogsWnd::OnGamepadKeyAction(int key, EUIMessages gamepad_action)
 			{
 				if (m_prev_period)
 				{
+					GetSoundsSharedInstance()->PlayAcceptSound();
 					m_prev_period->OnClick();
 				}
 				break;
@@ -1070,6 +1073,7 @@ bool CUILogsWnd::OnGamepadKeyAction(int key, EUIMessages gamepad_action)
 			{
 				if (m_next_period)
 				{
+					GetSoundsSharedInstance()->PlayAcceptSound();
 					m_next_period->OnClick();
 				}
 				break;
@@ -1078,6 +1082,7 @@ bool CUILogsWnd::OnGamepadKeyAction(int key, EUIMessages gamepad_action)
 			{
 				if (!m_use_split_lists && m_filter_talk)
 				{
+					GetSoundsSharedInstance()->PlayAcceptSound();
 					m_filter_talk->SetCheck(!m_filter_talk->GetCheck());
 					m_filter_talk->SendClickCallback();
 				}
@@ -1087,6 +1092,7 @@ bool CUILogsWnd::OnGamepadKeyAction(int key, EUIMessages gamepad_action)
 			{
 				if (!m_use_split_lists && m_filter_news)
 				{
+					GetSoundsSharedInstance()->PlayAcceptSound();
 					m_filter_news->SetCheck(!m_filter_news->GetCheck());
 					m_filter_news->SendClickCallback();
 				}

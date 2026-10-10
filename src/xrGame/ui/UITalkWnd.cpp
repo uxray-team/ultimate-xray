@@ -21,6 +21,7 @@
 #include "EffectorDOF.h"
 #include "ActorEffector.h"
 #include "GamePersistent.h"
+#include "../../xrUI/Widgets/UISoundsShared.h"
 
 bool EnableTalkDof = true;
 
@@ -463,6 +464,7 @@ bool CUITalkWnd::OnGamepadKeyAction(int id, EUIMessages gamepad_action)
 			{
 				if (!b_disable_break)
 				{
+					GetSoundsSharedInstance()->PlayDeclineSound();
 					HideDialog();
 					return true;
 				}
@@ -509,6 +511,7 @@ bool CUITalkWnd::OnGamepadKeyAction(int id, EUIMessages gamepad_action)
 			case kUI_ACCEPT:
 			{
 				VERIFY(UITalkDialogWnd->m_ClickedQuestionID != "");
+				GetSoundsSharedInstance()->PlayAcceptSound();
 				if (UITalkDialogWnd->m_ClickedQuestionID != "")
 				{
 					SendMessage(UITalkDialogWnd, TALK_DIALOG_QUESTION_CLICKED);

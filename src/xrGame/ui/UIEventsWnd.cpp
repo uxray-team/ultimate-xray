@@ -24,6 +24,7 @@
 #include "../../xrEngine/xr_input.h"
 #include "../../xrUI/UIHelper.h"
 #include "../../xrUI/Widgets/UIGamepadLegend.h"
+#include "../../xrUI/Widgets/UISoundsShared.h"
 
 CUIEventsWnd::CUIEventsWnd			()
 {
@@ -459,30 +460,40 @@ bool CUIEventsWnd::OnGamepadKeyAction(int id, EUIMessages gamepad_action)
 		{
 			case kPDA_TASKS_MAP_SHOW_ME:
 			{
+				GetSoundsSharedInstance()->PlayAcceptSound();
 				m_UIMapWnd->ViewActor();
 				return true;
 				break;
 			}
 			case kPDA_TASKS_TOGGLE_LEGEND:
 			{
+				GetSoundsSharedInstance()->PlayAcceptSound();
 				SetDescriptionMode(!GetDescriptionMode());
 
 				CUITaskItemLegacy* pItem = static_cast<CUITaskItemLegacy*>(m_ListWnd->GetSelected());
 				if (pItem)
+				{
 					SetSubtaskSelected(pItem);
+				}
 				return true;
 			}
 			case kPDA_TASKS_FILTER_NEXT:
 			{
 				if (!any_binded_key_for_action_pressed_c(kPDA_TASKS_FILTER_PREV))
+				{
+					GetSoundsSharedInstance()->PlaySwitchSound();
 					m_TaskFilter->NextTab(true);
+				}
 				ActionRepeaters()->SetActionStarted(this, kPDA_TASKS_FILTER_NEXT);
 				return true;
 			}
 			case kPDA_TASKS_FILTER_PREV:
 			{
 				if (!any_binded_key_for_action_pressed_c(kPDA_TASKS_FILTER_NEXT))
+				{
+					GetSoundsSharedInstance()->PlaySwitchSound();
 					m_TaskFilter->PrevTab(true);
+				}
 				ActionRepeaters()->SetActionStarted(this, kPDA_TASKS_FILTER_PREV);
 				return true;
 			}
@@ -490,14 +501,20 @@ bool CUIEventsWnd::OnGamepadKeyAction(int id, EUIMessages gamepad_action)
 			{
 				CUITaskSubItem* pItem = dynamic_cast<CUITaskSubItem*>(m_ListWnd->GetSelected());
 				if (pItem)
+				{
+					GetSoundsSharedInstance()->PlayAcceptSound();
 					pItem->OnActiveObjectiveClicked();
+				}
 				return true;
 			}
 			case kPDA_TASKS_FILTER_TOGGLE:
 			{
 				CUITaskSubItem* pItem = dynamic_cast<CUITaskSubItem*>(m_ListWnd->GetSelected());
 				if (pItem)
+				{
+					GetSoundsSharedInstance()->PlayAcceptSound();
 					pItem->OnDbClick();
+				}
 				return true;
 			}
 		}
@@ -540,13 +557,19 @@ bool CUIEventsWnd::OnGamepadKeyHold(int id)
 		case kPDA_TASKS_FILTER_NEXT:
 		{
 			if (ActionRepeaters()->CanRepeatActionNow(this, kPDA_TASKS_FILTER_NEXT) && !any_binded_key_for_action_pressed_c(kPDA_TASKS_FILTER_PREV))
+			{
+				GetSoundsSharedInstance()->PlaySwitchSound();
 				m_TaskFilter->NextTab(false);
+			}
 			return true;
 		}
 		case kPDA_TASKS_FILTER_PREV:
 		{
 			if (ActionRepeaters()->CanRepeatActionNow(this, kPDA_TASKS_FILTER_PREV) && !any_binded_key_for_action_pressed_c(kPDA_TASKS_FILTER_NEXT))
+			{
+				GetSoundsSharedInstance()->PlaySwitchSound();
 				m_TaskFilter->PrevTab(false);
+			}
 			return true;
 		}
 	}
@@ -565,6 +588,10 @@ bool CUIEventsWnd::MoveSelectionDown(bool bAllowLoop)
 	{
 		m_pUiSounds->Play(EPdaUiSound::ListSelect);
 	}
+	else
+	{
+		GetSoundsSharedInstance()->PlaySwitchSound();
+	}
 	return true;
 }
 
@@ -578,6 +605,10 @@ bool CUIEventsWnd::MoveSelectionUp(bool bAllowLoop)
 	if (m_pUiSounds)
 	{
 		m_pUiSounds->Play(EPdaUiSound::ListSelect);
+	}
+	else
+	{
+		GetSoundsSharedInstance()->PlaySwitchSound();
 	}
 	return true;
 }

@@ -1201,6 +1201,7 @@ bool CChangeLevelWnd::OnKeyboardAction(int dik, EUIMessages keyboard_action)
 	return inherited::OnKeyboardAction(dik, keyboard_action);
 }
 
+#include "../../xrUI/Widgets/UISoundsShared.h"
 bool CChangeLevelWnd::OnGamepadKeyAction(int id, EUIMessages gamepad_action)
 {
 	if (gamepad_action == WINDOW_KEY_PRESSED)
@@ -1209,6 +1210,7 @@ bool CChangeLevelWnd::OnGamepadKeyAction(int id, EUIMessages gamepad_action)
 		{
 			case kUI_ACCEPT:
 			{
+				GetSoundsSharedInstance()->PlayAcceptSound();
 				if (m_b_allow_change_level)
 				{
 					OnOk();
@@ -1221,6 +1223,7 @@ bool CChangeLevelWnd::OnGamepadKeyAction(int id, EUIMessages gamepad_action)
 			}
 			case kUI_BACK:
 			{
+				GetSoundsSharedInstance()->PlayDeclineSound();
 				OnCancel();
 				return true;
 			}
