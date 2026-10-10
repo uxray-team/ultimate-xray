@@ -151,9 +151,12 @@ function opt_controller_layout:OnGamepadKey(id, gamepad_action)
 				local elementInfo = class_info(element)
 				local elementClass = elementInfo.name
 				if elementClass == 'CUIComboBox' and element:IsListShown() then
+					sounds_shared.play_switch_sound()
 					element:GetListBox():NextItem(true)
 				else
-					self:OnElementChangeSelection(1, true)
+					if self:OnElementChangeSelection(1, true) then
+						sounds_shared.play_switch_sound()
+					end
 				end
 			end
 			action_repeaters():SetActionStarted(self, key_bindings.kUI_DOWN)
@@ -165,9 +168,12 @@ function opt_controller_layout:OnGamepadKey(id, gamepad_action)
 				local elementInfo = class_info(element)
 				local elementClass = elementInfo.name
 				if elementClass == 'CUIComboBox' and element:IsListShown() then
+					sounds_shared.play_switch_sound()
 					element:GetListBox():PrevItem(true)
 				else
-					self:OnElementChangeSelection(-1, true)
+					if self:OnElementChangeSelection(-1, true) then
+						sounds_shared.play_switch_sound()
+					end
 				end
 			end
 			action_repeaters():SetActionStarted(self, key_bindings.kUI_UP)
@@ -177,6 +183,7 @@ function opt_controller_layout:OnGamepadKey(id, gamepad_action)
 			local elementInfo = class_info(element)
 			local elementClass = elementInfo.name
 	
+			sounds_shared.play_decline_sound()
 			if elementClass == 'CUIComboBox' and element:IsListShown() then
 				element:ShowList(false)
 			else
@@ -187,18 +194,6 @@ function opt_controller_layout:OnGamepadKey(id, gamepad_action)
 			local element = self.focusList[self.focusIndex][2]
 			self:OnElementAbuttonPress(element)
 			return true
-		elseif bindUI == key_bindings.kUI_LEFT then
-			if not any_binded_key_for_action_pressed_c(key_bindings.kUI_RIGHT) then
-				local element = self.focusList[self.focusIndex][2]
-				self:OnElementGpadPress(element, false)
-			end
-			return true					
-		elseif bindUI == key_bindings.kUI_RIGHT then	
-			if not any_binded_key_for_action_pressed_c(key_bindings.kUI_LEFT) then
-				local element = self.focusList[self.focusIndex][2]
-				self:OnElementGpadPress(element, true)
-			end
-			return true
 		end
 	end
 
@@ -207,35 +202,37 @@ end
 
 function opt_controller_layout:OnGamepadKeyHold(id)
 	local bindUI = dik_to_bind(id, action_groups.agUIGeneral)
-	if self.mm_is_controller then 	
-		if bindUI == key_bindings.kUI_DOWN then
-			if action_repeaters():CanRepeatActionNow(self, key_bindings.kUI_DOWN) 
-			and not any_binded_key_for_action_pressed_c(key_bindings.kUI_UP) then
-				local element = self.focusList[self.focusIndex][2]
-				local elementInfo = class_info(element)
-				local elementClass = elementInfo.name
-				if elementClass == 'CUIComboBox' and element:IsListShown() then
-					element:GetListBox():NextItem(true)
-				else
-					self:OnElementChangeSelection(1, false)
+	if bindUI == key_bindings.kUI_DOWN then
+		if action_repeaters():CanRepeatActionNow(self, key_bindings.kUI_DOWN) 
+		and not any_binded_key_for_action_pressed_c(key_bindings.kUI_UP) then
+			local element = self.focusList[self.focusIndex][2]
+			local elementInfo = class_info(element)
+			local elementClass = elementInfo.name
+			if elementClass == 'CUIComboBox' and element:IsListShown() then
+				sounds_shared.play_switch_sound()
+				element:GetListBox():NextItem(true)
+			else
+				if self:OnElementChangeSelection(1, false) then
+					sounds_shared.play_switch_sound()
 				end
 			end
-			return true
-			
-		elseif bindUI == key_bindings.kUI_UP then
-			if action_repeaters():CanRepeatActionNow(self, key_bindings.kUI_UP) 
-			and not any_binded_key_for_action_pressed_c(key_bindings.kUI_DOWN) then
-				local element = self.focusList[self.focusIndex][2]
-				local elementInfo = class_info(element)
-				local elementClass = elementInfo.name
-				if elementClass == 'CUIComboBox' and element:IsListShown() then
-					element:GetListBox():PrevItem(true)
-				else
-					self:OnElementChangeSelection(-1, false) 
-				end
-			end
-			return true
 		end
+		return true
+			
+	elseif bindUI == key_bindings.kUI_UP then
+		if action_repeaters():CanRepeatActionNow(self, key_bindings.kUI_UP) 
+		and not any_binded_key_for_action_pressed_c(key_bindings.kUI_DOWN) then
+			local element = self.focusList[self.focusIndex][2]
+			local elementInfo = class_info(element)
+			local elementClass = elementInfo.name
+			if elementClass == 'CUIComboBox' and element:IsListShown() then
+				sounds_shared.play_switch_sound()
+				element:GetListBox():PrevItem(true)
+			else
+				self:OnElementChangeSelection(-1, false) 
+			end
+		end
+		return true
 	end
 
 	return CUIScriptWnd.OnGamepadKeyHold(self,id)
@@ -259,9 +256,7 @@ function opt_controller_layout:OnElementChangeSelection(offset, loop)
 			return false
 		end
 	end
-	
---	self.sndSwitch:play(nil, 0.0, sound_object.s2d)
-	
+		
 	self:OnElementSetSelected(self.focusIndex, false)
 	self.focusIndex = newFocusIndex	
 	self:OnElementSetSelected(self.focusIndex, true)
@@ -288,39 +283,6 @@ function opt_controller_layout:OnElementSetSelected(eltIndex, on)
 	end
 end
 
-
-function opt_controller_layout:OnElementGpadPress(element, right)
-	local elementInfo = class_info(element)
-	local elementClass = elementInfo.name
-	
-	if elementClass == 'CUIComboBox' then
-
-		local comboCnt = element:GetSize()
-		if comboCnt == 0 then return end
-		
-		local idx = element:GetCurrentIdx()
-		if idx == index_for_not_found then idx = 0
-		elseif right then
-			idx = idx + 1
-			if idx >= comboCnt then
-				idx = 0
-			end
---			self.sndDecline:play(nil, 0.0, sound_object.s2d)
-		else
-			idx = idx - 1
-			if idx < 0 then
-				idx = comboCnt-1
-			end
---			self.sndDecline:play(nil, 0.0, sound_object.s2d)
-		end
-		
-		element:SetItemIDX(idx)
-		
-		self:UpdateStrings()
-		
-	end
-end
-
 function opt_controller_layout:OnAccept()
 --	self.sndAccept:play(nil, 0.0, sound_object.s2d)
 	self.owner:OnBtnExitGamepadLayout()
@@ -330,6 +292,7 @@ function opt_controller_layout:OnElementAbuttonPress(element)
 	local elementInfo = class_info(element)
 	local elementClass = elementInfo.name
 	
+	sounds_shared.play_accept_sound()
 	if elementClass == 'CUIComboBox' then
 		if element:IsListShown() then
 			element:OnListItemSelect()

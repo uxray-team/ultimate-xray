@@ -3,7 +3,7 @@
 
 #include "script_ui_registrator.h"
 #include "MainMenu.h"
-
+#include "../xrUI/Widgets/UISoundsShared.h"
 #include "UIGameCustom.h"
 #include "ui/UIScriptWnd.h"
 #include "../xrUI/Widgets/UIButton.h"
@@ -53,6 +53,26 @@ bool is_widescreen()
 const char* gamepad_prefix()
 {
 	return pInput->GamepadPrefix();
+}
+
+void play_accept_sound()
+{
+	GetSoundsSharedInstance()->PlayAcceptSound();
+}
+
+void play_decline_sound()
+{
+	GetSoundsSharedInstance()->PlayDeclineSound();
+}
+
+void play_select_sound()
+{
+	GetSoundsSharedInstance()->PlaySelectSound();
+}
+
+void play_switch_sound()
+{
+	GetSoundsSharedInstance()->PlaySwitchSound();
 }
 
 #pragma optimize("s",on)
@@ -128,6 +148,12 @@ void UIRegistrator::script_register(lua_State *L)
 		def("gamepad_prefix",				&gamepad_prefix),
 		def("QueryScrollBarProfileLayout",	&QueryScrollBarProfileLayout_script)
 	];
-
+	module(L, "sounds_shared")
+	[
+		def("play_accept_sound",			&play_accept_sound),
+		def("play_decline_sound",			&play_decline_sound),
+		def("play_select_sound",			&play_select_sound),
+		def("play_switch_sound",			&play_switch_sound)
+	];
 	CMapManager::script_register(L);
 }

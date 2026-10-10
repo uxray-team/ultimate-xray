@@ -161,6 +161,11 @@ function save_dialog:OnButton_del_clicked()
 	if self.list_box:GetSelectedIndex() == 0 then
 		return
 	end
+	
+	if main_menu.in_controller_mode() then
+		sounds_shared.play_accept_sound		()
+	end
+	
 	self.mbox_mode = 2
 	self.message_box:InitMessageBox("message_box_delete_file_name")
 	self.message_box:ShowDialog(true)
@@ -248,8 +253,10 @@ function save_dialog:OnGamepadKey(key, gamepad_action)  --virtual function
 	local bindUI = dik_to_bind(key, action_groups.agUIGeneral)
 	if gamepad_action == ui_events.WINDOW_KEY_PRESSED then
 		if bindUI == key_bindings.kUI_ACCEPT then
+			sounds_shared.play_accept_sound()
 			self:OnButton_ok_clicked()		
 		elseif bind == key_bindings.kQUIT or bindUI == key_bindings.kUI_BACK then
+			sounds_shared.play_decline_sound()
 			self:OnButton_cancel_clicked()		
 		elseif bindUI == key_bindings.kUI_ACTION_1 then
 			self:OnButton_del_clicked()		
@@ -257,11 +264,13 @@ function save_dialog:OnGamepadKey(key, gamepad_action)  --virtual function
 			action_repeaters():SetActionStarted(self, key_bindings.kUI_UP)
 			if not any_binded_key_for_action_pressed_c(key_bindings.kUI_DOWN) then
 				self.list_box:PrevItem()
+				sounds_shared.play_switch_sound()
 			end
 		elseif bindUI == key_bindings.kUI_DOWN then
 			action_repeaters():SetActionStarted(self, key_bindings.kUI_DOWN)
 			if not any_binded_key_for_action_pressed_c(key_bindings.kUI_UP) then
 				self.list_box:NextItem()
+				sounds_shared.play_switch_sound()
 			end
 		end
 	end
@@ -315,12 +324,14 @@ function save_dialog:OnGamepadKeyHold(key)
 		if action_repeaters():CanRepeatActionNow(self, key_bindings.kUI_DOWN)
 		and not any_binded_key_for_action_pressed_c(key_bindings.kUI_UP) then
 			self.list_box:NextItem()
+			sounds_shared.play_switch_sound()
 		end
 		return true
 	elseif bindUI == key_bindings.kUI_UP then
 		if action_repeaters():CanRepeatActionNow(self, key_bindings.kUI_UP)
 		and not any_binded_key_for_action_pressed_c(key_bindings.kUI_DOWN) then
 			self.list_box:PrevItem()
+			sounds_shared.play_switch_sound()
 		end
 		return true
 	end

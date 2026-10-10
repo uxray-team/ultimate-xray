@@ -1,5 +1,4 @@
 saved_game_extension	= save_extension()
-saved_game_extension_ex	= alife_storage_manager.saved_game_extension_ex
 
 class "load_item" (CUIListBoxItem)
 
@@ -138,12 +137,6 @@ function delete_save_game(filename)
 	local f = getFS()
 
     f:file_delete("$game_saves$", save_file)
-    
-    -- START IX-Ray
-	if (file_exist(filename..saved_game_extension_ex)) then
-		f:file_delete("$game_saves$",filename..saved_game_extension_ex)
-	end
-	-- END IX-Ray
 	
 	if file_exist(dds_file) then
 		f:file_delete("$game_saves$", dds_file)
@@ -320,12 +313,18 @@ function load_dialog:OnButton_load_clicked()
 		return
 	end
 
+	if main_menu.in_controller_mode() then
+		sounds_shared.play_accept_sound		()
+	end
 	self.msgbox_id							= 2
 	self.message_box:InitMessageBox			("message_box_confirm_load_save")
 	self.message_box:ShowDialog(true)
 end
 
 function load_dialog:OnButton_back_clicked()
+	if main_menu.in_controller_mode() then
+		sounds_shared.play_decline_sound	()
+	end
 	self.owner:ShowDialog(true)
 	self:HideDialog()
 	self.owner:Show						(true)
@@ -343,7 +342,11 @@ function load_dialog:OnButton_del_clicked()
 	if not item then
 		return
 	end
-
+	
+	if main_menu.in_controller_mode() then
+		sounds_shared.play_accept_sound		()
+	end
+	
 	self.msgbox_id = 1
 
 	self.message_box:InitMessageBox("message_box_delete_file_name")
@@ -385,11 +388,13 @@ function load_dialog:OnGamepadKey(key, gamepad_action)  --virtual function
 			action_repeaters():SetActionStarted(self, key_bindings.kUI_UP)
 			if not any_binded_key_for_action_pressed_c(key_bindings.kUI_DOWN) then
 				self.list_box:PrevItem()
+				sounds_shared.play_switch_sound()
 			end
 		elseif bindUI == key_bindings.kUI_DOWN then
 			action_repeaters():SetActionStarted(self, key_bindings.kUI_DOWN)
 			if not any_binded_key_for_action_pressed_c(key_bindings.kUI_UP) then
 				self.list_box:NextItem()
+				sounds_shared.play_switch_sound()
 			end
 		end
 	end
@@ -402,12 +407,14 @@ function load_dialog:OnGamepadKeyHold(key)
 		if action_repeaters():CanRepeatActionNow(self, key_bindings.kUI_DOWN)
 		and not any_binded_key_for_action_pressed_c(key_bindings.kUI_UP) then
 			self.list_box:NextItem()
+			sounds_shared.play_switch_sound()
 		end
 		return true
 	elseif bindUI == key_bindings.kUI_UP then
 		if action_repeaters():CanRepeatActionNow(self, key_bindings.kUI_UP)
 		and not any_binded_key_for_action_pressed_c(key_bindings.kUI_DOWN) then
 			self.list_box:PrevItem()
+			sounds_shared.play_switch_sound()
 		end
 		return true
 	end

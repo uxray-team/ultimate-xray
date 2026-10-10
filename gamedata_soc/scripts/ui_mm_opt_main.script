@@ -350,6 +350,7 @@ function options_dialog:OnGamepadKey(dik, gamepad_action)
 				local elementInfo = class_info(element)
 				local elementClass = elementInfo.name
 	
+				sounds_shared.play_decline_sound()
 				if elementClass == 'CUIComboBox' and element:IsListShown() then
 					element:ShowList(false)
 				elseif self.dlg_video_adv:IsShown() then
@@ -365,6 +366,7 @@ function options_dialog:OnGamepadKey(dik, gamepad_action)
 				return true
 			elseif bindUI == key_bindings.kUI_ACTION_2 then
 				local tabId = self.tab:GetActiveId()
+				sounds_shared.play_accept_sound()
 				if tabId == "video" then
 					if not self.dlg_video_adv:IsShown() then
 						self:OnBtnAdvGraphic()
@@ -381,8 +383,10 @@ function options_dialog:OnGamepadKey(dik, gamepad_action)
 				local elementInfo = class_info(element)
 				local elementClass = elementInfo.name
 				if elementClass == 'CUIComboBox' and element:IsListShown() then
+					sounds_shared.play_select_sound()
 					element:GetListBox():PrevItem(true)
 				else
+					sounds_shared.play_select_sound()
 					self:OnElementChangeSelection(curTab, -1, true)
 				end
 				action_repeaters():SetActionStarted(self, key_bindings.kUI_UP)
@@ -393,8 +397,10 @@ function options_dialog:OnGamepadKey(dik, gamepad_action)
 				local elementInfo = class_info(element)
 				local elementClass = elementInfo.name
 				if elementClass == 'CUIComboBox' and element:IsListShown() then
+					sounds_shared.play_select_sound()
 					element:GetListBox():NextItem(true)
 				else
+					sounds_shared.play_select_sound()
 					self:OnElementChangeSelection(curTab, 1, true)
 				end
 				action_repeaters():SetActionStarted(self, key_bindings.kUI_DOWN)
@@ -413,19 +419,23 @@ function options_dialog:OnGamepadKey(dik, gamepad_action)
 				return true
 			elseif bindUI == key_bindings.kUI_TAB_LEFT then
 				self.tab:PrevTab()
+				sounds_shared.play_switch_sound()
 				action_repeaters():SetActionStarted(self, key_bindings.kUI_TAB_LEFT)
 				return true
 			elseif bindUI == key_bindings.kUI_TAB_RIGHT then
 				self.tab:NextTab()			
+				sounds_shared.play_switch_sound()
 				action_repeaters():SetActionStarted(self, key_bindings.kUI_TAB_RIGHT)
 				return true
 			end
 			if self.tab:GetActiveId() == "controls" then
 				if bindUI == key_bindings.kUI_TAB_SECONDARY_LEFT then
 					self.tab_input:PrevTab()
+					sounds_shared.play_switch_sound()
 					return true
 				elseif bindUI == key_bindings.kUI_TAB_SECONDARY_RIGHT then
 					self.tab_input:NextTab()			
+					sounds_shared.play_switch_sound()
 					return true
 				end
 			end
@@ -568,6 +578,7 @@ function options_dialog:OnElementAbuttonPress(element)
 	local elementInfo = class_info(element)
 	local elementClass = elementInfo.name
 	
+	sounds_shared.play_switch_sound()
 	if elementClass == 'CUICheckButton' then
 		element:Toggle()
 	elseif elementClass == 'CUIComboBox' then
@@ -631,6 +642,7 @@ function options_dialog:OnElementGpadPress(element, right)
 	-- MTB-Damian.Romanik [JP2-1565] End
 
 	if elementClass == 'CUITrackBar' then
+		sounds_shared.play_switch_sound()
 		if right then
 			element:StepRight()
 		else
@@ -799,6 +811,7 @@ function options_dialog:OnGamepadKeyHold(dik)
 	if bindUI == key_bindings.kUI_TAB_LEFT then
 		if action_repeaters():CanRepeatActionNow(self, key_bindings.kUI_TAB_LEFT) 
 		and not any_binded_key_for_action_pressed_c(key_bindings.kUI_TAB_RIGHT) then
+			sounds_shared.play_switch_sound()
 			self.tab:PrevTab()
 		end
 		return true
@@ -806,6 +819,7 @@ function options_dialog:OnGamepadKeyHold(dik)
 	elseif bindUI == key_bindings.kUI_TAB_RIGHT then
 		if action_repeaters():CanRepeatActionNow(self, key_bindings.kUI_TAB_RIGHT) 
 		and not any_binded_key_for_action_pressed_c(key_bindings.kUI_TAB_LEFT) then
+			sounds_shared.play_switch_sound()
 			self.tab:NextTab()
 		end
 		return true
@@ -818,9 +832,12 @@ function options_dialog:OnGamepadKeyHold(dik)
 			local elementInfo = class_info(element)
 			local elementClass = elementInfo.name
 			if elementClass == 'CUIComboBox' and element:IsListShown() then
+				sounds_shared.play_select_sound()
 				element:GetListBox():NextItem(true)
 			else
-				self:OnElementChangeSelection(curTab, 1, false)
+				if self:OnElementChangeSelection(curTab, 1, false) then
+					sounds_shared.play_select_sound()
+				end
 			end
 		end
 		return true
@@ -833,9 +850,12 @@ function options_dialog:OnGamepadKeyHold(dik)
 			local elementInfo = class_info(element)
 			local elementClass = elementInfo.name
 			if elementClass == 'CUIComboBox' and element:IsListShown() then
+				sounds_shared.play_select_sound()
 				element:GetListBox():PrevItem(true)
 			else
-				self:OnElementChangeSelection(curTab, -1, false)
+				if self:OnElementChangeSelection(curTab, -1, false) then
+					sounds_shared.play_select_sound()
+				end
 			end
 		end
 		return true

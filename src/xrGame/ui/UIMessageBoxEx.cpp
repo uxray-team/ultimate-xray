@@ -3,6 +3,7 @@
 #include "UIMessageBox.h"
 #include "UIMessageBoxEx.h"
 #include "../../xrUI/Widgets/UIDialogHolder.h"
+#include "../../xrUI/Widgets/UISoundsShared.h"
 
 CUIMessageBoxEx::CUIMessageBoxEx(){
 	m_pMessageBox = new CUIMessageBox();
@@ -126,11 +127,13 @@ bool CUIMessageBoxEx::OnGamepadKeyAction(int id, EUIMessages gamepad_action)
 		{
 			case kUI_ACCEPT:
 			{
+				GetSoundsSharedInstance()->PlayAcceptSound();
 				m_pMessageBox->OnYesOk();
 				return true;
 			}
 			case kUI_BACK:
 			{
+				GetSoundsSharedInstance()->PlayDeclineSound();
 				m_pMessageBox->OnNo();
 				return true;
 			}
@@ -139,6 +142,7 @@ bool CUIMessageBoxEx::OnGamepadKeyAction(int id, EUIMessages gamepad_action)
 		{
 			case kQUIT:
 			{
+				GetSoundsSharedInstance()->PlayDeclineSound();
 				m_pMessageBox->OnNo();
 				return true;
 			}

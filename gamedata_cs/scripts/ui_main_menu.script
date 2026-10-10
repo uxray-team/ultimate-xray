@@ -20,8 +20,6 @@ function main_menu:__init() super()
     self:InitCallBacks()
 	
 	RegisterScriptCallback("on_localization_change", self)
-	
-    xr_s.on_main_menu_on()     						 --' Distemper 03.2008 --
 end
 
 function main_menu:Update()
@@ -223,7 +221,6 @@ end
 function main_menu:OnButton_return_game()
 	local console = get_console()
 	console:execute("main_menu off")
-	xr_s.on_main_menu_off()      						--' Distemper 03.2008 --
 	SendScriptCallback("main_menu_on_quit", self)
 end
 
@@ -405,6 +402,7 @@ function main_menu:OnGamepadKey(dik, gamepad_action)  --virtual function
 				(	((db.actor ~= nil)and(db.actor:alive())) or
 					(false==IsGameTypeSingle())
 				) then
+				sounds_shared.play_decline_sound()
 				self.OnButton_return_game()                      --' xStream 02.2008
 			end
 		elseif bindUI == key_bindings.kUI_ACTION_2 then

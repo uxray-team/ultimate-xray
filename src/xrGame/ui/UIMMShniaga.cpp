@@ -14,6 +14,7 @@
 #include "MainMenu.h"
 #include "../gamespy/GameSpy_Full.h"
 #include "../../xrUI/UIHelper.h"
+#include "../../xrUI/Widgets/UISoundsShared.h"
 
 extern string_path g_last_saved_game;
 
@@ -384,22 +385,32 @@ bool CUIMMShniaga::OnGamepadKeyAction(int id, EUIMessages gamepad_action)
 		{
 			case kUI_UP:
 				if (!any_binded_key_for_action_pressed_c(kUI_DOWN) && m_selected_btn > 0)
+				{
 					SelectBtn(m_selected_btn - 1);
+					GetSoundsSharedInstance()->PlaySwitchSound();
+				}
 				ActionRepeaters()->SetActionStarted(this, kUI_UP);
 				return true;
 			case kUI_DOWN:
 				if (!any_binded_key_for_action_pressed_c(kUI_UP) && m_selected_btn < BtnCount() - 1)
+				{
 					SelectBtn(m_selected_btn + 1);
+					GetSoundsSharedInstance()->PlaySwitchSound();
+				}
 				ActionRepeaters()->SetActionStarted(this, kUI_DOWN);
 				return true;
 			case kUI_ACCEPT:
 				ActionRepeaters()->ResetAll();
 				OnBtnClick();
+				GetSoundsSharedInstance()->PlayAcceptSound();
 				return true;
 			case kUI_BACK:
 				ActionRepeaters()->ResetAll();
 				if (m_page != epi_main)
+				{
 					ShowMain();
+					GetSoundsSharedInstance()->PlayDeclineSound();
+				}
 				return true;
 		}
 	}
@@ -415,13 +426,19 @@ bool CUIMMShniaga::OnGamepadKeyHold(int id)
 		case kUI_UP:
 		{
 			if (ActionRepeaters()->CanRepeatActionNow(this, kUI_UP) && !any_binded_key_for_action_pressed_c(kUI_DOWN) && m_selected_btn > 0)
+			{
 				SelectBtn(m_selected_btn - 1);
+				GetSoundsSharedInstance()->PlaySwitchSound();
+			}
 			return true;
 		}
 		case kUI_DOWN:
 		{
 			if (ActionRepeaters()->CanRepeatActionNow(this, kUI_DOWN) && !any_binded_key_for_action_pressed_c(kUI_UP) && m_selected_btn < BtnCount() - 1)
+			{
 				SelectBtn(m_selected_btn + 1);
+				GetSoundsSharedInstance()->PlaySwitchSound();
+			}
 			return true;
 		}
 	}
