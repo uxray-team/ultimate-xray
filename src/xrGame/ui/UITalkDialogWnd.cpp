@@ -456,13 +456,6 @@ CUIQuestionItem::CUIQuestionItem(CUIXml* xml_doc, const char* path)
 		m_num_text = UIHelper::CreateStatic(*xml_doc, str, this);
 }
 
-void CUIQuestionItem::Update()
-{
-	inherited::Update();
-	if (m_num_text)
-		m_num_text->Show(!pInput->GetControllerMode());
-}
-
 void CUIQuestionItem::Init			(const char* val, const char* text, bool isFinalizer)
 {
 	m_is_finalizer					= isFinalizer;
