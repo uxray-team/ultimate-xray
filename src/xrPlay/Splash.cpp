@@ -3,7 +3,7 @@
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_video.h>
 #include <SDL_Ext/SDL_image.h>
-
+#include "../xrCore/git_version.h"
 #include <cstdlib>
 #include <ctime>
 
@@ -13,24 +13,14 @@
 #include<string>
 #ifdef _EDITOR
     #include "../Editors/xrECore/resource.h"
-    #define DISABLE_SPLASH_EVENTS 1
 #else
     #include "resource.h"
-    #define DISABLE_SPLASH_EVENTS 0
-
-    #include "splash_eff_ng.h"  //NOVA GODA PRIKOL
-    #include "splash_eff_sp.h"
-    #include "splash_eff_crt.h"
 #endif
 
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb/stb_image.h>
 
 #define HAVE_SLD3TTF 0
-
-
-//CHANGE THIS TO 1 TO DISABLE SPLASH EVENTS (NEW YEAR AND ETC)
-
 
 //#if HAVE_SLD3TTF
 //#include <SDL3_ttf/SDL_ttf.h>
@@ -56,14 +46,6 @@ namespace splash
 
     // WINDOW ==
 
-    // == LOADING AMIN SHNYAGA
-    constexpr int LD_COLS = 8;
-    constexpr int LD_ROWS = 2;
-    constexpr int LD_FRAME_COUNT = LD_COLS * LD_ROWS;
-    constexpr float LD_FRAME_TIME = 0.05f;
-    SDL_Texture* LD_atlas = nullptr;
-    // LOADING AMIN SHNYAGA ==
-
     // == FONT
 #if HAVESDL3TTF
 #else
@@ -76,14 +58,6 @@ namespace splash
     int CHAR_WIDTH = 0;
     int CHAR_HEIGHT = 0;
 #endif
-
-    enum E_SPLASH_RENDER_PRIKOL
-    {
-        NORMIS = 0,
-        CRT,
-        NOVA_GODA,
-        SPOOKY,
-    } splash_render_prikol;
 
     SPLASH_API void SetProgressStatus(int prog, const char* status)
     {
@@ -130,22 +104,6 @@ namespace splash
 
         return surface;
     }
-
-#ifndef _EDITOR
-    void renderPrikolHub(SDL_Surface* overlaySurf, SDL_Texture* overlayTex)
-    {
-
-        switch (splash_render_prikol)
-        {
-        case NORMIS: { break; }
-        case SPOOKY: { break; }
-        case NOVA_GODA: { splash::nova_goda::update_and_draw_snow(renderer, WINDOW_WIDTH, WINDOW_HEIGHT); break; }
-        case CRT: { splash::crt::update_and_draw(renderer, overlaySurf, overlayTex, WINDOW_WIDTH, WINDOW_HEIGHT); break; }
-        default:
-            break;
-        }
-    }
-#endif // !_EDITOR
 
     void RenderText(const char* text, int x, int y) {
         if (!fontTexture) return;
@@ -194,71 +152,17 @@ namespace splash
     }
 #endif
 
-#if! DISABLE_SPLASH_EVENTS
-    bool IsBetweenDec25AndJan5()
-    {
-        std::time_t t = std::time(nullptr);
-        std::tm tm;
-        localtime_s(&tm, &t);
-
-        int month = tm.tm_mon + 1;
-        int day = tm.tm_mday;
-
-        if (month == 12 && day >= 25 && day <= 31)  return true;
-
-        if (month == 1 && day >= 1 && day <= 5)  return true;
-
-        return false;
-    }
-
-    bool IsBetweenOct30AndNov5()
-    {
-        std::time_t t = std::time(nullptr);
-        std::tm tm;
-        localtime_s(&tm, &t);
-
-        int month = tm.tm_mon + 1;
-        int day = tm.tm_mday;
-
-        if (month == 10 && day >= 30 && day <= 31)  return true;
-
-        if (month == 11 && day >= 1 && day <= 5)  return true;
-
-        return false;
-    }
-#endif
-
     bool running = true;
 	SPLASH_API void Show()
 	{
 		srand((unsigned)time(nullptr));
 
-		SDL_SetAppMetadata("Chezze splash", "1.3.3.7-01a", "com.chezze.ix_splash");
+		SDL_SetAppMetadata("Ultimate X-Ray", _VER, "com.uxray-team.ultimate-xray");
 
 		if (!SDL_Init(SDL_INIT_VIDEO))
 		{
 			return;
 		}
-
-#if DISABLE_SPLASH_EVENTS
-		splash_render_prikol = NORMIS;
-#else
-		// idk where the splash shound to enable crt effect, so let's just disable it for now ! :-)
-
-		if (IsBetweenDec25AndJan5())
-		{
-			splash_render_prikol = NOVA_GODA;
-		}
-		else if (IsBetweenOct30AndNov5())
-		{
-			splash_render_prikol = SPOOKY;
-		}
-		// else if (crt) sphash_render_prikol = CRT;
-		else
-		{
-			splash_render_prikol = NORMIS;
-		}
-#endif
 
 		unsigned char* imageData = nullptr;
 
@@ -326,29 +230,17 @@ namespace splash
 				CEngineExternal engineExternal; // Hack
 				auto platform = engineExternal.GetCurrentPlatform();
 
-				switch (splash_render_prikol)
+				if (platform == EEngineExternalPlatform::ShadowOfChernobyl)
 				{
-					case NOVA_GODA:
-						background_resource_id = nova_goda::getBackgroundID(platform);
-
-						break;
-					case SPOOKY:
-						background_resource_id = spooky::getBackgroundID(platform);
-						break;
-					default:
-						if (platform == EEngineExternalPlatform::ShadowOfChernobyl)
-						{
-							background_resource_id = IDB_SOC_SPLASH_BG;
-						}
-						else if (platform == EEngineExternalPlatform::ClearSky)
-						{
-							background_resource_id = IDB_CS_SPLASH_BG;
-						}
-						else
-						{
-							background_resource_id = IDB_COP_SPLASH_BG;
-						}
-						break;
+					background_resource_id = IDB_SOC_SPLASH_BG;
+				}
+				else if (platform == EEngineExternalPlatform::ClearSky)
+				{
+					background_resource_id = IDB_CS_SPLASH_BG;
+				}
+				else
+				{
+					background_resource_id = IDB_COP_SPLASH_BG;
 				}
 #endif
 				surface = LoadPNGSurfaceFromResource(imageData, MAKEINTRESOURCE(background_resource_id), TEXT("PNG"));
@@ -370,7 +262,7 @@ namespace splash
         {
 			window_flags |= SDL_WINDOW_ALWAYS_ON_TOP;
         }
-		if (!SDL_CreateWindowAndRenderer("chezze/renderer/ixray_splash", WINDOW_WIDTH, WINDOW_HEIGHT, window_flags, &window, &renderer))
+		if (!SDL_CreateWindowAndRenderer("Ultimate X-Ray", WINDOW_WIDTH, WINDOW_HEIGHT, window_flags, &window, &renderer))
 		{
 			SDL_Log("Couldn't create window/renderer: %s", SDL_GetError());
 			return;
@@ -399,16 +291,6 @@ namespace splash
 		//
 		SDL_SetTextureBlendMode(overlayTex, SDL_BLENDMODE_BLEND);
 		//////////////////////////////
-		surface = LoadPNGSurfaceFromResource(imageData, MAKEINTRESOURCE(IDB_LOAD_ICON), TEXT("PNG"));
-		stbi_image_free(imageData);
-
-		LD_atlas = SDL_CreateTextureFromSurface(renderer, surface);
-		if (!LD_atlas)
-		{
-			return;
-		}
-		SDL_DestroySurface(surface);
-		stbi_image_free(imageData);
 
 		// font
 		surface = LoadPNGSurfaceFromResource(imageData, MAKEINTRESOURCE(IDB_FONT), TEXT("PNG"));
@@ -418,26 +300,8 @@ namespace splash
 
 		CHAR_WIDTH = surface->w / CHARS_PER_ROW;
 		CHAR_HEIGHT = surface->h / CHARS_PER_COL;
-		//
-
-
-		float texW, texH;
-		SDL_GetTextureSize(LD_atlas, &texW, &texH);
-
-		int frameW = texW / LD_COLS;
-		int frameH = texH / LD_ROWS;
-
-		int currentFrame = 0;
-		float timer = 0.0f;
 
 		Uint64 prevTicks = SDL_GetTicks();
-
-#ifndef _EDITOR
-		if (splash_render_prikol == NOVA_GODA)
-		{
-			splash::nova_goda::init_snow(WINDOW_WIDTH, WINDOW_HEIGHT);
-		}
-#endif
 
 		SDL_PropertiesID props = SDL_GetWindowProperties(window);
 		HWND hwnd = (HWND)SDL_GetPointerProperty(props, SDL_PROP_WINDOW_WIN32_HWND_POINTER, nullptr);
@@ -453,44 +317,14 @@ namespace splash
 
 		while (running)
 		{
-			Uint64 now = SDL_GetTicks();
-			float delta = (now - prevTicks) / 1000.0f;
-			prevTicks = now;
-
-			timer += delta;
-			if (timer >= LD_FRAME_TIME)
-			{
-				timer -= LD_FRAME_TIME;
-				currentFrame = (currentFrame + 1) % LD_FRAME_COUNT;
-			}
-
 			SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
 			SDL_RenderClear(renderer);
 
 			SDL_RenderTexture(renderer, texture, nullptr, nullptr);
 
-			{
-				int col = currentFrame % LD_COLS;
-				int row = currentFrame / LD_COLS;
-
-				SDL_FRect src{
-					float(col * frameW),
-					float(row * frameH),
-					float(frameW),
-					float(frameH)
-				};
-
-				// POSITIONING OF LOADING ANIMATION SCHNYAGA
-				SDL_FRect dst{
-					1.f, WINDOW_HEIGHT - 10.f - frameH, float(frameW), float(frameH)
-				};
-				SDL_RenderTexture(renderer, LD_atlas, &src, &dst);
-			}
 			UpdatepProgressBar(progress_percent, SPLASH_STATUS);
 
 #ifndef _EDITOR
-			renderPrikolHub(overlaySurf, overlayTex);
-
 #ifdef DEBUG_DRAW
 #ifdef NDEBUG
 			RenderText("DEV BUILD", 0, 0);

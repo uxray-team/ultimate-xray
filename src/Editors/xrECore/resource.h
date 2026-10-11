@@ -7,9 +7,8 @@
 #define IDB_SE                          106
 #define IDB_AE                          107
 #define IDB_PE                          108
-#define IDB_LOAD_ICON                   110
-#define IDB_PNG1                        111
-#define IDB_FONT                        111
+#define IDB_PNG1                        110
+#define IDB_FONT                        110
 
 // Next default values for new objects
 // 

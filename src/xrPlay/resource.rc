@@ -59,7 +59,7 @@ BEGIN
             VALUE "InternalName", "xrEngine"
             VALUE "LegalCopyright", "Copyright © 2009 GSC Game World"
             VALUE "OriginalFilename", "xrEngine.exe"
-            VALUE "ProductName", "S.T.A.L.K.E.R.: Call Of Pripyat"
+            VALUE "ProductName", "S.T.A.L.K.E.R."
             VALUE "ProductVersion", "1.6.02"
         END
     END
@@ -133,23 +133,9 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 
 IDB_COP_SPLASH_BG       PNG                     "SplashBackgrounds/splash_cop_bg.png"
 
-IDB_LOAD_ICON           PNG                     "splash_ld.png"
-
-IDB_COP_SPLASH_BG_HW    PNG                     "SplashBackgrounds/splash_cop_bg_HW.png"
-
-IDB_COP_SPLASH_BG_NG    PNG                     "SplashBackgrounds/splash_cop_bg_NY.png"
-
 IDB_CS_SPLASH_BG        PNG                     "SplashBackgrounds\\splash_cs_bg.png"
 
-IDB_CS_SPLASH_BG_HW     PNG                     "SplashBackgrounds\\splash_cs_bg_HW.png"
-
-IDB_CS_SPLASH_BG_NG     PNG                     "SplashBackgrounds\\splash_cs_bg_NY.png"
-
 IDB_SOC_SPLASH_BG       PNG                     "SplashBackgrounds\\splash_soc_bg.png"
-
-IDB_SOC_SPLASH_BG_HW    PNG                     "SplashBackgrounds\\splash_soc_bg_HW.png"
-
-IDB_SOC_SPLASH_BG_NG    PNG                     "SplashBackgrounds\\splash_soc_bg_NY.png"
 
 #endif    // English (United States) resources
 /////////////////////////////////////////////////////////////////////////////
