@@ -154,9 +154,9 @@ void CPdaUiSounds::PlayPanel(bool opening, bool throttled)
 	Play(opening ? EPdaUiSound::PanelOpen : EPdaUiSound::PanelClose, throttled);
 }
 
-void CPdaUiSounds::PlayFilterToggle(bool throttled)
+bool CPdaUiSounds::PlayFilterToggle(bool throttled)
 {
-	Play(EPdaUiSound::FilterToggle, throttled);
+	return Play(EPdaUiSound::FilterToggle, throttled);
 }
 
 void CPdaUiSounds::SetSuppressSound(EPdaUiSound sound, bool suppress)

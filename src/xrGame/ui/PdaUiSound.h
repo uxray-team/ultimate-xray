@@ -64,7 +64,7 @@ public:
 	bool Play(EPdaUiSound sound, bool throttled = false);
 	void PlayMapZoom(bool zoomIn, bool throttled = false);
 	void PlayPanel(bool opening, bool throttled = false);
-	void PlayFilterToggle(bool throttled = false);
+	bool PlayFilterToggle(bool throttled = false);
 
 	void SetSuppressSound(EPdaUiSound sound, bool suppress);
 	void SetSuppressTabSound(bool suppress) { SetSuppressSound(EPdaUiSound::Tab, suppress); }

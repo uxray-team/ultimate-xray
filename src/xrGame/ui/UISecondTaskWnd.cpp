@@ -396,11 +396,7 @@ bool UITaskListWnd::SelectNextToSelected(bool bNext)
 						taskManager->SetActiveTask(nextToItem->get_task());
 						const float barHeight = m_list->ScrollBar() ? m_list->ScrollBar()->GetHeight() : 0.0f;
 						m_list->ScrollToItem(nextToItem, iFloor(-barHeight / 2.0f + nextToItem->GetWndRect().height() / 2.0f));
-						if (m_pUiSounds)
-						{
-							m_pUiSounds->Play(EPdaUiSound::ListSelect);
-						}
-						else
+						if (!m_pUiSounds || !m_pUiSounds->Play(EPdaUiSound::ListSelect))
 						{
 							GetSoundsSharedInstance()->PlaySwitchSound();
 						}
@@ -415,11 +411,7 @@ bool UITaskListWnd::SelectNextToSelected(bool bNext)
 						taskManager->SetActiveTask(nextToItem->get_task());
 						const float barHeight = m_list->ScrollBar() ? m_list->ScrollBar()->GetHeight() : 0.0f;
 						m_list->ScrollToItem(nextToItem, iFloor(-barHeight / 2.0f + nextToItem->GetWndRect().height() / 2.0f));
-						if (m_pUiSounds)
-						{
-							m_pUiSounds->Play(EPdaUiSound::ListSelect);
-						}
-						else
+						if (!m_pUiSounds || !m_pUiSounds->Play(EPdaUiSound::ListSelect))
 						{
 							GetSoundsSharedInstance()->PlaySwitchSound();
 						}

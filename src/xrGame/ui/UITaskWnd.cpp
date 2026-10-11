@@ -879,11 +879,7 @@ bool CUITaskWnd::SwitchToNextFilter(bool bLoop)
 		m_currentFilterIndex = newFilterIndex;
 		if (m_cbFilters[m_currentFilterIndex])
 		{
-			if (m_pUiSounds)
-			{
-				m_pUiSounds->PlayFilterToggle();
-			}
-			else
+			if (!m_pUiSounds || !m_pUiSounds->Play(EPdaUiSound::ListSelect))
 			{
 				GetSoundsSharedInstance()->PlaySwitchSound();
 			}
@@ -908,11 +904,7 @@ bool CUITaskWnd::SwitchToPrevFilter(bool bLoop)
 		m_currentFilterIndex = newFilterIndex;
 		if (m_cbFilters[m_currentFilterIndex])
 		{
-			if (m_pUiSounds)
-			{
-				m_pUiSounds->PlayFilterToggle();
-			}
-			else
+			if (!m_pUiSounds || !m_pUiSounds->Play(EPdaUiSound::ListSelect))
 			{
 				GetSoundsSharedInstance()->PlaySwitchSound();
 			}
