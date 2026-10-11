@@ -167,10 +167,15 @@ function sleep_dialog:OnGamepadKey(id, gamepad_action)
 				res = true
 			
 			elseif bindUI == key_bindings.kUI_ACCEPT then
-				sounds_shared.play_accept_sound()
-				self:OnButtonSleep()
-				res = true
+				SemiLog("! time_global() - "..tostring(time_global()))
+				SemiLog("! self.shown_time - "..tostring(self.shown_time))
+				SemiLog("! diff: - "..tostring(time_global() - self.shown_time))
 				
+				if ((time_global() - self.shown_time) >= 50) then
+					sounds_shared.play_accept_sound()
+					self:OnButtonSleep()
+					res = true
+				end
 			end
 		end
 	end
@@ -234,6 +239,7 @@ function sleep()
 		sleep_control = ui_sleep_dialog.sleep_dialog()
 	end
 	sleep_control.time_track:SetCurrentValue()
+	sleep_control.shown_time = time_global()
 	sleep_control:TestAndShow()
 	action_repeaters():ResetAll(sleep_control)
 end

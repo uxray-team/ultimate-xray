@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="windows-1251" ?>
+<string_table>
+	<string id="sleep_ok_button">
+		<text_gamepad override="add">$$ACTION_UI_ACCEPT$$ Спать</text_gamepad>
+	</string>
+</string_table>
