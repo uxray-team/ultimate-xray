@@ -475,6 +475,14 @@ void CGamepadService::GyroscopeUpdate()
 
     Gyroscope *= GyroscopeSensitivity;
 
+    if (IsGamepadWireless())
+    {
+        // SDL hack 
+        // if gamepad is wired, gyroscope is updated every 4th millisecond, 
+        // but if it's wireless, it updates every millisecond
+        Gyroscope.div(8.f);
+    }
+
     pInput->GamepadGyroscopeUpdate(Gyroscope);
 }
 
