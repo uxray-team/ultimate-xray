@@ -2031,7 +2031,7 @@ bool CUIActorMenuBase::OnGamepadKeyAction(int id, EUIMessages gamepad_action)
 			OnPressUserKey();
 			return true;
 		}
-		else if (is_binded(kUI_BACK, id) || is_binded(kQUIT, id))
+		else if (is_binded(kUI_BACK, id) || is_binded(kQUIT, id) || is_binded(kINVENTORY, id))
 		{
 			g_btnHint->Discard();
 			for (u8 i = 1; i <= LAST_SLOT; ++i)

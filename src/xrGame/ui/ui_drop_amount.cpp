@@ -207,11 +207,6 @@ void CUIItemDropAmountWnd::InitDropAmount(CUIXml& uiXml)
     ActionRepeaters()->Register(this, kUI_RIGHT);
 }
 
-void CUIItemDropAmountWnd::RecalculateLayout(CInventoryItem* pItem)
-{
-    // WTF?
-}
-
 void CUIItemDropAmountWnd::ShowDropAmount(u32 max, EDropMode mode, CInventoryItem* pItem, CUICellItem* pCellItem)
 {
     if (_trackBar == nullptr)
@@ -314,8 +309,6 @@ void CUIItemDropAmountWnd::Show(CInventoryItem* pItem, CUICellItem* pCellItem, i
         xr_sprintf(cnt, "%d", maxSelectable);
         _staticValueMax->SetText(cnt);
     }
-
-    RecalculateLayout(pItem);
 }
 
 void CUIItemDropAmountWnd::SyncValueToEdit()
@@ -544,14 +537,9 @@ bool CUIItemDropAmountWnd::OnKeyboardAction(int dik, EUIMessages keyboardAction)
     {
         if (keyboardAction == WINDOW_KEY_PRESSED)
         {
-            if (dik == SDL_SCANCODE_RETURN || dik == SDL_SCANCODE_KP_ENTER)
+            if (get_binded_action(dik, agUIGeneral) == kUI_ACCEPT)
             {
                 OnBtnAcceptClicked(nullptr, nullptr);
-                return true;
-            }
-            if (dik == SDL_SCANCODE_ESCAPE)
-            {
-                OnBtnCancelClicked(nullptr, nullptr);
                 return true;
             }
         }
@@ -560,7 +548,9 @@ bool CUIItemDropAmountWnd::OnKeyboardAction(int dik, EUIMessages keyboardAction)
     if (is_binded(kUSE, dik) || is_binded(kINVENTORY, dik) || is_binded(kQUIT, dik))
     {
         if (WINDOW_KEY_PRESSED == keyboardAction)
-            HideDialog();
+        {
+            OnBtnCancelClicked(this, nullptr);
+        }
         return true;
     }
 

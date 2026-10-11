@@ -146,24 +146,36 @@ bool CUISpawnWnd::OnKeyboardAction(int dik, EUIMessages keyboard_action)
 			game->OnTeamSelect(1);
 		return true;
 	}
+
+	switch (get_binded_action(dik))
+	{
+		case kQUIT:
+		{
+			HideDialog();
+			game->OnTeamMenuBack();
+			return true;
+		}
+	}
+
+	switch (get_binded_action(dik, agUIGeneral))
+	{
+		case kUI_ACCEPT:
+		{
+			HideDialog();
+			if (m_pImage1->GetSelectedState())
+				game->OnTeamSelect(0);
+			else if (m_pImage2->GetSelectedState())
+				game->OnTeamSelect(1);
+			else
+				game->OnTeamSelect(-1);
+			return true;
+		}
+	}
 	switch (dik)
 	{
-	case SDL_SCANCODE_ESCAPE:
-		HideDialog							();
-		game->OnTeamMenuBack();
-		return true;
 	case SDL_SCANCODE_SPACE:
 		HideDialog							();
 		game->OnTeamSelect(-1);
-		return true;
-	case SDL_SCANCODE_RETURN:
-		HideDialog							();
-		if (m_pImage1->GetSelectedState())
-			game->OnTeamSelect(0);
-		else if (m_pImage2->GetSelectedState())
-			game->OnTeamSelect(1);
-		else
-			game->OnTeamSelect(-1);		
 		return true;
 	}
 

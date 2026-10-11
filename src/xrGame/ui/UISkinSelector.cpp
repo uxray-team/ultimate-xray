@@ -293,15 +293,21 @@ bool CUISkinSelectorWnd::OnKeyboardAction(int dik, EUIMessages keyboard_action)
 		return true;		
 	}
 
+	switch (get_binded_action(dik, agUIGeneral))
+	{
+		case kUI_ACCEPT:
+		{
+			OnBtnOK();
+			return true;
+		}
+	}
+
 	switch (dik){
 		case SDL_SCANCODE_ESCAPE:
 			OnBtnCancel();
 			return true;
 		case SDL_SCANCODE_SPACE: // do autoselect
 			m_iActiveIndex = -1;
-		case SDL_SCANCODE_RETURN:	
-			OnBtnOK();
-			return true;
 		case SDL_SCANCODE_LEFT:
 			OnKeyLeft();
 			return true;

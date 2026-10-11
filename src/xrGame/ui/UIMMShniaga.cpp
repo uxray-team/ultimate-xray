@@ -350,6 +350,14 @@ void CUIMMShniaga::OnBtnClick(){
 
 bool CUIMMShniaga::OnKeyboardAction(int dik, EUIMessages keyboard_action)
 {
+	switch (get_binded_action(dik, agUIGeneral))
+	{
+		case kUI_ACCEPT:
+		{
+			OnBtnClick();
+			return true;
+		}
+	}
 
 	if (WINDOW_KEY_PRESSED == keyboard_action)
 	{
@@ -362,9 +370,6 @@ bool CUIMMShniaga::OnKeyboardAction(int dik, EUIMessages keyboard_action)
 			case SDL_SCANCODE_DOWN:
 				if (m_selected_btn < BtnCount() - 1)
 					SelectBtn(m_selected_btn + 1);
-				return true;
-			case SDL_SCANCODE_RETURN:
-				OnBtnClick();
 				return true;
 			case SDL_SCANCODE_ESCAPE:
 				if (m_page != epi_main)

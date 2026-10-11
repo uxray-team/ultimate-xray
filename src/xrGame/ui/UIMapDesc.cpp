@@ -129,15 +129,25 @@ bool CUIMapDesc::OnKeyboardAction(int dik, EUIMessages keyboard_action){
 	}
 
 	game_cl_mp * dm = Game().cast_game_cl_mp();
+	
+	switch (get_binded_action(dik, agUIGeneral))
+	{
+		case kUI_ACCEPT:
+		{
+			HideDialog();
+			dm->OnMapInfoAccept();
+			return true;
+		}
+	}
 
-	switch (dik){
+	switch (dik)
+	{
 		case SDL_SCANCODE_ESCAPE:
 			HideDialog					();
 			dm->OnSpectatorSelect		();
 			return true;
 			break;
 		case SDL_SCANCODE_SPACE:
-		case SDL_SCANCODE_RETURN:
 			HideDialog					();
 			dm->OnMapInfoAccept			();
 			return true;

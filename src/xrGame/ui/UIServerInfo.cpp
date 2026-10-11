@@ -171,10 +171,18 @@ void		CUIServerInfo::OnNextBtnClick(CUIWindow* w, void* d)
 
 bool CUIServerInfo::OnKeyboardAction(int dik, EUIMessages keyboard_action)
 {
+	switch (get_binded_action(dik, agUIGeneral))
+	{
+		case kUI_ACCEPT:
+		{
+			OnNextBtnClick(nullptr, 0);
+			return true;
+		}
+	}
+
 	switch (dik)
 	{
 		case SDL_SCANCODE_SPACE:
-		case SDL_SCANCODE_RETURN:
 			{
 				OnNextBtnClick(nullptr, 0);
 				return true;

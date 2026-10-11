@@ -78,7 +78,6 @@ private:
 	std::function<void(int)> _callback;
 
     void PerformDrop();
-    void RecalculateLayout(CInventoryItem* pItem);
     void SyncValueToEdit();
     void SyncEditToValue();
     void UpdateWeightText();
