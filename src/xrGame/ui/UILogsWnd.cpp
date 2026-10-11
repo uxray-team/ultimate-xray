@@ -190,6 +190,8 @@ CUILogsWnd::CUILogsWnd()
 	m_list                  = nullptr;
 	m_list_news             = nullptr;
 	m_list_dialogs          = nullptr;
+	ActionRepeaters()->Register(this, kPDA_LOG_SCROLL_UP);
+	ActionRepeaters()->Register(this, kPDA_LOG_SCROLL_DOWN);
 }
 
 CUILogsWnd::~CUILogsWnd()
@@ -1100,11 +1102,13 @@ bool CUILogsWnd::OnGamepadKeyAction(int key, EUIMessages gamepad_action)
 			}
 			case kPDA_LOG_SCROLL_UP:
 			{
+				ActionRepeaters()->SetActionStarted(this, kPDA_LOG_SCROLL_UP);
 				on_scroll_keys(SDL_SCANCODE_UP, 64);
 				break;
 			}
 			case kPDA_LOG_SCROLL_DOWN:
 			{
+				ActionRepeaters()->SetActionStarted(this, kPDA_LOG_SCROLL_DOWN);
 				on_scroll_keys(SDL_SCANCODE_DOWN, 64);
 				break;
 			}
@@ -1121,12 +1125,18 @@ bool CUILogsWnd::OnGamepadKeyHold(int key)
 	{
 		case kPDA_LOG_SCROLL_UP:
 		{
-			on_scroll_keys(SDL_SCANCODE_UP, 64);
+			if (ActionRepeaters()->CanRepeatActionNow(this, kPDA_LOG_SCROLL_UP))
+			{
+				on_scroll_keys(SDL_SCANCODE_UP, 64);
+			}
 			break;
 		}
 		case kPDA_LOG_SCROLL_DOWN:
 		{
-			on_scroll_keys(SDL_SCANCODE_DOWN, 64);
+			if (ActionRepeaters()->CanRepeatActionNow(this, kPDA_LOG_SCROLL_DOWN))
+			{
+				on_scroll_keys(SDL_SCANCODE_DOWN, 64);
+			}
 			break;
 		}
 		return true;
