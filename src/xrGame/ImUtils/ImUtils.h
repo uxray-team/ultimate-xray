@@ -711,7 +711,6 @@ void RenderSearchManagerWindow();
 void RenderHUDAdjustManager();
 void RenderToolsOMFEditorWindow();
 void RenderCarConfigEditor();
-void RenderToolsInputManagerWindow();
 void RenderToolsRenderDebugSVGStorageViewerWindow();
 void RenderTextureEditor();
 void RenderQuestEditor();

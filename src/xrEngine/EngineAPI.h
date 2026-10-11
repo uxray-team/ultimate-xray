@@ -50,7 +50,6 @@ enum class EditorUI : u8
 	Game_ActorAnimations,
 	Tools_RenderDebug_SVGStorageViewer,
 	Tools_OMFEditor,
-	Tools_InputManager,
 	Tools_CarEditor,
 	Tools_PostProcessEffectorEditor,
 	Tools_TextureEditor,
