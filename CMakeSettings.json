@@ -20,7 +20,7 @@
                 },
                 {
                     "name": "IXRAY_MP",
-                    "value": "False",
+                    "value": "True",
                     "type": "BOOL"
                 },
                 {
@@ -80,7 +80,7 @@
                 },
                 {
                     "name": "IXRAY_MP",
-                    "value": "False",
+                    "value": "True",
                     "type": "BOOL"
                 },
                 {
@@ -140,7 +140,7 @@
                 },
                 {
                     "name": "IXRAY_MP",
-                    "value": "False",
+                    "value": "True",
                     "type": "BOOL"
                 },
                 {
@@ -200,7 +200,7 @@
                 },
                 {
                     "name": "IXRAY_MP",
-                    "value": "False",
+                    "value": "True",
                     "type": "BOOL"
                 },
                 {
@@ -260,7 +260,7 @@
                 },
                 {
                     "name": "IXRAY_MP",
-                    "value": "False",
+                    "value": "True",
                     "type": "BOOL"
                 },
                 {
@@ -320,7 +320,7 @@
                 },
                 {
                     "name": "IXRAY_MP",
-                    "value": "False",
+                    "value": "True",
                     "type": "BOOL"
                 },
                 {

@@ -14,7 +14,7 @@
             "cacheVariables": {
                 "IXRAY_UTILS": "OFF",
                 "IXRAY_EDITORS": "OFF",
-                "IXRAY_MP": "OFF",
+                "IXRAY_MP": "ON",
                 "IXRAY_COMPRESSOR_ONLY": "OFF",
                 "IXRAY_PLUGINS": "OFF",
                 "IXRAY_ASAN": "OFF",
@@ -46,7 +46,7 @@
             "cacheVariables": {
                 "IXRAY_UTILS": "OFF",
                 "IXRAY_EDITORS": "OFF",
-                "IXRAY_MP": "OFF",
+                "IXRAY_MP": "ON",
                 "IXRAY_COMPRESSOR_ONLY": "OFF",
                 "IXRAY_PLUGINS": "OFF",
                 "IXRAY_ASAN": "OFF",
@@ -110,7 +110,7 @@
                 "CMAKE_RC_COMPILER": "$env{WINE_MSVC_DIR}/bin/x64/rc",
                 "IXRAY_UTILS": "OFF",
                 "IXRAY_EDITORS": "OFF",
-                "IXRAY_MP": "OFF",
+                "IXRAY_MP": "ON",
                 "IXRAY_COMPRESSOR_ONLY": "OFF",
                 "IXRAY_PLUGINS": "OFF",
                 "IXRAY_ASAN": "OFF",
