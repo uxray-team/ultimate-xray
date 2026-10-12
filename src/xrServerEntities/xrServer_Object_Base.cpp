@@ -258,6 +258,24 @@ enum EGameTypes {
 	GAME_DUMMY							= 255	// temporary game type
 };
 
+u16 ConvertGameID(u8 legacyGameID)
+{
+	switch (legacyGameID)
+	{
+		case GAME_ANY:
+			return eGameIDNoGame;
+		case GAME_SINGLE:
+			return eGameIDSingle;
+		case GAME_DEATHMATCH:
+			return eGameIDDeathmatch;
+		case GAME_TEAMDEATHMATCH:
+			return eGameIDTeamDeathmatch;
+		case GAME_ARTEFACTHUNT:
+			return eGameIDArtefactHunt;
+	}
+	return eGameIDNoGame;
+}
+
 bool CSE_Abstract::Spawn_Read				(NET_Packet	&tNetPacket)
 {
 	u16							dummy16;
@@ -290,8 +308,11 @@ bool CSE_Abstract::Spawn_Read				(NET_Packet	&tNetPacket)
 		u16 gt;
 		tNetPacket.r_u16			(gt);
 		m_gameType.m_GameType.assign(gt);
-	}else
-		m_gameType.SetDefaults		();
+	}
+	else
+	{
+		m_gameType.m_GameType.assign(ConvertGameID(temp_gt));
+	}
 
 	if (0==m_wVersion) {
 		tNetPacket.r_pos		-= sizeof(u16);
