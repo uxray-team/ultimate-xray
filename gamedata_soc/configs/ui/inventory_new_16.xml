@@ -174,7 +174,7 @@
 
 	<static_personal x="1" y="285" width="95" height="260"/>
 
-    <rank x="732" y="272" width="56" height="65" stretch="1">
+    <rank x="682" y="272" width="56" height="65" stretch="1">
 		<texture>ui_inventory_rank</texture>
 		<pic x="10" y="17" width="34" height="40" stretch="1"/>
     </rank>
