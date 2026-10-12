@@ -243,12 +243,6 @@ void CUIInventoryWnd::Show(bool status)
 
 		if (!IsGameTypeSingle())
 		{
-			CObject* current_entity = Level().CurrentEntity();
-			CActor* pActor = current_entity != nullptr ? current_entity->cast_actor() : nullptr;
-			if (!pActor) return;
-
-			pActor->SetWeaponHideState(INV_STATE_INV_WND, true);
-
 			//rank icon		
 			int team = Game().local_player->team;
 			int rank = Game().local_player->rank;
@@ -278,24 +272,6 @@ void CUIInventoryWnd::Show(bool status)
 
 		SendInfoToActor("ui_inventory_hide");
 		ClearAllLists();
-
-		//достать вещь в активный слот
-		CObject* current_entity = Level().CurrentEntity();
-		CActor* pActor = current_entity != nullptr ? current_entity->cast_actor() : nullptr;
-		if (pActor && m_iCurrentActiveSlot != NO_ACTIVE_SLOT &&
-			pActor->inventory().m_slots[m_iCurrentActiveSlot].m_pIItem)
-		{
-			pActor->inventory().Activate(m_iCurrentActiveSlot);
-			m_iCurrentActiveSlot = NO_ACTIVE_SLOT;
-		}
-
-		if (!IsGameTypeSingle())
-		{
-			if (!pActor)			
-				return;
-
-			pActor->SetWeaponHideState(INV_STATE_INV_WND, false);
-		}
 	}
 }
 
