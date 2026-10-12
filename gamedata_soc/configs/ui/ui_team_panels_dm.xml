@@ -28,40 +28,23 @@
             </field>
 
             <column name="mp_name"  x="10" y="26" width="100" height="21">
-              <text vert_align="c" font="letterica16" color="ui_1">mp_name</text>
-              <texture a="0">mp_stats_icon_c_frags</texture>
+              <text vert_align="c" font="letterica16" a="255" r="188" g="188" b="180">mp_name</text>
             </column>
-			
-            <auto_static x="238" y="27" width="1" height="376" stretch="1">
-              <texture>ui_v_line_normal</texture>
-            </auto_static>
 
             <column name="mp_frags" x="244" y="26" width="40" height="21">
-              <texture>mp_stats_icon_c_frags</texture>
+              <text vert_align="c" font="letterica16" a="255" r="188" g="188" b="180">mp_frags</text>
             </column>
-
-            <auto_static x="278" y="27" width="1" height="376" stretch="1">
-              <texture>ui_v_line_normal</texture>
-            </auto_static>
 
             <column name="mp_deaths" x="284" y="26" width="40" height="21">
-              <texture>mp_stats_icon_c_deaths</texture>
+              <text vert_align="c" font="letterica16" a="255" r="188" g="188" b="180">mp_deaths</text>
             </column>
-
-            <auto_static x="318" y="27" width="1" height="376" stretch="1">
-              <texture>ui_v_line_normal</texture>
-            </auto_static>
 
             <column name="mp_status" x="324" y="26" width="40" height="21">
-              <texture>mp_stats_icon_c_rank</texture>
+              <text vert_align="c" font="letterica16" a="255" r="188" g="188" b="180">ui_st_rank</text>
             </column>
 
-            <auto_static x="358" y="27" width="1" height="376" stretch="1">
-              <texture>ui_v_line_normal</texture>
-            </auto_static>
-
             <column name="mp_ping" x="364" y="26" width="40" height="21">
-              <texture>mp_stats_icon_c_ping</texture>
+              <text vert_align="c" font="letterica16" a="255" r="188" g="188" b="180">mp_ping</text>
             </column>
 			
           </team_header>
@@ -122,9 +105,6 @@
         <panel number="0">
           <scroll_panel x="22" y="5" width="405" height="171" always_show_scroll="0" vert_interval="20" />
           <team_header x="22" y="5" width="405" height="20">
-            <auto_static x="368" y="20" width="1" height="171" stretch="1">
-              <texture>ui_v_line_normal</texture>
-            </auto_static>
           </team_header>
         </panel>
       </scroll_panels>
@@ -169,23 +149,15 @@
             </field>
 
             <column name="mp_name"  x="10" y="28" width="80" height="16">
-              <text font="letterica16" color="ui_1" />
+              <text font="letterica16" a="255" r="188" g="188" b="180" />
             </column>
-
-            <auto_static x="318" y="27" width="1" height="376" stretch="1">
-              <texture>ui_v_line_normal</texture>
-            </auto_static>
 
             <column name="mp_status" x="323" y="28" width="40" height="16">
-              <text font="letterica16" color="ui_1" />
+              <text font="letterica16" a="255" r="188" g="188" b="180" />
             </column>
 
-            <auto_static x="358" y="27" width="1" height="376" stretch="1">
-              <texture>ui_v_line_normal</texture>
-            </auto_static>
-
             <column name="mp_ping" x="363" y="28" width="40" height="16">
-              <text font="letterica16" color="ui_1" />
+              <text font="letterica16" a="255" r="188" g="188" b="180" />
             </column>
           </team_header>
 
