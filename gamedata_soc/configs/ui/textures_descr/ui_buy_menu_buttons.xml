@@ -1,0 +1,28 @@
+<w>
+    <file name="ui\ui_btn_primary_e">	
+		<texture id="ui_btn_shotgun_e"	x="0" y="28" width="256" height="100" />
+		<texture id="ui_btn_sniper_e"	x="0" y="28" width="256" height="100" />
+		<texture id="ui_btn_heavy_e"	x="0" y="28" width="256" height="100"  />
+		<texture id="ui_btn_assault_e"	x="0" y="28" width="256" height="100"  />
+	</file>
+    <file name="ui\ui_btn_shotgun_t">	
+		<texture id="ui_btn_shotgun_h"	x="0" y="28" width="256" height="100" />
+		<texture id="ui_btn_shotgun_t"	x="0" y="28" width="256" height="100" />
+		<texture id="ui_btn_shotgun_d"	x="0" y="28" width="256" height="100" />
+	</file>
+    <file name="ui\ui_btn_sniper_t">	
+		<texture id="ui_btn_sniper_h"	x="0" y="28" width="256" height="100" />
+		<texture id="ui_btn_sniper_t"	x="0" y="28" width="256" height="100" />
+		<texture id="ui_btn_sniper_d"	x="0" y="28" width="256" height="100" />
+	</file>
+    <file name="ui\ui_btn_heavy_t">	
+		<texture id="ui_btn_heavy_h"	x="0" y="28" width="256" height="100" />
+		<texture id="ui_btn_heavy_t"	x="0" y="28" width="256" height="100" />
+		<texture id="ui_btn_heavy_d"	x="0" y="28" width="256" height="100" />
+	</file>
+    <file name="ui\ui_btn_assault_t">	
+		<texture id="ui_btn_assault_h"	x="0" y="28" width="256" height="100" />
+		<texture id="ui_btn_assault_t"	x="0" y="28" width="256" height="100" />
+		<texture id="ui_btn_assault_d"	x="0" y="28" width="256" height="100" />
+	</file>
+</w>
