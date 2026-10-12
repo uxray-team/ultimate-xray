@@ -48,10 +48,10 @@
 			<text font="letterica16" r="115" g="114" b="112" complex_mode="0" vert_align="c">mm_mp_dedicated</text>			
 		</check_dedicated>
 
-  <static_map_pic x="392" y="10" width="213" height="180" under_background="1">
-    <texture width="213" height="175">ui\ui_noise</texture>
+  <static_map_pic x="392" y="10" width="213" height="175" under_background="1" stretch="1">
+    <texture width="211" height="157">ui\ui_noise</texture>
   </static_map_pic>
-  <static_map_pic_fore x="392" y="8" width="213" height="180" stretch="1">
+  <static_map_pic_fore x="392" y="6" width="213" height="180" stretch="1">
     <texture x="588" y="229" width="256" height="180">ui\ui_mp_main</texture>
   </static_map_pic_fore>
   <cap_map_info x="408" y="200" width="204" height="200">

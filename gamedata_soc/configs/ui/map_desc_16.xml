@@ -17,7 +17,9 @@
 			<texture>ui_TV_descr_e</texture>
 		</image_frames_3>
 		
-		<image x="60" y="61" width="215" height="215" />
+		<image x="60" y="61" width="215" height="215" stretch="1">
+			<texture width="211" height="157">ui\ui_noise</texture>
+		</image>
 		
 		<map_info x="352" y="100" width="188" height="215" />
 		
