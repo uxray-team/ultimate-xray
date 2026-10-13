@@ -109,7 +109,7 @@ void CWeaponShotEffector::Shot(CWeapon* weapon)
 		// Используем СТАРУЮ ЛОГИКУ
 		m_using_pattern = false;
 		float angle = current_recoil.Dispersion * weapon->cur_silencer_koef.cam_dispersion;
-		angle += current_recoil.DispersionInc * weapon->cur_silencer_koef.cam_disper_inc * (float)m_shot_numer;
+		angle += current_recoil.DispersionInc * weapon->cur_silencer_koef.cam_disper_inc;
 
 		Shot2Legacy(angle);
 	}
@@ -148,10 +148,10 @@ void CWeaponShotEffector::ShotFromPattern(float pattern_x, float pattern_y)
 
 void CWeaponShotEffector::Shot2Legacy(float angle)
 {
-	m_angle_vert += angle * (current_recoil.DispersionFrac + m_Random.randF(-1.0f, 1.0f) * (1.0f - current_recoil.DispersionFrac));
+	m_angle_vert += (angle * (float)m_shot_numer) * (current_recoil.DispersionFrac + m_Random.randF(-1.0f, 1.0f) * (1.0f - current_recoil.DispersionFrac));
 	if (current_recoil.LegacyRecoil)
 	{
-		m_angle_vert += m_angle_vert;
+		m_angle_vert += angle * (current_recoil.DispersionFrac + m_Random.randF(-1.0f, 1.0f) * (1.0f - current_recoil.DispersionFrac));
 	}
 
 	clamp(m_angle_vert, -current_recoil.MaxAngleVert, current_recoil.MaxAngleVert);
