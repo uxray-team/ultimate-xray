@@ -847,6 +847,10 @@ void CMapListHelper::Load()
 	CInifile::Root& sections = map_list_cfg.sections();
 	for(CInifile::Sect& sect : sections)
 	{
+		if (!xr_strcmp(sect.Name, "weather"))
+		{
+			continue;
+		}
 		m_storage.resize		(m_storage.size()+1);
 		SGameTypeMaps&	M		= m_storage.back();
 		M.m_game_type_name	= sect.Name;
