@@ -155,7 +155,9 @@
 			<font_s r="218" g="217" b="213"/>
 			<font r="131" g="131" b="131" font="letterica16"/>
 		</list>
-		<map_pic x="249" y="103" width="150" height="200" />
+		<map_pic x="249" y="103" width="150" height="200" stretch="1">
+		    <texture width="200" height="200">ui\ui_noise</texture>
+		</map_pic>
 		<map_frame x="207" y="87" width="225" height="261" stretch="1">
 			<texture>ui_mp_Voting_tv</texture>
 		</map_frame>
