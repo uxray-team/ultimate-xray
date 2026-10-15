@@ -78,7 +78,7 @@ void	game_sv_ArtefactHunt::Create					(shared_str& options)
 				{
 				case rptArtefactSpawn:
 					{
-						if (GameType & eGameIDArtefactHunt)
+						if (EngineExternal().ShadowOfChernobylMode() || GameType & eGameIDArtefactHunt)
 						{
 							Artefact_rpoints.push_back	(R);
 						}

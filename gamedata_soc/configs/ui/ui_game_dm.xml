@@ -68,9 +68,13 @@
 		</rank_9>
 	</rank_wnd>
 
-	<fraglimit x="395" y="0" width="236" height="40">
-		<text y="5" align="c" font="graffiti32" r="238" g="155" b="23" a="255"/>
-		<texture>ui_hud_fragBig</texture>
+	<fraglimit x="371" y="0" width="280" height="47">
+		<text y="7" align="c" font="graffiti32" r="238" g="155" b="23" a="255"/>
 	</fraglimit>
 	
+	<global width="1024" height="768">
+	    <auto_static x="371" y="0" width="280" height="47">
+		    <texture>ui_hud_fragBig</texture>
+	    </auto_static>
+    </global>	
 </w>
