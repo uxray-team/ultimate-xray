@@ -15,7 +15,7 @@
       <texture>ui_statSingle_back</texture>
     </frame>
     <frame class="static" x="0" y="584" width="447" height="28" stretch="1">
-      <texture x="444" y="350" width="442" height="28">ui_statSingle_back</texture>
+      <texture x="447" y="350" width="447" height="28">ui_statSingle_back</texture>
     </frame>
     <frame class="static" x="0" y="612" width="447" height="58" stretch="1">
       <texture>ui_statSingle_e</texture>

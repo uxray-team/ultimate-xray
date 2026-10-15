@@ -2,12 +2,24 @@
   <team_panels_wnd x="125" y="65" width="848" height="600">
 
     <!--This nodes will process by UITeamPanels::InitAllFrames(...)-->
-    <frame class="frame_line" x="0" y="0" width="845" height="400" vertical="1">
-      <texture>ui_statTwo</texture>
+    <frame class="static" x="0" y="0" width="845" height="98" stretch="1">
+      <texture>ui_statTwo_b</texture>
+    </frame>
+    <frame class="static" x="0" y="98" width="845" height="162" stretch="1">
+      <texture>ui_statTwo_back</texture>
+    </frame>
+    <frame class="static" x="0" y="260" width="845" height="115" stretch="1">
+      <texture x="0" y="98" width="845" height="115">ui_statTwo_back</texture>
+    </frame>
+    <frame class="static" x="0" y="375" width="845" height="25" stretch="1">
+      <texture>ui_statTwo_e</texture>
     </frame>
   
-    <frame class="frame_line" x="0" y="400" width="845" height="200" vertical="1">
-      <texture>ui_statTwo2</texture>
+    <frame class="static" x="0" y="400" width="845" height="142" stretch="1">
+      <texture x="0" y="540" width="845" height="142">ui_statTwo2_back</texture>
+    </frame>
+    <frame class="static" x="0" y="542" width="845" height="58" stretch="1">
+      <texture>ui_statTwo2_e</texture>
     </frame>
 
     <!--This nodes will process by UITeamPanels::InitAllTeams(...)-->
