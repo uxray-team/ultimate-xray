@@ -76,6 +76,7 @@ public:
 
 	virtual	void				on_error					(lua_State* state);
 			void				collect_all_garbage			();
+			void				dump_lua_exports			();
 
 	DECLARE_SCRIPT_REGISTER_FUNCTION
 };

@@ -433,3 +433,123 @@ void CScriptEngine::collect_all_garbage	()
 void CScriptEngine::on_error(lua_State* state)
 {
 }
+
+void CScriptEngine::dump_lua_exports()
+{
+	string_path fn = {};
+	FS.update_path(fn, "$app_data_root$", "exports.lua");
+	IWriter* output_file = FS.w_open(fn);
+
+	lua_State* L = lua();
+	using namespace luabind::detail;
+
+	class_registry* Registry = class_registry::get_registry(L);
+	auto GetArgTypeName = [](const auto info) -> xr_string
+		{
+			if (!info)
+			{
+				return "unknown";
+			}
+
+			xr_string Result = (*info).name();
+
+			const xr_vector<xr_string> Need2Remove = { "class ", "struct ", " __ptr64" };
+			for (const auto& Str : Need2Remove)
+			{
+				size_t Pos = 0;
+				while ((Pos = Result.find(Str, Pos)) != xr_string::npos)
+				{
+					Result.erase(Pos, Str.length());
+				}
+			}
+
+			return Result;
+		};
+
+	auto writeToFile = [output_file](const char* text) -> void
+		{
+			output_file->w(text, xr_strlen(text));
+			output_file->w("\r\n", 2);
+		};
+
+	Registry->iterate_classes(L, [&](lua_State* st, class_rep* crep)
+		{
+			if (!crep->bases().empty())
+			{
+				xr_string OutStr = "C++ class ";
+				OutStr += crep->name();
+				OutStr += " : ";
+
+				bool IsFirstStep = true;
+				for (const class_rep::base_info& BaseClassInfo : crep->bases())
+				{
+					if (!IsFirstStep)
+					{
+						OutStr += ", ";
+					}
+
+					OutStr += BaseClassInfo.base->name();
+					IsFirstStep = false;
+				}
+
+				writeToFile(OutStr.c_str());
+			}
+			else
+			{
+				xr_string out = "C++ class ";
+				out += crep->name();
+				writeToFile(out.c_str());
+			}
+
+			writeToFile("{");
+
+			for (const auto& [Name, _] : crep->m_getters)
+			{
+				xr_string out = "\tproperty ";
+				out += Name;
+				writeToFile(out.c_str());
+			}
+
+			for (const auto& [Name, Value] : crep->static_constants())
+			{
+				xr_string out = "\tconst ";
+				out += Name;
+				out += " = ";
+				out += std::to_string(Value);
+				writeToFile(out.c_str());
+			}
+
+			for (const auto& Method : crep->m_methods)
+			{
+				for (const auto& Overload : Method.overloads())
+				{
+					int ArgsCount = Overload.m_arity;
+					xr_string args;
+					bool IsPrinted = false;
+					for (int i = 0; i < ArgsCount; ++i)
+					{
+						if (Overload.m_params_.size() > i)
+						{
+							if (IsPrinted)
+							{
+								args += ", ";
+							}
+
+							args += GetArgTypeName(Overload.m_params_[i]);
+							IsPrinted = true;
+						}
+					}
+					xr_string out = "\tfunction ";
+					out += Method.name;
+					out += "(";
+					out += args;
+					out += ");";
+					writeToFile(out.c_str());
+				}
+			}
+
+			writeToFile("};\n");
+		});
+	FS.w_close(output_file);
+	Msg("# Saved exports to file [%s]", fn);
+}

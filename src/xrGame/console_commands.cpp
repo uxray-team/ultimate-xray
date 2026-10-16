@@ -1154,6 +1154,19 @@ public:
 
 };
 
+struct CCC_LuaHelp : public IConsole_Command 
+{
+	CCC_LuaHelp(const char* N) : IConsole_Command(N) 
+	{ 
+		bEmptyArgsHandled = true; 
+	};
+
+	virtual void Execute(const char* args) 
+	{
+		g_pScriptEngine->dump_lua_exports();
+	}
+};
+
 //#ifndef MASTER_GOLD
 #	include "game_graph.h"
 struct CCC_JumpToLevel : public IConsole_Command {
@@ -2732,6 +2745,7 @@ void CCC_RegisterCommands()
 	CMD4(CCC_Float, "hud_adj_delta_pos", &_delta_pos, 0.0001f, 1.0f);
 	CMD4(CCC_Float, "hud_adj_delta_rot", &_delta_rot, 0.0001f, 1.0f);
 
+	CMD1(CCC_LuaHelp, "lua_help");
 #endif // MASTER_GOLD
 
 	CMD1(CCC_ReloadSystemLtx, "reload_system_ltx");
