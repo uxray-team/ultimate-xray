@@ -17,7 +17,14 @@ set_target_properties(SDL_uclibc PROPERTIES FOLDER "3rd Party")
 set_target_properties(SDL3-shared PROPERTIES FOLDER "3rd Party")
 
 # SDL Image
-download_single_header(
-    "https://raw.githubusercontent.com/libsdl-org/SDL_image/refs/heads/main/include/SDL3_image/SDL_image.h"
-    "SDL_Ext/SDL_image.h"
+FetchContent_Declare(
+    SDL_image
+    URL https://github.com/libsdl-org/SDL_image/archive/refs/tags/release-3.2.6.tar.gz
+    DOWNLOAD_EXTRACT_TIMESTAMP TRUE
 )
+
+set(SDLIMAGE_VENDORED OFF CACHE BOOL "" FORCE)
+
+FetchContent_MakeAvailable(SDL_image)
+
+set_target_properties(SDL3_image-shared PROPERTIES FOLDER "3rd Party")

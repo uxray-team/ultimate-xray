@@ -20,12 +20,6 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb/stb_image.h>
 
-#define HAVE_SLD3TTF 0
-
-//#if HAVE_SLD3TTF
-//#include <SDL3_ttf/SDL_ttf.h>
-//#endif
-
 EXTERN_C IMAGE_DOS_HEADER __ImageBase;
 #pragma warning(disable: 4047)
 HINSTANCE hInstanceG = (HINSTANCE)&__ImageBase;
@@ -33,7 +27,6 @@ HINSTANCE hInstanceG = (HINSTANCE)&__ImageBase;
 
 namespace splash
 {
-    // == WINDOW
     int WINDOW_WIDTH = 98;
     int WINDOW_HEIGHT = 78;
 
@@ -44,11 +37,6 @@ namespace splash
     int progress_percent = 0;
     int background_resource_id = 0;
 
-    // WINDOW ==
-
-    // == FONT
-#if HAVESDL3TTF
-#else
     SDL_Texture* fontTexture = nullptr;
 
     const int CHARS_PER_ROW = 14;
@@ -57,7 +45,6 @@ namespace splash
 
     int CHAR_WIDTH = 0;
     int CHAR_HEIGHT = 0;
-#endif
 
     SPLASH_API void SetProgressStatus(int prog, const char* status)
     {
@@ -65,24 +52,25 @@ namespace splash
         SPLASH_STATUS = status;
     }
 
-    SDL_Surface* LoadPNGSurfaceFromResource(unsigned char* imageData, LPCTSTR lpName, LPCTSTR lpType) {
+    SDL_Surface* LoadPNGSurfaceFromResource(unsigned char* imageData, LPCTSTR lpName, LPCTSTR lpType) 
+    {
         HMODULE hMODULE = hInstanceG;
 
         HRSRC hRes = FindResource(hMODULE, lpName, lpType);
-        if (!hRes) {
-            //ErrorMsg("Failed to find resource (ID %d)", lpName);
+        if (!hRes) 
+        {
             return nullptr;
         }
 
         HGLOBAL hMem = LoadResource(hInstanceG, hRes);
-        if (!hMem) {
-            //ErrorMsg("Failed to load resource (ID %d)", lpName);
+        if (!hMem) 
+        {
             return nullptr;
         }
 
         void* pResData = LockResource(hMem);
-        if (!pResData) {
-            //ErrorMsg("Failed to lock resource (ID %d)", lpName);
+        if (!pResData) 
+        {
             return nullptr;
         }
 
@@ -90,38 +78,52 @@ namespace splash
 
         int width, height, channels;
         imageData = stbi_load_from_memory((unsigned char*)pResData, resSize, &width, &height, &channels, STBI_rgb_alpha);
-        if (!imageData) {
-            //ErrorMsg("Failed to decode PNG (ID %d)", lpName);
+        if (!imageData) 
+        {
             return nullptr;
         }
 
         SDL_Surface* surface = SDL_CreateSurfaceFrom(width, height, SDL_PIXELFORMAT_RGBA32, imageData, width * 4);
-        if (!surface) {
+        if (!surface) 
+        {
             stbi_image_free(imageData);
-            //ErrorMsg("Failed to create pixel format (ID %d). %s", lpName, SDL_GetError());
             return nullptr;
         }
 
         return surface;
     }
 
-    void RenderText(const char* text, int x, int y) {
+    void RenderText(const char* text, int x, int y, bool right = false) 
+    {
         if (!fontTexture) return;
 
         size_t len = strlen(text);
-        for (size_t i = 0; i < len; ++i) {
-            unsigned char c = static_cast<unsigned char>(text[i]);
+        for (size_t i = 0; i < len; ++i) 
+        {
+            u8 c = (u8)text[i];
             int charIndex = c - 32;
             int srcX = (charIndex % CHARS_PER_ROW) * CHAR_WIDTH;
             int srcY = (charIndex / CHARS_PER_ROW) * CHAR_HEIGHT;
 
-            SDL_FRect srcRect = { (float)srcX, (float)srcY, (float)CHAR_WIDTH, (float)CHAR_HEIGHT };
-            SDL_FRect dstRect = { (float)x + i * CHAR_WIDTH, (float)y, (float)CHAR_WIDTH, (float)CHAR_HEIGHT };
+            SDL_FRect srcRect = 
+            { 
+                (float)srcX, 
+                (float)srcY,
+                (float)CHAR_WIDTH,
+                (float)CHAR_HEIGHT
+            };
+            SDL_FRect dstRect = 
+            { 
+                right ? (float)x - (len - i) * CHAR_WIDTH : (float)x + i * CHAR_WIDTH,
+                (float)y, 
+                (float)CHAR_WIDTH, 
+                (float)CHAR_HEIGHT 
+            };
 
             SDL_RenderTexture(renderer, fontTexture, &srcRect, &dstRect);
         }
     }
-    void UpdatepProgressBar(int progress = 0, const char* status = "")
+    void UpdatepProgressBar(int progress, const char* status)
     {
         int pgHeight = 10;
 
@@ -137,11 +139,10 @@ namespace splash
         SDL_SetRenderDrawColor(renderer, 30, 30, 30, 255);
         SDL_RenderFillRect(renderer, &progressBarBackground);
 
-        SDL_SetRenderDrawColor(renderer, 58, 134, 255, 255);
+        SDL_SetRenderDrawColor(renderer, 0, 74, 127, 255);
         SDL_RenderFillRect(renderer, &progressBarFill);
 
-        //RenderText(status, (WINDOW_WIDTH - (strlen(status) * CHAR_WIDTH)) / 2, progressBarBackground.y - CHAR_HEIGHT);
-        RenderText(status, 32.f, progressBarBackground.y - CHAR_HEIGHT - (CHAR_HEIGHT / 3));
+        RenderText(status, (WINDOW_WIDTH - (strlen(status) * CHAR_WIDTH)) / 2, progressBarBackground.y - CHAR_HEIGHT - (CHAR_HEIGHT / 3));
     }
 
 #ifdef _EDITOR
@@ -155,10 +156,6 @@ namespace splash
     bool running = true;
 	SPLASH_API void Show()
 	{
-		srand((unsigned)time(nullptr));
-
-		SDL_SetAppMetadata("Ultimate X-Ray", _VER, "com.uxray-team.ultimate-xray");
-
 		if (!SDL_Init(SDL_INIT_VIDEO))
 		{
 			return;
@@ -172,56 +169,21 @@ namespace splash
 		{
 			bool extern_splash = false;
 
-	// \/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/
-	// Mr Forserx, dobav' SDL3_image. Bez nego ne work load png from bin dir
-	// /\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\ .
-#if 0
+#ifndef _EDITOR
+            std::string splash_path = Platform::GetModuleName();
+            size_t lastSlash = splash_path.find_last_of('\\');
 
-            std::wstring exePath;
-            exePath.resize(MAX_PATH, 0);
-            auto path_size(GetModuleFileNameW(nullptr, &exePath.front(), MAX_PATH));
-            exePath.resize(path_size);
-
-            if (path_size != 0 && path_size < MAX_PATH)
+            if (lastSlash != -1)
             {
-                size_t lastSlash = exePath.find_last_of('\\');
-
-                if (lastSlash != -1)
-                    exePath.replace(lastSlash + 1, exePath.size() - (lastSlash + 1), L"");
-
-                exePath += L"splash.png";
-
-                if (GetFileAttributesW(exePath.c_str()) != INVALID_FILE_ATTRIBUTES)
-                {
-                    //blin blyat, i hope this works with unicode paths
-                    int size = WideCharToMultiByte(
-                        CP_UTF8,
-                        0,
-                        exePath.c_str(),
-                        -1,
-                        nullptr,
-                        0,
-                        nullptr,
-                        nullptr
-                    );
-                    std::string result(size - 1, '\0');
-
-                    WideCharToMultiByte(
-                        CP_UTF8,
-                        0,
-                        exePath.c_str(),
-                        -1,
-                        &result[0],
-                        size,
-                        nullptr,
-                        nullptr
-                    );
-
-                    surface = IMG_Load(result.c_str());
-                    extern_splash = (surface != nullptr);
-                }
+                splash_path.replace(lastSlash + 1, splash_path.size() - (lastSlash + 1), "");
             }
 
+            splash_path += "splash.png";
+            if (Platform::OpenFile(splash_path.c_str()))
+            {
+                surface = IMG_Load(splash_path.c_str());
+                extern_splash = (surface != nullptr);
+            }
 #endif
 
 			if (!extern_splash)
@@ -326,11 +288,13 @@ namespace splash
 
 #ifndef _EDITOR
 #ifdef DEBUG_DRAW
+#pragma todo("Replace later with real config name check")
 #ifdef NDEBUG
-			RenderText("DEV BUILD", 0, 0);
+			RenderText("RelWithDebInfo", WINDOW_WIDTH, 0, true);
 #else
-			RenderText("DEBUG BUILD", 0, 0);
+			RenderText("Debug", WINDOW_WIDTH, 0, true);
 #endif
+            RenderText(_HASH, WINDOW_WIDTH, CHAR_HEIGHT, true);
 #endif // !_NDEBUG
 #endif // _EDITOR
 
