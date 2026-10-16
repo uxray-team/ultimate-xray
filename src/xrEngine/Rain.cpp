@@ -285,7 +285,7 @@ void CEffect_Rain::OnFrame()
 		}
 
 		state = stWorking;
-		if (snd_Ambient.handle())
+		if (snd_Ambient.handle() && !snd_Ambient.is_playing())
 		{
 			snd_Ambient.play(nullptr, sm_2D | sm_Looped);
 			if (!Device.IsEditorMode() || (Device.IsEditorMode() && bIsSndOnRoof))
