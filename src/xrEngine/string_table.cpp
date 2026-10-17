@@ -114,7 +114,7 @@ void CStringTable::Init		()
 	pData = new STRING_TABLE_DATA();
 	
 	//имя языка, если не задано (nullptr), то первый <text> в <string> в XML
-	pData->m_sLanguage = pSettings->r_string("string_table", "language");
+	pData->m_sLanguage = languages_token.front().name;
 
 	// Get preferred fallback language from EngineExternal
 	pData->m_sFallbackLanguage = EngineExternal().GetPreferredFallbackLanguage();
