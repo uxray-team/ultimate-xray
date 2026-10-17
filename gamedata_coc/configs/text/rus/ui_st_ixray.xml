@@ -927,9 +927,6 @@
 	<string id="st_quicksaves_count">
 		<text>Кол-во быстрых сохранений</text>
 	</string>
-	<string id="st_ixray_framework_options">
-		<text>$$ACTION_UI_ACTION_2$$ IX-Ray Framework</text>
-	</string>
 	<string id="st_ixray_framework_options_accept">
 		<text>$$ACTION_UI_ACCEPT$$ Выбор</text>
 	</string>
@@ -1016,5 +1013,8 @@
 	</string>
 	<string id="ui_am_quick_inventory_switch">
 		<text>$$ACTION_UI_TAB_LEFT$$/$$ACTION_UI_TAB_RIGHT$$ Переключить инвентарь</text>
+	</string>
+	<string id="ui_mm_script_options">
+		<text>Скриптовые опции</text>
 	</string>
 </string_table>
