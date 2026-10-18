@@ -83,6 +83,10 @@ function getOptions()
 	return ixr_options.options or {}
 end
 
+function getOptionsAddonInfo()
+	return ixr_options.options_addon_info or {}
+end
+
 function getNextControllIndex()
 	ixr_options._counter = ixr_options._counter + 1
 	
@@ -99,7 +103,6 @@ end
 function on_game_start()
 	RegisterScriptCallback("main_menu_on_init", this.on_main_menu_init)
 	RegisterScriptCallback("main_menu_on_init_controlls", this.on_main_menu_init_controlls)
-	RegisterScriptCallback("main_menu_on_init_callbacks", this.on_main_menu_init_callbacks)
 	RegisterScriptCallback("main_menu_update", this.on_main_menu_update)
 	RegisterScriptCallback("actor_on_update", this.on_actor_update)
 	
@@ -108,10 +111,6 @@ end
 
 function on_main_menu_init(_ref)
 	_on_main_menu_init(_ref)
-end
-
-function on_main_menu_init_callbacks(_ref)
-	_on_main_menu_init_callbacks(_ref)
 end
 
 function on_main_menu_init_controlls(_ref)
@@ -727,17 +726,6 @@ function ixr_options.init()
 
 	IXRLog("[IXR OPTIONS] INITIALIZED")
 	
-	--[[
-	local addons_data = get_addons_list()
-
-	for i, addon_data in ipairs(addons_data) do
-		IXRLog("ADDON: " .. i .. ": " .. addon_data.addon_folder)
-		for j, script_name in ipairs(addon_data.script_files_names) do
-			IXRLog("  ADDON‚ " .. j .. ": " .. script_name)
-		end
-	end
-	--]]
-	
 	return true
 end
 
@@ -1297,10 +1285,6 @@ function _on_main_menu_init(_ref)
 	get_menu_ref().options_xml = CScriptXmlInit()
 	get_menu_ref().options_xml:ParseFile("ui_ixr_options.xml")
 	ixr_options.main_menu_ref.ixr_controlls = {}
-end
-
-function _on_main_menu_init_callbacks(_ref)
-	get_menu_ref():AddCallback("btn_script_options", ui_events.BUTTON_CLICKED, this.on_btn_options_ixr_clicked, get_menu_ref())
 end
 
 function on_ixr_options_exit_btn_clicked()
@@ -2865,82 +2849,4 @@ end
 
 function get_root_dir()
 	return tostring(lfs.currentdir())
-end
-
-function get_addons_list()
-    local addons_path = lfs.currentdir() .. "\\ixr_addons"
-    
-    if not lfs.attributes(addons_path) then
-        return {}
-    end
-    
-    local addons = {}
-    
-    local handle = io.popen('dir "' .. addons_path .. '" /B /AD')
-    if handle then
-        local result = handle:read("*a")
-        handle:close()
-        
-        if result and result ~= "" then
-            for addon_name in result:gmatch("[^\r\n]+") do
-                if addon_name ~= "." and addon_name ~= ".." then
-                    addons[addon_name] = get_scripts_for_addon(addons_path .. "\\" .. addon_name)
-                end
-            end
-        end
-    end
-    
-    local sorted_result = {}
-    local addon_names = {}
-    for addon_name, _ in pairs(addons) do
-        table.insert(addon_names, addon_name)
-    end
-    
-    table.sort(addon_names)
-    
-    local overridden_scripts = {}
-    for i = #addon_names, 1, -1 do
-        local addon_name = addon_names[i]
-        local scripts = addons[addon_name]
-        local filtered_scripts = {}
-
-        for _, script_name in ipairs(scripts) do
-            if not overridden_scripts[script_name] then
-                table.insert(filtered_scripts, script_name)
-            end
-			
-            overridden_scripts[script_name] = true
-        end
-        
-        table.insert(sorted_result, 1, {
-            addon_folder = addon_name,
-            script_files_names = filtered_scripts
-        })
-    end
-    
-    return sorted_result
-end
-
-function get_scripts_for_addon(addon_path)
-	local scripts_path = addon_path .. "\\scripts"
-    local script_files = {}
-    
-    if lfs.attributes(scripts_path) then
-		local handle = io.popen('dir "' .. scripts_path .. '\\*.script" /B /S 2>nul')
-		if handle then
-			local result = handle:read("*a")
-			handle:close()
-			
-			if result and result ~= "" then
-				for file_path in result:gmatch("[^\r\n]+") do
-					local file_name = file_path:match("[^\\]+$")
-					if file_name then
-						table.insert(script_files, file_name)
-					end
-				end
-			end
-		end
-	end
-	
-	return script_files
 end

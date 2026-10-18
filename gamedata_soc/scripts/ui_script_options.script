@@ -1,0 +1,171 @@
+class "AddonItem" (CUIListBoxItem)
+
+function AddonItem:__init(parent, script_name, options_variables, addon_info) super()	
+	self.option_title = game.translate_string(addon_info.options_title) or addon_info.options_title
+	self.icon_path = "ui\\ixr_options\\icons\\addon_icon"
+	
+	if addon_info.icon_path ~= nil then
+		self.icon_path = addon_info.icon_path
+	end
+	
+	self.options_addon_name = addon_name
+	if addon_info.options_addon_name ~= nil then
+		self.options_addon_name =  game.translate_string(tostring(addon_info.options_addon_name)) or tostring(addon_info.options_addon_name)
+	end
+	
+	self.options_script_version = addon_version
+	if addon_info.options_script_version ~= nil then
+		self.options_script_version = tostring(addon_info.options_script_version)
+	end
+	
+	
+	self.options_authors_text = addon_authors
+	if addon_info.options_authors_text ~= nil then
+		self.options_authors_text = tostring(addon_info.options_authors_text)
+	end
+	
+	self.y_offset = 10
+	self.addon_script_name = script_name
+	self.options_variables = options_variables
+	
+	self.addon_icon = parent.xml:InitStatic("addon_item:icon", self)
+	self.addon_icon:InitTexture(self.icon_path)
+	
+	if addon_info.options_title ~= nil then
+		self.addon_title = parent.xml:InitStatic("addon_item:title", self)
+		self.addon_title:SetText(self.option_title)
+	end
+	
+	self.script_name = parent.xml:InitStatic("addon_item:script_name", self)
+	self.script_name:SetText("Script: " .. self.addon_script_name)
+	
+	self.addon_status = parent.xml:InitStatic("addon_item:addon_name", self)
+	self.addon_status:SetText("Addon: " .. self.options_addon_name)
+	
+	self.addon_version = parent.xml:InitStatic("addon_item:addon_version", self)
+	self.addon_version:SetText("Version: " .. self.options_script_version)
+	
+	self.addon_authors = parent.xml:InitStatic("addon_item:addon_authors", self)
+	self.addon_authors:SetText("Authors: " .. tostring(self.options_authors_text))
+end
+
+class "script_options_dialog" (CUIScriptWnd)
+
+function script_options_dialog:__init() super()
+	self.focusIndex = 1
+    self:InitControls()
+    self:InitCallBacks()
+	
+	action_repeaters():Register(self, key_bindings.kUI_UP, 0, 0)
+	action_repeaters():Register(self, key_bindings.kUI_DOWN, 0, 0)
+	action_repeaters():Register(self, key_bindings.kUI_LEFT, 0, 0)
+	action_repeaters():Register(self, key_bindings.kUI_RIGHT, 0, 0)
+end
+
+function script_options_dialog:__finalize()
+	action_repeaters():UnregisterOwner(self)
+end
+
+function script_options_dialog:InitControls()
+	self:SetWndRect				(Frect():set(0,0,1024,768))
+	self:Enable					(true)
+
+	self.xml					= CScriptXmlInit()
+	self.xml:ParseFile			("ui_mm_script_options.xml")
+
+	self.xml:InitStatic			("background", self)
+	self.dialog					= self.xml:InitStatic("main_dialog:dialog", self)
+
+	self.xml:InitFrame			("main_dialog:list_frame",self.dialog)
+
+	self.list_box				= self.xml:InitListBox("main_dialog:list",self.dialog)
+
+	self.list_box:ShowSelectedItem(true)
+	self:Register				(self.list_box, "list_window")
+
+	self.btn_exit 				= self.xml:Init3tButton("main_dialog:btn_exit", self.dialog)
+	self:Register				(self.btn_exit, "btn_exit")
+end
+
+function script_options_dialog:InitCallBacks()
+	self:AddCallback("btn_exit",			ui_events.BUTTON_CLICKED,	self.OnBtnExit,			self)
+end
+
+function script_options_dialog:OnBtnExit()
+	self.owner:ShowDialog(true)
+	self:HideDialog()
+	self.owner:Show(true)
+end
+
+function script_options_dialog:OnKeyboard(dik, keyboard_action)
+	local res = CUIScriptWnd.OnKeyboard(self,dik,keyboard_action)
+
+	if res==false then
+
+		local bind = dik_to_bind(dik)
+
+		if keyboard_action == ui_events.WINDOW_KEY_PRESSED then
+			if bind == key_bindings.kQUIT then
+				self.owner:ShowDialog(true)
+				self:HideDialog()
+				self.owner:Show(true)
+			end
+
+		end
+	end
+
+	return res
+end
+
+function script_options_dialog:FillList()
+	self.list_box:RemoveAll()
+	
+	local sorted_addons_names = {}
+	-- сборка листа сортировки для именованных аддонов
+	for options_script_name, options_variables in pairs(GetModule("ixr_module_options").getOptions()) do
+		if GetModule("ixr_module_options").getOptionsAddonInfo()[options_script_name] and GetModule("ixr_module_options").getOptionsAddonInfo()[options_script_name].options_addon_name ~= nil then
+			if not ffx_table_utils.is_contains(sorted_addons_names, GetModule("ixr_module_options").getOptionsAddonInfo()[options_script_name].options_addon_name) then
+				table.insert(sorted_addons_names, GetModule("ixr_module_options").getOptionsAddonInfo()[options_script_name].options_addon_name)
+			end
+		end
+	end
+	
+	-- сортировка по именованным аддонам
+	for i, addon_name in ipairs(sorted_addons_names) do
+		for options_script_name, options_variables in pairs(GetModule("ixr_module_options").getOptions()) do
+			if GetModule("ixr_module_options").getOptionsAddonInfo()[options_script_name] and addon_name == GetModule("ixr_module_options").getOptionsAddonInfo()[options_script_name].options_addon_name then
+				self.list_box:AddExistingItem(AddonItem(
+					self,
+					tostring(options_script_name).. ".script",
+					options_variables,
+					GetModule("ixr_module_options").getOptionsAddonInfo()[options_script_name] or {}
+				))
+			end
+		end
+	end
+	
+	-- сортировка в конец безымянных аддонов
+	for options_script_name, options_variables in pairs(GetModule("ixr_module_options").getOptions()) do
+		if ((not GetModule("ixr_module_options").getOptionsAddonInfo()[options_script_name]) or  GetModule("ixr_module_options").getOptionsAddonInfo()[options_script_name].options_addon_name == nil) then
+			self.list_box:AddExistingItem(AddonItem(
+				self,
+				tostring(options_script_name).. ".script",
+				options_variables,
+				GetModule("ixr_module_options").getOptionsAddonInfo()[options_script_name] or {}
+			))
+		end
+	end
+		
+--[[	local f		= getFS()
+	local flist = f:file_list_open_ex("$arch_dir_addons$",bit_or(FS.FS_ListFiles,FS.FS_RootOnly),"*")
+	local f_cnt = flist:Size()
+
+	flist:Sort(FS.FS_sort_by_name_up)
+
+	for	it=0, f_cnt-1 	do
+		local file		=	flist:GetAt(it)
+		local file_name = string.sub(file:NameFull(), 0, (string.len(file:NameFull()) - string.len(saved_game_extension)))
+		local date_time = "[" .. file:ModifDigitOnly() .. "]"
+		self:AddItemToList(file_name, date_time)
+	end]]
+end

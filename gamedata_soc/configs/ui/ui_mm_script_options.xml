@@ -1,0 +1,61 @@
+<w>
+	<background x="0" y="0" width="1024" height="768">
+		<auto_static x="0" y="0" width="1024" height="430">
+		  <texture x="0" y="0" width="1024" height="430">ui\ui_mm_window_back_crop</texture>
+		</auto_static>
+		
+		<auto_static x="0" y="0" width="1024" height="768">
+		  <texture x="0" y="0" width="1024" height="768">ui\ui_static_mm_back_03</texture>
+		</auto_static>
+		<auto_static x="275" y="425" width="128" height="256">
+		  <texture>ui\ui_mm_rug02</texture>
+		</auto_static>
+	</background>
+  
+	<addon_item x="0" y="0" width="650" height="80">
+		<icon x="6" y="6" width="48" height="48" stretch="1">
+			<texture>ui\ui_noise</texture>
+		</icon>	
+		<title x="60" y="0" width="200" height="20">
+			<text font="letterica18" color="ui_7"/>
+		</title>	
+		<script_name x="60" y="15" width="200" height="20">
+			<text font="letterica16" color="ui_3"/>
+		</script_name>	
+		<addon_name x="60" y="30" width="200" height="20">
+			<text font="letterica16" color="ui_3"/>
+		</addon_name>	
+		<addon_version x="60" y="45" width="200" height="20">
+			<text font="letterica16" color="ui_3"/>
+		</addon_version>	
+		<addon_authors x="60" y="60" width="200" height="20">
+			<text font="letterica16" color="ui_3"/>
+		</addon_authors>	
+	</addon_item>
+	
+	<main_dialog>
+		<dialog x="120" y="29" width="785" height="712" stretch="1">
+			<texture>ui_menu_options_dlg</texture>
+		    <auto_static x="55" y="19" width="378" height="33">
+				<text font="graffiti32" color="ui_6">ui_mm_script_options</text>
+			</auto_static>
+		</dialog>
+
+		<list_frame x="70" y="61" width="689" height="600">
+			<texture>ui_tablist_textbox</texture>
+		</list_frame>
+  	
+		<list x="80" y="71" width="669" height="580" item_height="80" can_select="1" always_show_scroll="1">
+			<font font="letterica16" r="216" g="186" b="140" />
+		</list>
+		
+		<btn_exit x="348" y="666" width="131" height="44" stretch="1">
+			<text font="graffiti19" align="c">ui_inv_exit</text>
+			<texture>ui_button_main02</texture>
+			<text_color>
+				<e r="227" g="199" b="178"/> <t r="180" g="153" b="155"/> <d r="106" g="95" b="91"/> <h r="0" g="0" b="0"/>
+			</text_color>
+		</btn_exit>
+
+	</main_dialog>
+</w>
