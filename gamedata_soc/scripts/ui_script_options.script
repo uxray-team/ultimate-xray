@@ -53,6 +53,7 @@ class "script_options_dialog" (CUIScriptWnd)
 
 function script_options_dialog:__init() super()
 	self.focusIndex = 1
+	self.optionsScrollShown = false
     self:InitControls()
     self:InitCallBacks()
 	
@@ -79,22 +80,55 @@ function script_options_dialog:InitControls()
 	self.xml:InitFrame			("main_dialog:list_frame",self.dialog)
 
 	self.list_box				= self.xml:InitListBox("main_dialog:list",self.dialog)
-
 	self.list_box:ShowSelectedItem(true)
 	self:Register				(self.list_box, "list_window")
 
+	self.options_scroll			= self.xml:InitScrollView("main_dialog:options_scroll",self.dialog)
+	self:Register				(self.options_scroll, "options_scroll")
+
 	self.btn_exit 				= self.xml:Init3tButton("main_dialog:btn_exit", self.dialog)
 	self:Register				(self.btn_exit, "btn_exit")
+	
+	self.btn_save 				= self.xml:Init3tButton("main_dialog:btn_save", self.dialog)
+	self:Register				(self.btn_save, "btn_save")
+	
+	self.btn_back 				= self.xml:Init3tButton("main_dialog:btn_back", self.dialog)
+	self:Register				(self.btn_back, "btn_back")
 end
 
 function script_options_dialog:InitCallBacks()
-	self:AddCallback("btn_exit",			ui_events.BUTTON_CLICKED,	self.OnBtnExit,			self)
+	self:AddCallback("btn_exit",			ui_events.BUTTON_CLICKED,		self.OnBtnExit,			self)
+	self:AddCallback("btn_back",			ui_events.BUTTON_CLICKED,		self.OnBtnBack,			self)
+	self:AddCallback("list_window", 		ui_events.LIST_ITEM_CLICKED, 	self.OnListItemClicked,	self)
+end
+
+function script_options_dialog:OnListItemClicked()
+	if self.list_box:GetSize()==0 then 
+		return 
+	end
+
+	local item = self.list_box:GetSelectedItem()
+	local index = self.list_box:GetSelectedIndex()
+		
+	self.optionsScrollShown = true
+	self.list_box:Show(false)
+	self.options_scroll:Clear()
+	self.options_scroll:Show(false)
+--	if on_draw_options(index, item) then
+		self.options_scroll:Show(true)
+--	end
 end
 
 function script_options_dialog:OnBtnExit()
 	self.owner:ShowDialog(true)
 	self:HideDialog()
 	self.owner:Show(true)
+end
+
+function script_options_dialog:OnBtnBack()
+	self.options_scroll:Show(false)
+	self.list_box:Show(true)	
+	self.optionsScrollShown = false
 end
 
 function script_options_dialog:OnKeyboard(dik, keyboard_action)
@@ -106,15 +140,28 @@ function script_options_dialog:OnKeyboard(dik, keyboard_action)
 
 		if keyboard_action == ui_events.WINDOW_KEY_PRESSED then
 			if bind == key_bindings.kQUIT then
-				self.owner:ShowDialog(true)
-				self:HideDialog()
-				self.owner:Show(true)
+				if self.optionsScrollShown then
+					self.options_scroll:Show(false)
+					self.list_box:Show(true)	
+					self.optionsScrollShown = false
+				else
+					self.owner:ShowDialog(true)
+					self:HideDialog()
+					self.owner:Show(true)
+				end
 			end
 
 		end
 	end
 
 	return res
+end
+
+function script_options_dialog:Update()
+	CUIScriptWnd.Update(self)
+	self.btn_exit:Show(not self.optionsScrollShown and not main_menu.in_controller_mode())
+	self.btn_save:Show(self.optionsScrollShown and not main_menu.in_controller_mode())
+	self.btn_back:Show(self.optionsScrollShown and not main_menu.in_controller_mode())
 end
 
 function script_options_dialog:FillList()
@@ -155,17 +202,4 @@ function script_options_dialog:FillList()
 			))
 		end
 	end
-		
---[[	local f		= getFS()
-	local flist = f:file_list_open_ex("$arch_dir_addons$",bit_or(FS.FS_ListFiles,FS.FS_RootOnly),"*")
-	local f_cnt = flist:Size()
-
-	flist:Sort(FS.FS_sort_by_name_up)
-
-	for	it=0, f_cnt-1 	do
-		local file		=	flist:GetAt(it)
-		local file_name = string.sub(file:NameFull(), 0, (string.len(file:NameFull()) - string.len(saved_game_extension)))
-		local date_time = "[" .. file:ModifDigitOnly() .. "]"
-		self:AddItemToList(file_name, date_time)
-	end]]
 end
