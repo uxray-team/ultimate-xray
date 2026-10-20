@@ -24,7 +24,6 @@ function AddonItem:__init(parent, script_name, options_variables, addon_info) su
 		self.options_authors_text = tostring(addon_info.options_authors_text)
 	end
 	
-	self.y_offset = 10
 	self.addon_script_name = script_name
 	self.options_variables = options_variables
 	
@@ -52,6 +51,7 @@ end
 class "script_options_dialog" (CUIScriptWnd)
 
 function script_options_dialog:__init() super()
+	self.focusList = {}
 	self.focusIndex = 1
 	self.optionsScrollShown = false
     self:InitControls()
@@ -102,21 +102,276 @@ function script_options_dialog:InitCallBacks()
 	self:AddCallback("list_window", 		ui_events.LIST_ITEM_CLICKED, 	self.OnListItemClicked,	self)
 end
 
+function script_options_dialog:add_option_shell(fn_fillable)
+	local shell = self.xml:InitStatic("main_dialog:templ_item", nil)
+	
+	if fn_fillable ~= nil then
+		fn_fillable(shell)
+	end
+	
+	self.options_scroll:AddWindow(shell, false)
+	self.options_scroll:SetAutoDelete(false)
+	
+	return shell
+end
+
+--[[
+function register_checkbox(name_controll, x, y, alpha, def_value, _ref, _callback, script_name, variable_name)
+	if _ref == nil then
+		_ref = get_menu_ref()
+	end
+	
+	name_controll = name_controll .. "_checkbox_"
+	
+	set_controll(name_controll, IXRCheckBox(name_controll, x, y, alpha, def_value, _callback, _ref, script_name, variable_name))
+	get_controll(name_controll):Show(true)
+	register_controll(name_controll)
+	
+	return get_controll(name_controll)
+end
+
+function register_textbox(name_controll, x, y, alpha, def_value, _ref, _callback, script_name, variable_name)
+	if _ref == nil then
+		_ref = get_menu_ref()
+	end
+	
+	name_controll = name_controll .. "_textbox_"
+	
+	set_controll(name_controll, IXRTextBox(name_controll, x, y, alpha, def_value, _callback, _ref, script_name, variable_name))
+	get_controll(name_controll):Show(true)
+	register_controll(name_controll)
+	
+	return get_controll(name_controll)
+end
+
+function register_combobox(name_controll, x, y, alpha, def_value, list_values, _ref, _callback, script_name, variable_name)
+	if _ref == nil then
+		_ref = get_menu_ref()
+	end
+	
+	name_controll = name_controll .. "_combobox_"
+	
+	set_controll(name_controll, IXRComboBox(name_controll, x, y, alpha, def_value, list_values, _callback, _ref, script_name, variable_name))
+	get_controll(name_controll):Show(true)
+	register_controll(name_controll)
+	
+	return get_controll(name_controll)
+end
+
+function register_numeric_up_down(name_controll, x, y, alpha, default_value, min_value, max_value, value_offset, _ref, _callback, script_name, variable_name)
+	if _ref == nil then
+		_ref = get_menu_ref()
+	end
+	
+	name_controll = name_controll .. "_numeric_up_down_"
+	set_controll(name_controll, IXRNumericUpDown(name_controll, x, y, alpha, default_value, min_value, max_value, value_offset, _callback, _ref, script_name, variable_name))
+	get_controll(name_controll):Show(true)
+	register_controll(name_controll)
+	
+	return get_controll(name_controll)
+end
+
+function register_track_bar(name_controll, x, y, alpha, default_value, min_value, max_value, value_offset, use_ceil, _ref, _callback, script_name, variable_name)
+	if _ref == nil then
+		_ref = get_menu_ref()
+	end
+	
+	name_controll = name_controll .. "_track_bar_"
+	set_controll(name_controll, IXRTrackBar(name_controll, x, y, alpha, default_value, min_value, max_value, value_offset, use_ceil, _callback, _ref, script_name, variable_name))
+	get_controll(name_controll):Show(true)
+	register_controll(name_controll)
+	
+	return get_controll(name_controll)
+end
+]]
+function pick_controll(option_data, option_bg, option_key_name)
+	local controll_type = option_data["controll_data"]["controll"]
+	local group_name = option_data["group_name"] or nil
+	local variable_name = option_data["variable_name"]
+	local script_name = option_data["script_name"]
+	local parent_element_width = option_bg:GetWidth()
+	
+	local __callback_handler = function (value, ctrl, is_value_from_code)
+		if is_user_input == nil then
+			is_user_input = true
+		end
+		
+		ixr_options.set_variable_value(script_name, variable_name, value)
+		option_data["controll_data"]["default_value"] = value
+		
+		if option_data["_callback"] ~= nil then
+			if controll_type == "combo_box" then
+				option_data["_callback"](group_name, variable_name, option_data["controll_data"]["list_values"][value]["option_return_value"], is_value_from_code)
+			else
+				option_data["_callback"](group_name, variable_name, value, is_value_from_code)
+			end
+		end
+	end
+	
+	if controll_type == "check_box" then
+		return register_checkbox(
+			tostring(controll_type) .. tostring(option_key_name),
+			parent_element_width - ixr_options.controlls_defines.check_box_width - 3.5,
+			4,
+			ixr_options.controlls_defines.check_box_alpha,
+			option_data["controll_data"]["default_value"],
+			option_bg,
+			__callback_handler,
+			script_name, 
+			variable_name
+		)
+	end
+		
+	if controll_type == "text_box" then
+		return register_textbox(
+			tostring(controll_type) .. tostring(option_key_name),
+			parent_element_width - ixr_options.controlls_defines.text_box_width - 3.5,
+			4,
+			ixr_options.controlls_defines.text_box_alpha,
+			option_data["controll_data"]["default_value"],
+			option_bg,
+			__callback_handler,
+			script_name, 
+			variable_name
+		)
+	end
+	
+	if controll_type == "combo_box" then
+		return register_combobox(
+			tostring(controll_type) .. tostring(option_key_name),
+			parent_element_width - ixr_options.controlls_defines.combo_box_width - 3.5,
+			4,
+			ixr_options.controlls_defines.combo_box_alpha,
+			option_data["controll_data"]["default_value"],
+			option_data["controll_data"]["list_values"],
+			option_bg,
+			__callback_handler,
+			script_name, 
+			variable_name
+		)
+	end
+	
+	if controll_type == "numeric_up_down" then
+		return register_numeric_up_down(
+			tostring(controll_type) .. tostring(option_key_name),
+			parent_element_width - ixr_options.controlls_defines.numeric_up_down_width - 3.5,
+			4,
+			ixr_options.controlls_defines.numeric_up_down_alpha,
+			option_data["controll_data"]["default_value"],
+			option_data["controll_data"]["min_value"],
+			option_data["controll_data"]["max_value"],
+			option_data["controll_data"]["value_offset"],
+			option_bg,
+			__callback_handler,
+			script_name, 
+			variable_name
+		)
+	end
+	
+	if controll_type == "track_bar" then
+		return  register_track_bar(
+			tostring(controll_type) .. tostring(option_key_name),
+			parent_element_width - ixr_options.controlls_defines.track_bar_width - 3.5,
+			4,
+			ixr_options.controlls_defines.track_bar_alpha,
+			option_data["controll_data"]["default_value"],
+			option_data["controll_data"]["min_value"],
+			option_data["controll_data"]["max_value"],
+			option_data["controll_data"]["value_offset"],
+			option_data["controll_data"]["use_ceil"],
+			option_bg,
+			__callback_handler,
+			script_name, 
+			variable_name
+		)
+	end
+end
+
+function script_options_dialog:add_single_ungroupped_option(option_data)
+	local display_text = option_data["display_text"]
+	self:add_option_shell(function (_shell)		
+		local control_text = self.xml:InitStatic("main_dialog:cap_template", _shell)
+		control_text:SetText( game.translate_string(tostring(display_text)) )				
+		
+		--pick_controll(option_data, option_bg, tostring(option_index))
+	end)
+end
+
+function script_options_dialog:add_option_group(group_display_text, group_options)
+	local controll_option_bg_name = "groupped_option_bg_" .. tostring(option_index)
+	local shell_header = self:add_option_shell()
+	
+	local group_bg = self.xml:InitFrameLine("main_dialog:header_setup", shell_header)
+	
+	local group_name_text_height = 25
+	local group_name_control = self.xml:InitStatic("main_dialog:cap_header_setup", group_bg)
+	group_name_control:SetText(game.translate_string(tostring(group_display_text)))
+	
+	for k, option_data in pairs(group_options) do
+		local display_text = option_data["display_text"]
+		local shell_option = self:add_option_shell()
+	
+		local option_name_controll = self.xml:InitStatic("main_dialog:cap_template", shell_option)
+		option_name_controll:SetText( game.translate_string(tostring(display_text)) )
+		--pick_controll(option_data, option_bg, tostring(option_index))
+	end
+end
+
+function script_options_dialog:OnDrawOptions(item)
+	local ungroupped_controlls = {}
+	local groupped_controlls = {}
+	local groups_order = {}
+	
+	for _variable_name, option_data in pairs(item.options_variables) do
+		if option_data["group_name"] == nil then
+			table.insert(ungroupped_controlls, option_data)
+		else
+			if groupped_controlls[tostring(option_data["group_name"])] == nil then
+				groupped_controlls[tostring(option_data["group_name"])] = {}
+				table.insert(groups_order, option_data["group_name"])
+			end
+			
+			table.insert(groupped_controlls[tostring(option_data["group_name"])], option_data)
+		end
+	end
+	
+	self.focusList = {}
+	
+	local cnt_ungroupped_controlls = #ungroupped_controlls
+	if cnt_ungroupped_controlls > 0 then
+		for i=1, cnt_ungroupped_controlls do
+			if ungroupped_controlls[i] then
+				self:add_single_ungroupped_option(ungroupped_controlls[i])
+			end
+		end
+	end
+	
+	local cnt_groups_order = #groups_order
+	if cnt_groups_order > 0 then
+		for i=1, cnt_groups_order do
+			if groupped_controlls[groups_order[i]] then
+				self:add_option_group(groupped_controlls[groups_order[i]][1]["group_name"], groupped_controlls[groups_order[i]])
+			end
+		end
+	end
+	
+	return true
+end
+
 function script_options_dialog:OnListItemClicked()
 	if self.list_box:GetSize()==0 then 
 		return 
 	end
 
 	local item = self.list_box:GetSelectedItem()
-	local index = self.list_box:GetSelectedIndex()
 		
 	self.optionsScrollShown = true
 	self.list_box:Show(false)
 	self.options_scroll:Clear()
 	self.options_scroll:Show(false)
---	if on_draw_options(index, item) then
+	if self:OnDrawOptions(item) then
 		self.options_scroll:Show(true)
---	end
+	end
 end
 
 function script_options_dialog:OnBtnExit()
