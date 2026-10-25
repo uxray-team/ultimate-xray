@@ -2,7 +2,7 @@
 #ifdef IXR_WINDOWS
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_video.h>
-#include <SDL_Ext/SDL_image.h>
+#include <SDL3_Image/SDL_image.h>
 #include "../xrCore/git_version.h"
 #include <cstdlib>
 #include <ctime>
