@@ -201,6 +201,7 @@ target_link_libraries(xrECore PRIVATE Ogg::ogg)
 target_link_libraries(xrECore PRIVATE Vorbis::vorbis)
 target_link_libraries(xrECore PRIVATE Vorbis::vorbisfile)
 target_link_libraries(xrECore PUBLIC OpenAL::OpenAL)
+target_link_libraries(xrECore PUBLIC SDL3_image-shared)
 
 if (WIN32)
 	target_link_libraries(xrECore PUBLIC DirectX::Mesh)
