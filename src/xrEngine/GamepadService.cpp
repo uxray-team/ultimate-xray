@@ -100,15 +100,16 @@ void CGamepadService::ResetHID()
 {
     if (HidDevice != nullptr)
     {
-        u8 Report[32] = {};
-        Report[0] = 0x05;
+        xr_vector<u8> array;
+        array.resize(GetPacketSize());
+        u8* Report = BeginOutputPacket(array);
         Report[1] = 0xFF;
         Report[4] = 0;
         Report[5] = 0;
         Report[6] = 0;
         Report[7] = 0;
         Report[8] = 255;
-        SDL_hid_write(HidDevice, Report, sizeof(Report));
+        EndOutputPacket(array);
 
         SDL_hid_close(HidDevice);
         HidDevice = nullptr;
@@ -166,9 +167,9 @@ void CGamepadService::SetLED(u8 Red, u8 Green, u8 Blue)
             return;
         }
 
-        u8 Report[32] = {};
-
-        Report[0] = 0x05; // Output Report ID
+        xr_vector<u8> array;
+        array.resize(GetPacketSize());
+        u8* Report = BeginOutputPacket(array);
         Report[1] = 0xFF; // Enable rumble + lightbar
 
         Report[4] = (u8)(CurrentLFRumble.load() / 257);
@@ -177,13 +178,7 @@ void CGamepadService::SetLED(u8 Red, u8 Green, u8 Blue)
         Report[6] = Red;
         Report[7] = Green;
         Report[8] = Blue;
-
-        const int Result = SDL_hid_write(HidDevice, Report, sizeof(Report));
-
-        if (Result < 0)
-        {
-            Msg("SDL_hid_write failed: %s", SDL_GetError());
-        }
+        EndOutputPacket(array);
     }
     else if (GamePadDevice)
     {
@@ -198,16 +193,16 @@ void CGamepadService::StopRumble()
         CurrentLFRumble.store(0);
         CurrentHFRumble.store(0);
         
-        u8 Report[32] = {};
-        Report[0] = 0x05;
+        xr_vector<u8> array;
+        array.resize(GetPacketSize());
+        u8* Report = BeginOutputPacket(array);
         Report[1] = 0xFF;
         Report[4] = 0;
         Report[5] = 0;
 		Report[6] = CurrentLEDRed.load();
 		Report[7] = CurrentLEDGreen.load();
 		Report[8] = CurrentLEDBlue.load();
-
-        SDL_hid_write(HidDevice, Report, sizeof(Report));
+        EndOutputPacket(array);
     }
     else if (GamePadDevice != nullptr)
     {
@@ -282,9 +277,10 @@ bool CGamepadService::Rumble(u16 LFRumble, u16 HFRumble, u16 DurationMS)
         CurrentLFRumble.store(LFRumble);
         CurrentHFRumble.store(HFRumble);
 
-        u8 Report[32] = {};
+        xr_vector<u8> array;
+        array.resize(GetPacketSize());
+        u8* Report = BeginOutputPacket(array);
 
-        Report[0] = 0x05; // Output Report ID
         Report[1] = 0xFF; // Enable rumble + lightbar
 
         Report[4] = (u8)(LFRumble / 257);
@@ -294,13 +290,7 @@ bool CGamepadService::Rumble(u16 LFRumble, u16 HFRumble, u16 DurationMS)
 		Report[7] = CurrentLEDGreen.load();
 		Report[8] = CurrentLEDBlue.load();
 
-        int Result = SDL_hid_write(HidDevice, Report, sizeof(Report));
-
-        if (Result < 0)
-        {
-            Msg("SDL_hid_write (rumble) failed: %s", SDL_GetError());
-            return false;
-        }
+        EndOutputPacket(array);
 
         // Запускаем таймер на отключение вибрации
         if (DurationMS > 0)
@@ -518,11 +508,11 @@ Uint32 CGamepadService::RumbleTimerCallback(void*, SDL_TimerID, Uint32)
 
 u8 CGamepadService::GetPacketSize()
 {
-	u8 size = 32;
+	u8 size = Type == EGamepadType::DualSense ? 48: 32;
 
-	if (Type == EGamepadType::DualSense)
+	if (IsGamepadWireless())
 	{
-		size = IsGamepadWireless() ? 78 : 48;
+		size = 78;
 	}
 	return size;
 }
@@ -534,17 +524,35 @@ bool CGamepadService::IsGamepadWireless()
 
 u8* CGamepadService::BeginOutputPacket(xr_vector<u8>& array)
 {
-	if (IsGamepadWireless())
+    if (Type == EGamepadType::DualSense)
     {
-		array[0] = 0x31;
-		array[1] = 0x00; // Tag and sequence
-		array[2] = 0x10; // Magic value
-		return &array[2];
-	}
+        if (IsGamepadWireless())
+        {
+            array[0] = 0x31;
+            array[1] = 0x00; // Tag and sequence
+            array[2] = 0x10; // Magic value
+            return &array[2];
+        }
+        else
+        {
+            array[0] = 0x02;
+            return &array[0];
+        }
+    }
     else
     {
-		array[0] = 0x02;
-		return &array[0];
+        if (IsGamepadWireless())
+        {
+            array[0] = 0x11;
+            array[1] = 0x80;
+            array[2] = 0x00;
+            return &array[2];
+        }
+        else
+        {
+            array[0] = 0x05;
+            return &array[0];
+        }
     }
 }
 
