@@ -56,7 +56,7 @@
         <cap_header_setup x="20" y="0" width="143" height="15">
 			<text font="letterica16" color="ui_6" vert_align="c"/>
         </cap_header_setup>
-        <header_setup x="0" y="7" width="446" height="15">
+        <header_setup x="0" y="7" width="646" height="15">
             <texture>ui_brokenline</texture>
         </header_setup>
 
@@ -66,6 +66,7 @@
 		
 		<track_template_float x="394" y="0" width="245" height="21" show_value="1"/>
 		<track_template_int x="394" y="0" width="245" height="21" is_integer="1" show_value="1"/>
+		<check_template x="394" y="0" width="30" height="21"/>
 		
 		<btn_save x="278" y="666" width="131" height="44" stretch="1">
 			<text font="graffiti19" align="c">ui_mm_save</text>
