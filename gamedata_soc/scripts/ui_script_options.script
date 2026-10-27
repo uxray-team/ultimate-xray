@@ -1,7 +1,61 @@
+class "IXRCheckBox" (CUIStatic)
+function IXRCheckBox:__init(parent, shell, state, _callback, script_name, variable_name)
+	super()
+	self.parent = parent
+	
+	self.is_pushed_from_code = false
+	self.script_name = script_name
+	self.variable_name = variable_name
+	
+	self.is_checked = state
+	self.on_change_callback = _callback
+	
+	self.check_box = parent.xml:InitCheck("main_dialog:check_template", shell)
+	self.check_box:Show(false)
+	self:Show(true)
+end
 
--- #########################################################################################################
--- 												TRACK BAR
--- #########################################################################################################
+function IXRCheckBox:Show(flag)
+	self.check_box:Show(flag)
+	
+	if flag then
+		self:OnChangeState()
+		self.parent.updateBus[self] = function () self:Update() end
+	else
+		self.parent.updateBus[self] = nil
+	end
+end
+
+function IXRCheckBox:Update()
+	self:UpdateVisualValue()
+end
+
+-- update_visual_value
+function IXRCheckBox:UpdateVisualValue()
+	local metadata = GetModule("ixr_module_options").ixr_options.get_metadata(self.script_name, self.variable_name)
+	if metadata ~= nil and metadata.update_visual_value ~= nil then
+		local new_value = metadata.update_visual_value
+		metadata.update_visual_value = nil
+		GetModule("ixr_module_options").ixr_options.set_metadata(self.script_name, self.variable_name, metadata)
+		self:OnIncomingUpdateVisualValue(new_value)
+	end
+end
+
+function IXRCheckBox:OnIncomingUpdateVisualValue(new_state)
+	if self.check_box:GetCheck() == new_state then
+		return
+	end
+	self.is_pushed_from_code = true
+	self.check_box:SetCheck(new_state)
+end
+
+function IXRCheckBox:OnChangeState()
+	if self.on_change_callback then
+		self.on_change_callback(self.check_box:GetCheck(), self.check_box_ctrl_name, self.is_pushed_from_code)
+	end
+	self.is_pushed_from_code = false
+end
+
 class "IXRTrackBar" (CUIStatic)
 function IXRTrackBar:__init(parent, shell, default_value, min_value, max_value, value_offset, use_ceil, _callback, script_name, variable_name)
 	super()
@@ -97,9 +151,9 @@ end
 function IXRTrackBar:OnChangeState()
 	if self.visible and self.on_change_callback then
 		if self.use_ceil then
-			self.on_change_callback(math.ceil(self.value), self.controll_name, self.is_pushed_from_code)
+			self.on_change_callback(math.ceil(self.value), self.is_pushed_from_code)
 		else
-			self.on_change_callback(self.value, self.controll_name, self.is_pushed_from_code)
+			self.on_change_callback(self.value, self.is_pushed_from_code)
 		end
 	end
 	self.is_pushed_from_code = false
@@ -226,7 +280,6 @@ function script_options_dialog:add_option_shell(fn_fillable)
 	return shell
 end
 
---[[
 function register_checkbox(name_controll, x, y, alpha, def_value, _ref, _callback, script_name, variable_name)
 	if _ref == nil then
 		_ref = get_menu_ref()
@@ -241,6 +294,7 @@ function register_checkbox(name_controll, x, y, alpha, def_value, _ref, _callbac
 	return get_controll(name_controll)
 end
 
+--[[
 function register_textbox(name_controll, x, y, alpha, def_value, _ref, _callback, script_name, variable_name)
 	if _ref == nil then
 		_ref = get_menu_ref()
@@ -289,7 +343,7 @@ function script_options_dialog:PickControl(option_data, shell)
 	local variable_name = option_data["variable_name"]
 	local script_name = option_data["script_name"]
 	
-	local __callback_handler = function (value, ctrl, is_value_from_code)
+	local __callback_handler = function (value, is_value_from_code)
 		GetModule("ixr_module_options").ixr_options.set_variable_value(script_name, variable_name, value)
 		option_data["controll_data"]["default_value"] = value
 		
@@ -302,19 +356,17 @@ function script_options_dialog:PickControl(option_data, shell)
 		end
 	end
 	
-	--[[if controll_type == "check_box" then
-		return register_checkbox(
-			tostring(controll_type) .. tostring(option_key_name),
---			parent_element_width - ixr_options.controlls_defines.check_box_width - 3.5,
-			4,
-			ixr_options.controlls_defines.check_box_alpha,
+	if controll_type == "check_box" then
+		return IXRCheckBox(
+			self,
+			shell,
 			option_data["controll_data"]["default_value"],
 			option_bg,
 			__callback_handler,
 			script_name, 
 			variable_name
-		)
-	elseif controll_type == "text_box" then
+			)
+	--[[elseif controll_type == "text_box" then
 		return register_textbox(
 			tostring(controll_type) .. tostring(option_key_name),
 			parent_element_width - ixr_options.controlls_defines.text_box_width - 3.5,
@@ -355,8 +407,8 @@ function script_options_dialog:PickControl(option_data, shell)
 			__callback_handler,
 			script_name, 
 			variable_name
-		)	
-	else]]if controll_type == "track_bar" then
+		)	]]
+	elseif controll_type == "track_bar" then
 		return IXRTrackBar(
 			self,
 			shell,
