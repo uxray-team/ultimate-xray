@@ -49,6 +49,15 @@ SCallbackInfo*	CUIDialogWndEx::NewCallback ()
 	return m_callbacks.back();
 }
 
+void CUIDialogWndEx::AddCallback (CUIWindow* pWnd, s16 evt, const luabind::functor<void> &functor, const luabind::object &object)
+{
+	SCallbackInfo* c	= NewCallback ();
+	c->m_callback.set	(functor,object);
+	c->m_control_ptr	= pWnd;
+	c->m_control_name	= "noname";
+	c->m_event			= evt;
+}
+
 void CUIDialogWndEx::AddCallback (const char* control_id, s16 evt, const luabind::functor<void> &functor, const luabind::object &object)
 {
 	SCallbackInfo* c	= NewCallback ();

@@ -51,7 +51,7 @@
 	  	
 		<options_scroll x="80" y="71" width="669" height="580" always_show_scroll="1"/>
 		
-		<templ_item width="450" height="30"/>
+		<templ_item width="650" height="30"/>
 
         <cap_header_setup x="20" y="0" width="143" height="15">
 			<text font="letterica16" color="ui_6" vert_align="c"/>
@@ -63,6 +63,9 @@
 		<cap_template x="20" y="0" width="143" height="21">
 			<text font="letterica16" color="ui_6" vert_align="c"/>
 		</cap_template>
+		
+		<track_template_float x="394" y="0" width="245" height="21" show_value="1"/>
+		<track_template_int x="394" y="0" width="245" height="21" is_integer="1" show_value="1"/>
 		
 		<btn_save x="278" y="666" width="131" height="44" stretch="1">
 			<text font="graffiti19" align="c">ui_mm_save</text>
