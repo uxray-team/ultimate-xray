@@ -68,6 +68,11 @@
 		<track_template_int x="394" y="0" width="245" height="21" is_integer="1" show_value="1"/>
 		<check_template x="394" y="0" width="30" height="21"/>
 		
+		<edit_box x="394" y="55" width="245" height="23" file_name_mode="1">
+			<texture>ui_linetext_e</texture>
+			<text x="3" font="letterica18" r="240" g="217" b="182"/>
+		</edit_box>
+		
 		<btn_save x="278" y="666" width="131" height="44" stretch="1">
 			<text font="graffiti19" align="c">ui_mm_save</text>
 			<texture>ui_button_main02</texture>

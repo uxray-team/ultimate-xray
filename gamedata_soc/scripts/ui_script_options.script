@@ -1,3 +1,80 @@
+class "IXRTextBox" (CUIStatic)
+function IXRTextBox:__init(parent, shell, default_value, _callback, script_name, variable_name)
+	super()
+	
+	self.parent = parent
+	self.is_pushed_from_code = false
+	self.script_name = script_name
+	self.variable_name = variable_name
+	
+	self.value = nil
+	self.on_change_callback = _callback
+	
+	self.edit_box = parent.xml:InitEditBox("main_dialog:edit_box", shell)
+	self.edit_box:Show(false)
+	
+	self:SetValue(default_value)
+	self:Show(true)
+end
+
+-- update_visual_value
+function IXRTextBox:UpdateVisualValue()
+	local metadata = GetModule("ixr_module_options").ixr_options.get_metadata(self.script_name, self.variable_name)
+	if metadata ~= nil and metadata.update_visual_value ~= nil then
+		local new_value = metadata.update_visual_value
+		metadata.update_visual_value = nil
+		GetModule("ixr_module_options").ixr_options.set_metadata(self.script_name, self.variable_name, metadata)
+		self:OnIncomingUpdateVisualValue(new_value)
+	end
+end
+
+function IXRTextBox:OnIncomingUpdateVisualValue(new_value)
+	if self:GetValue() == new_value then
+		return
+	end
+	
+	self.is_pushed_from_code = true
+	self:SetValue(new_value)
+end
+
+function IXRTextBox:Update()
+	if self.edit_box:GetText() ~= self.value then
+		self:OnChangeState()
+	end
+	
+	self:UpdateVisualValue()
+end
+
+function IXRTextBox:Show(flag)
+	self.edit_box:Show(flag)
+	
+	if flag then
+		self:OnChangeState()
+		self.parent.updateBus[self] = function () self:Update() end
+	else
+		self.parent.updateBus[self] = nil
+	end
+end
+
+function IXRTextBox:OnChangeState()
+	if self.on_change_callback then
+		self.on_change_callback(self:GetValue(), self.is_pushed_from_code)
+	end
+	self.is_pushed_from_code = false
+end
+
+function IXRTextBox:SetValue(value)
+	self.value = value
+	self.edit_box:SetText(self.value)
+	self:OnChangeState()
+end
+
+function IXRTextBox:GetValue()
+	self.value = self.edit_box:GetText()
+
+	return self.value
+end
+
 class "IXRCheckBox" (CUIStatic)
 function IXRCheckBox:__init(parent, shell, state, _callback, script_name, variable_name)
 	super()
@@ -7,7 +84,6 @@ function IXRCheckBox:__init(parent, shell, state, _callback, script_name, variab
 	self.script_name = script_name
 	self.variable_name = variable_name
 	
-	self.is_checked = state
 	self.on_change_callback = _callback
 	
 	self.check_box = parent.xml:InitCheck("main_dialog:check_template", shell)
@@ -51,7 +127,7 @@ end
 
 function IXRCheckBox:OnChangeState()
 	if self.on_change_callback then
-		self.on_change_callback(self.check_box:GetCheck(), self.check_box_ctrl_name, self.is_pushed_from_code)
+		self.on_change_callback(self.check_box:GetCheck(), self.is_pushed_from_code)
 	end
 	self.is_pushed_from_code = false
 end
@@ -280,35 +356,7 @@ function script_options_dialog:add_option_shell(fn_fillable)
 	return shell
 end
 
-function register_checkbox(name_controll, x, y, alpha, def_value, _ref, _callback, script_name, variable_name)
-	if _ref == nil then
-		_ref = get_menu_ref()
-	end
-	
-	name_controll = name_controll .. "_checkbox_"
-	
-	set_controll(name_controll, IXRCheckBox(name_controll, x, y, alpha, def_value, _callback, _ref, script_name, variable_name))
-	get_controll(name_controll):Show(true)
-	register_controll(name_controll)
-	
-	return get_controll(name_controll)
-end
-
 --[[
-function register_textbox(name_controll, x, y, alpha, def_value, _ref, _callback, script_name, variable_name)
-	if _ref == nil then
-		_ref = get_menu_ref()
-	end
-	
-	name_controll = name_controll .. "_textbox_"
-	
-	set_controll(name_controll, IXRTextBox(name_controll, x, y, alpha, def_value, _callback, _ref, script_name, variable_name))
-	get_controll(name_controll):Show(true)
-	register_controll(name_controll)
-	
-	return get_controll(name_controll)
-end
-
 function register_combobox(name_controll, x, y, alpha, def_value, list_values, _ref, _callback, script_name, variable_name)
 	if _ref == nil then
 		_ref = get_menu_ref()
@@ -361,7 +409,15 @@ function script_options_dialog:PickControl(option_data, shell)
 			self,
 			shell,
 			option_data["controll_data"]["default_value"],
-			option_bg,
+			__callback_handler,
+			script_name, 
+			variable_name
+			)
+	elseif controll_type == "text_box" then
+		return IXRTextBox(
+			self,
+			shell,
+			option_data["controll_data"]["default_value"],
 			__callback_handler,
 			script_name, 
 			variable_name
