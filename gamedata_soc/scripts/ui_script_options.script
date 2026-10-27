@@ -1,3 +1,110 @@
+
+-- #########################################################################################################
+-- 												TRACK BAR
+-- #########################################################################################################
+class "IXRTrackBar" (CUIStatic)
+function IXRTrackBar:__init(parent, shell, default_value, min_value, max_value, value_offset, use_ceil, _callback, script_name, variable_name)
+	super()
+	
+	self.parent = parent
+	self.script_visible_controlls = nil
+	
+	self.is_pushed_from_code = false
+	self.script_name = script_name
+	self.variable_name = variable_name
+	
+	self.use_ceil = use_ceil
+	self.visible = false
+	self.value = 0.0
+	
+	self.on_change_callback = _callback
+	
+	if use_ceil then
+		self.controll_track_bar = parent.xml:InitTrackBar("main_dialog:track_template_int", shell)
+		self.controll_track_bar:SetOptIBounds(min_value, max_value)
+	else
+		self.controll_track_bar = parent.xml:InitTrackBar("main_dialog:track_template_float", shell)
+		self.controll_track_bar:SetOptFBounds(min_value, max_value)
+	end
+	
+	self.controll_track_bar:SetStep(value_offset)
+	parent:AddCallback(self.controll_track_bar, ui_events.TRACK_VALUE_CHANGED, self.OnChangeState, parent)
+	
+	if use_ceil then
+		self.controll_track_bar:SetIValue(default_value)
+	else
+		self.controll_track_bar:SetFValue(default_value)
+	end
+	self:Show(true)
+end
+
+function IXRTrackBar:Show(flag, skip_callbacks)
+	if skip_callbacks == nil then 
+		skip_callbacks = false
+	end
+	
+	self.visible = flag
+	self.controll_track_bar:Show(flag)
+	
+	if not skip_callbacks then
+		if flag then
+			self:OnChangeState()
+			self.parent.updateBus[self] = function () self:Update() end
+		else
+			self.parent.updateBus[self] = nil
+		end
+	end
+end
+
+function IXRTrackBar:Update()
+	local metadata = GetModule("ixr_module_options").ixr_options.get_metadata(self.script_name, self.variable_name)
+	self:UpdateVisualValue(metadata)
+	self:UpdateControllVisibility(metadata)
+end
+
+function IXRTrackBar:UpdateControllVisibility(metadata)
+	if metadata ~= nil and self.script_visible_controlls ~= metadata.visible_controlls then
+		self.script_visible_controlls = metadata.visible_controlls
+		self:Show(metadata.visible_controlls, true)
+	end
+end
+
+
+function IXRTrackBar:UpdateVisualValue(metadata)
+	if metadata ~= nil and metadata.update_visual_value ~= nil then
+		local new_value = metadata.update_visual_value
+		metadata.update_visual_value = nil
+		GetModule("ixr_module_options").ixr_options.set_metadata(self.script_name, self.variable_name, metadata)
+		
+		self:OnIncomingUpdateVisualValue(new_value)
+		self.value = self.controll_track_bar:GetFValue()
+	end
+end
+
+function IXRTrackBar:OnIncomingUpdateVisualValue(new_value_index)
+	if self.value == new_value_index then
+		return
+	end
+	
+	self.is_pushed_from_code = true
+	if use_ceil then
+		self.controll_track_bar:SetIValue(new_value_index)
+	else
+		self.controll_track_bar:SetFValue(new_value_index)
+	end
+end
+
+function IXRTrackBar:OnChangeState()
+	if self.visible and self.on_change_callback then
+		if self.use_ceil then
+			self.on_change_callback(math.ceil(self.value), self.controll_name, self.is_pushed_from_code)
+		else
+			self.on_change_callback(self.value, self.controll_name, self.is_pushed_from_code)
+		end
+	end
+	self.is_pushed_from_code = false
+end
+
 class "AddonItem" (CUIListBoxItem)
 
 function AddonItem:__init(parent, script_name, options_variables, addon_info) super()	
@@ -53,6 +160,10 @@ class "script_options_dialog" (CUIScriptWnd)
 function script_options_dialog:__init() super()
 	self.focusList = {}
 	self.focusIndex = 1
+	
+	self.updateBus = {}
+	self.updateTimer = 0
+	
 	self.optionsScrollShown = false
     self:InitControls()
     self:InitCallBacks()
@@ -170,33 +281,16 @@ function register_numeric_up_down(name_controll, x, y, alpha, default_value, min
 	
 	return get_controll(name_controll)
 end
-
-function register_track_bar(name_controll, x, y, alpha, default_value, min_value, max_value, value_offset, use_ceil, _ref, _callback, script_name, variable_name)
-	if _ref == nil then
-		_ref = get_menu_ref()
-	end
-	
-	name_controll = name_controll .. "_track_bar_"
-	set_controll(name_controll, IXRTrackBar(name_controll, x, y, alpha, default_value, min_value, max_value, value_offset, use_ceil, _callback, _ref, script_name, variable_name))
-	get_controll(name_controll):Show(true)
-	register_controll(name_controll)
-	
-	return get_controll(name_controll)
-end
 ]]
-function pick_controll(option_data, option_bg, option_key_name)
+
+function script_options_dialog:PickControl(option_data, shell)
 	local controll_type = option_data["controll_data"]["controll"]
 	local group_name = option_data["group_name"] or nil
 	local variable_name = option_data["variable_name"]
 	local script_name = option_data["script_name"]
-	local parent_element_width = option_bg:GetWidth()
 	
 	local __callback_handler = function (value, ctrl, is_value_from_code)
-		if is_user_input == nil then
-			is_user_input = true
-		end
-		
-		ixr_options.set_variable_value(script_name, variable_name, value)
+		GetModule("ixr_module_options").ixr_options.set_variable_value(script_name, variable_name, value)
 		option_data["controll_data"]["default_value"] = value
 		
 		if option_data["_callback"] ~= nil then
@@ -208,10 +302,10 @@ function pick_controll(option_data, option_bg, option_key_name)
 		end
 	end
 	
-	if controll_type == "check_box" then
+	--[[if controll_type == "check_box" then
 		return register_checkbox(
 			tostring(controll_type) .. tostring(option_key_name),
-			parent_element_width - ixr_options.controlls_defines.check_box_width - 3.5,
+--			parent_element_width - ixr_options.controlls_defines.check_box_width - 3.5,
 			4,
 			ixr_options.controlls_defines.check_box_alpha,
 			option_data["controll_data"]["default_value"],
@@ -220,9 +314,7 @@ function pick_controll(option_data, option_bg, option_key_name)
 			script_name, 
 			variable_name
 		)
-	end
-		
-	if controll_type == "text_box" then
+	elseif controll_type == "text_box" then
 		return register_textbox(
 			tostring(controll_type) .. tostring(option_key_name),
 			parent_element_width - ixr_options.controlls_defines.text_box_width - 3.5,
@@ -236,7 +328,7 @@ function pick_controll(option_data, option_bg, option_key_name)
 		)
 	end
 	
-	if controll_type == "combo_box" then
+	elseif controll_type == "combo_box" then
 		return register_combobox(
 			tostring(controll_type) .. tostring(option_key_name),
 			parent_element_width - ixr_options.controlls_defines.combo_box_width - 3.5,
@@ -249,9 +341,7 @@ function pick_controll(option_data, option_bg, option_key_name)
 			script_name, 
 			variable_name
 		)
-	end
-	
-	if controll_type == "numeric_up_down" then
+	elseif controll_type == "numeric_up_down" then
 		return register_numeric_up_down(
 			tostring(controll_type) .. tostring(option_key_name),
 			parent_element_width - ixr_options.controlls_defines.numeric_up_down_width - 3.5,
@@ -265,45 +355,46 @@ function pick_controll(option_data, option_bg, option_key_name)
 			__callback_handler,
 			script_name, 
 			variable_name
-		)
-	end
-	
-	if controll_type == "track_bar" then
-		return  register_track_bar(
-			tostring(controll_type) .. tostring(option_key_name),
-			parent_element_width - ixr_options.controlls_defines.track_bar_width - 3.5,
-			4,
-			ixr_options.controlls_defines.track_bar_alpha,
+		)	
+	else]]if controll_type == "track_bar" then
+		return IXRTrackBar(
+			self,
+			shell,
 			option_data["controll_data"]["default_value"],
 			option_data["controll_data"]["min_value"],
-			option_data["controll_data"]["max_value"],
+			option_data["controll_data"]["max_value"], 
 			option_data["controll_data"]["value_offset"],
 			option_data["controll_data"]["use_ceil"],
-			option_bg,
 			__callback_handler,
-			script_name, 
+			script_name,
 			variable_name
 		)
 	end
 end
 
-function script_options_dialog:add_single_ungroupped_option(option_data)
+function script_options_dialog:AddSingleUngrouppedOption(option_data)
 	local display_text = option_data["display_text"]
 	self:add_option_shell(function (_shell)		
 		local control_text = self.xml:InitStatic("main_dialog:cap_template", _shell)
 		control_text:SetText( game.translate_string(tostring(display_text)) )				
 		
-		--pick_controll(option_data, option_bg, tostring(option_index))
+		local controll_ref = self:PickControl(option_data, _shell)
+
+		local _metadata = GetModule("ixr_module_options").ixr_options.get_metadata(option_data["script_name"], option_data["variable_name"])
+		_metadata.controll_type = option_data["controll_data"]["controll"]
+		_metadata.controll_ref = controll_ref
+		_metadata.script_name = option_data["script_name"]
+		_metadata.variable_name = option_data["variable_name"]
+		GetModule("ixr_module_options").ixr_options.set_metadata(option_data["script_name"], option_data["variable_name"], _metadata)
+		
 	end)
 end
 
 function script_options_dialog:add_option_group(group_display_text, group_options)
-	local controll_option_bg_name = "groupped_option_bg_" .. tostring(option_index)
 	local shell_header = self:add_option_shell()
 	
 	local group_bg = self.xml:InitFrameLine("main_dialog:header_setup", shell_header)
 	
-	local group_name_text_height = 25
 	local group_name_control = self.xml:InitStatic("main_dialog:cap_header_setup", group_bg)
 	group_name_control:SetText(game.translate_string(tostring(group_display_text)))
 	
@@ -313,7 +404,14 @@ function script_options_dialog:add_option_group(group_display_text, group_option
 	
 		local option_name_controll = self.xml:InitStatic("main_dialog:cap_template", shell_option)
 		option_name_controll:SetText( game.translate_string(tostring(display_text)) )
-		--pick_controll(option_data, option_bg, tostring(option_index))
+		local controll_ref = self:PickControl(option_data, shell_option)
+			
+		local _metadata = GetModule("ixr_module_options").ixr_options.get_metadata(option_data["script_name"], option_data["variable_name"])
+		_metadata.controll_type = option_data["controll_data"]["controll"]
+		_metadata.controll_ref = controll_ref
+		_metadata.script_name = option_data["script_name"]
+		_metadata.variable_name = option_data["variable_name"]
+		GetModule("ixr_module_options").ixr_options.set_metadata(option_data["script_name"], option_data["variable_name"], _metadata)
 	end
 end
 
@@ -341,7 +439,7 @@ function script_options_dialog:OnDrawOptions(item)
 	if cnt_ungroupped_controlls > 0 then
 		for i=1, cnt_ungroupped_controlls do
 			if ungroupped_controlls[i] then
-				self:add_single_ungroupped_option(ungroupped_controlls[i])
+				self:AddSingleUngrouppedOption(ungroupped_controlls[i])
 			end
 		end
 	end
@@ -414,6 +512,15 @@ end
 
 function script_options_dialog:Update()
 	CUIScriptWnd.Update(self)
+	
+	if self.updateTimer <= device().dwtime_continual then 
+		self.updateTimer = device().dwtime_continual + 100
+
+		for k, v in pairs(self.updateBus) do
+			if type(v) == "function" then v() end
+		end
+	end
+	
 	self.btn_exit:Show(not self.optionsScrollShown and not main_menu.in_controller_mode())
 	self.btn_save:Show(self.optionsScrollShown and not main_menu.in_controller_mode())
 	self.btn_back:Show(self.optionsScrollShown and not main_menu.in_controller_mode())

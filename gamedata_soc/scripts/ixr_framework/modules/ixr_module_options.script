@@ -30,7 +30,7 @@ local DRAW_VAR_NAME = false
 local CONST_APPDATA_FOLDER = nil -- auto
 local options_scroll_wnd = nil
 
-local ixr_options = {
+ixr_options = {
 	options = {},
 	options_addon_info = {},
 	options_storage = {},

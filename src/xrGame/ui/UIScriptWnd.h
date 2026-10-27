@@ -26,7 +26,7 @@ public:
 			void				Register			(CUIWindow* pChild, const char* name);
 								CUIDialogWndEx		();
 	virtual						~CUIDialogWndEx		();
-			void				AddCallback			(const char* control_id, s16 event, const luabind::functor<void> &lua_function);
+			void				AddCallback			(CUIWindow* pWnd, s16 event, const luabind::functor<void> &functor, const luabind::object &object);
 			void				AddCallback			(const char* control_id, s16 event, const luabind::functor<void> &functor, const luabind::object &object);
 	virtual void				Update				();
 	virtual bool				OnKeyboardAction			(int dik, EUIMessages keyboard_action);
