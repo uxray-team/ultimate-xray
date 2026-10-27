@@ -1,3 +1,130 @@
+class "IXRComboBox" (CUIStatic)
+function IXRComboBox:__init(parent, shell, default_value_index, list_values, _callback, script_name, variable_name)
+	super()
+	
+	self.parent = parent
+	self.visible = false
+	self.value_index = nil
+	self.list_values = list_values
+	
+	self.is_pushed_from_code = false
+	self.script_name = script_name
+	self.variable_name = variable_name
+	self.disabled_ids = {}
+	self:RefreshDisabledIds()
+	
+	self.on_change_callback = _callback
+	
+	self.combo_box = parent.xml:InitComboBox("main_dialog:list_template", shell)
+	for i, v in ipairs(self.list_values) do
+		self.combo_box:AddItem(v["option_display_name"], i)
+	end
+	
+	self:SetValueIndex(default_value_index)
+	self:Show(true)
+end
+
+function IXRComboBox:RefreshDisabledIds()
+	local metadata = GetModule("ixr_module_options").ixr_options.get_metadata(self.script_name, self.variable_name)
+	local disabled_ids = {}
+	if metadata ~= nil and metadata.disabled_ids ~= nil then
+		self.disabled_ids = metadata.disabled_ids
+	end
+end
+
+-- update_visual_value
+function IXRComboBox:UpdateVisualValue()
+	local metadata = GetModule("ixr_module_options").ixr_options.get_metadata(self.script_name, self.variable_name)
+	if metadata ~= nil and metadata.update_visual_value ~= nil then
+		local new_value = metadata.update_visual_value
+		metadata.update_visual_value = nil
+		GetModule("ixr_module_options").ixr_options.set_metadata(self.script_name, self.variable_name, metadata)
+		self:OnIncomingUpdateVisualValue(new_value)
+	end
+end
+
+function IXRComboBox:OnIncomingUpdateVisualValue(new_value_index)
+	if self.value_index == new_value_index then
+		return
+	end
+	
+	self.is_pushed_from_code = true
+	self:SetValueIndex(new_value_index)
+end
+
+function IXRComboBox:Update()
+	self:RefreshDisabledIds()
+	self:UpdateVisualValue()
+end
+
+function IXRComboBox:Show(flag)
+	self.visible = flag
+	self.combo_box:Show(flag)
+	
+	if flag then
+		self:OnChangeState()
+		self.parent.updateBus[self] = function () self:Update() end
+	else
+		self.parent.updateBus[self] = nil
+	end
+end
+
+function IXRComboBox:SetValueIndex(index)
+	if #self.list_values == 0 then
+		return
+	end
+	
+	if index < 1 then
+		index = 1
+	end
+	
+	if index > #self.list_values then
+		index = #self.list_values
+	end
+	
+	self.value_index = index
+	self.combo_box:SetCurrentIdx(index)
+	self.combo_box:OnListItemSelect()
+	
+	self:OnChangeState()
+end
+
+function IXRComboBox:IsIndexDisabled(item_index)
+	if #self.disabled_ids <= 0 then
+		return false
+	end
+	
+	for k, v in pairs(self.disabled_ids) do
+		if item_index == v then
+			return true
+		end
+	end
+	
+	return false
+end
+
+function IXRComboBox:GetAllowedIndexes()	
+	local indexes = {}
+	for i, v in ipairs(self.list_values) do
+		if not self:IsIndexDisabled(i) then
+			table.insert(indexes, i)
+		end
+	end
+
+	return indexes
+end
+
+function IXRComboBox:GetValue()
+	return self.value_index
+end
+
+function IXRComboBox:OnChangeState()
+	if self.on_change_callback and not self:IsIndexDisabled(self.value_index) then
+		self.on_change_callback(self:GetValue(), self.is_pushed_from_code)
+	end
+	self.is_pushed_from_code = false
+end
+
 class "IXRTextBox" (CUIStatic)
 function IXRTextBox:__init(parent, shell, default_value, _callback, script_name, variable_name)
 	super()
@@ -357,20 +484,6 @@ function script_options_dialog:add_option_shell(fn_fillable)
 end
 
 --[[
-function register_combobox(name_controll, x, y, alpha, def_value, list_values, _ref, _callback, script_name, variable_name)
-	if _ref == nil then
-		_ref = get_menu_ref()
-	end
-	
-	name_controll = name_controll .. "_combobox_"
-	
-	set_controll(name_controll, IXRComboBox(name_controll, x, y, alpha, def_value, list_values, _callback, _ref, script_name, variable_name))
-	get_controll(name_controll):Show(true)
-	register_controll(name_controll)
-	
-	return get_controll(name_controll)
-end
-
 function register_numeric_up_down(name_controll, x, y, alpha, default_value, min_value, max_value, value_offset, _ref, _callback, script_name, variable_name)
 	if _ref == nil then
 		_ref = get_menu_ref()
@@ -422,33 +535,17 @@ function script_options_dialog:PickControl(option_data, shell)
 			script_name, 
 			variable_name
 			)
-	--[[elseif controll_type == "text_box" then
-		return register_textbox(
-			tostring(controll_type) .. tostring(option_key_name),
-			parent_element_width - ixr_options.controlls_defines.text_box_width - 3.5,
-			4,
-			ixr_options.controlls_defines.text_box_alpha,
-			option_data["controll_data"]["default_value"],
-			option_bg,
-			__callback_handler,
-			script_name, 
-			variable_name
-		)
-	end
-	
 	elseif controll_type == "combo_box" then
-		return register_combobox(
-			tostring(controll_type) .. tostring(option_key_name),
-			parent_element_width - ixr_options.controlls_defines.combo_box_width - 3.5,
-			4,
-			ixr_options.controlls_defines.combo_box_alpha,
+		return IXRComboBox(
+			self,
+			shell,
 			option_data["controll_data"]["default_value"],
 			option_data["controll_data"]["list_values"],
-			option_bg,
 			__callback_handler,
 			script_name, 
 			variable_name
 		)
+	--[[
 	elseif controll_type == "numeric_up_down" then
 		return register_numeric_up_down(
 			tostring(controll_type) .. tostring(option_key_name),
