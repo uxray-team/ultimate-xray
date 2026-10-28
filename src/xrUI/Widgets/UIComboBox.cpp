@@ -79,7 +79,7 @@ void CUIComboBox::InitComboBox(Fvector2 pos, float width)
 	// Edit Box on left side of frame line
 	m_text.SetWndPos					(Fvector2().set(lb_text_offset,0.0f));
 	m_text.SetWndSize					(Fvector2().set(width-lb_text_offset, comboBoxHeight));
-
+	m_text.SetTextComplexMode			(true);
 	m_text.SetVTextAlignment			(valCenter);
 	m_text.SetTextColor					(m_textColor[0]);
 	m_text.Enable						(false);
@@ -91,6 +91,7 @@ void CUIComboBox::InitComboBox(Fvector2 pos, float width)
 	m_list_box.SetWndSize				(Fvector2().set(width-lb_text_offset, item_height*m_iListHeight));
 	m_list_box.InitScrollView			();
 	m_list_box.SetTextColor				(m_textColor[0]);
+	m_list_box.SetTextComplexMode		(true);
 	m_list_box.SetItemHeight(item_height);
 
 	m_list_box.SetSelectionTexture(listBoxTexture);

@@ -30,6 +30,7 @@ public:
 		void			SetText					(const char* txt);
 		const char*			GetText					();
 		void			SetTextColor			(u32 color);
+		void			SetTextComplexMode		(bool v);
 		u32				GetTextColor			();
 		void			SetFont					(CGameFont* F);
 		CGameFont*		GetFont					();

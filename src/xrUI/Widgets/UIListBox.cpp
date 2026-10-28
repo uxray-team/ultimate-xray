@@ -46,6 +46,7 @@ CUIListBoxItem* CUIListBox::AddTextItem(const char* text)
 
 	pItem->SetWndSize				(Fvector2().set(GetDesiredChildWidth(), m_def_item_height));
 	pItem->SetTextColor				(m_text_color);
+	pItem->SetTextComplexMode		(m_text_complex_mode);
 	pItem->SetText					(g_pStringTable->translate(text).c_str());
 	pItem->GetTextItem()->SetWidth	(GetDesiredChildWidth());
 	return							pItem;
@@ -361,6 +362,11 @@ void CUIListBox::SetFont(CGameFont* pFont)
 CGameFont* CUIListBox::GetFont()
 {
 	return m_pFont;
+}
+
+void CUIListBox::SetTextComplexMode(bool v)
+{
+	m_text_complex_mode = v;
 }
 
 float CUIListBox::GetLongestLength()

@@ -77,6 +77,11 @@ u32 CUIListBoxItem::GetTextColor()
 	return (m_text)?m_text->GetTextColor():0xffffffff;
 }
 
+void CUIListBoxItem::SetTextComplexMode(bool v)
+{
+	m_text->SetTextComplexMode(v);
+}
+
 float CUIListBoxItem::FieldsLength() const
 {
 	xrCriticalSectionGuard guard(const_cast<xrCriticalSection&>(csUi));
