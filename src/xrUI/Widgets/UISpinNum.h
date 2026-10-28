@@ -54,10 +54,13 @@ public:
     virtual void	OnBtnUpClick		();
 	virtual void	OnBtnDownClick		();
 
-			void	SetMax				(float max);
-			void	SetMin				(float min);
-protected:
+		IC	void	SetMax				(float max) { m_fMax = max; }
+		IC	void	SetMin				(float min) { m_fMin = min; }
+		IC	void	SetStep				(float step) { m_fStep = step; }
+			void	SetValueVisual		(float v);
 			void	SetValue			(float v);
+			float	Value				() const {return m_fVal;}
+protected:
 	virtual bool	CanPressUp			();
 	virtual bool	CanPressDown		();
 	virtual void	IncVal				();

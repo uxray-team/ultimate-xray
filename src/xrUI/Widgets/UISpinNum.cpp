@@ -113,7 +113,7 @@ void CUISpinFlt::SaveBackUpOptValue()
 void CUISpinFlt::UndoOptValue()
 {
 	m_fVal			= m_opt_backup_value;
-	SetValue		(m_fVal);
+	SetValueVisual	(m_fVal);
 	CUIOptionsItem::UndoOptValue();
 }
 
@@ -121,7 +121,7 @@ void CUISpinFlt::SetCurrentOptValue()
 {
 	CUIOptionsItem::SetCurrentOptValue();
 	GetOptFloatValue	(m_fVal, m_fMin, m_fMax);
-	SetValue			(m_fVal);
+	SetValueVisual	(m_fVal);
 }
 
 void CUISpinFlt::SaveOptValue()
@@ -138,21 +138,21 @@ bool CUISpinFlt::IsChangedOptValue() const
 void CUISpinFlt::InitSpin(Fvector2 pos, Fvector2 size)
 {
 	CUICustomSpin::InitSpin	(pos, size);
-	SetValue				(m_fVal);
+	SetValueVisual			(m_fVal);
 }
 
 void CUISpinFlt::IncVal()
 {
 	m_fVal		+= m_fStep;
 	clamp		(m_fVal, m_fMin, m_fMax);
-	SetValue	(m_fVal);
+	SetValueVisual(m_fVal);
 }
 
 void CUISpinFlt::DecVal()
 {
 	m_fVal		-= m_fStep;
 	clamp		(m_fVal, m_fMin, m_fMax);
-	SetValue	(m_fVal);
+	SetValueVisual(m_fVal);
 }
 
 void CUISpinFlt::OnBtnUpClick()
@@ -170,6 +170,13 @@ void CUISpinFlt::OnBtnDownClick()
 }
 
 void CUISpinFlt::SetValue(float v)
+{
+	m_fVal = v;
+	clamp(m_fVal, m_fMin, m_fMax);
+	SetValueVisual(v);
+}
+
+void CUISpinFlt::SetValueVisual(float v)
 {
 	string16				buff;
 	xr_sprintf				(buff, "%.1f", v);
