@@ -75,6 +75,7 @@
 			<list_font_s r="240" g="217" b="182"/>
 			<list_font	 r="216" g="186" b="140" font="letterica16"/>
 		</list_template>
+		<spin_template x="394" y="0" width="245" height="21"/>		
 		
 		<edit_box x="394" y="0" width="245" height="23" file_name_mode="1">
 			<texture>ui_linetext_e</texture>

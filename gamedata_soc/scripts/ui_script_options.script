@@ -1,3 +1,73 @@
+class "IXRNumericUpDown" (CUIStatic)
+function IXRNumericUpDown:__init(parent, shell, default_value, min_value, max_value, value_offset, _callback, script_name, variable_name)
+	super()
+	
+	self.is_pushed_from_code = false
+	self.script_name = script_name
+	self.variable_name = variable_name
+	
+	self.visible = false
+	self.parent = parent
+	
+	self.on_change_callback = _callback
+	
+	self.spin_float = parent.xml:InitSpinFlt("main_dialog:spin_template", shell)
+	self.spin_float:SetMin(min_value)
+	self.spin_float:SetMax(max_value)
+	self.spin_float:SetStep(value_offset)
+	self.spin_float:Show(false)
+	
+	self:SetValue(default_value)
+	self:Show(true)
+end
+
+function IXRNumericUpDown:Show(flag)
+	self.visible = flag
+	self.spin_float:Show(flag)
+	
+	if flag then
+		self:OnChangeState()
+		self.parent.updateBus[self] = function () self:Update() end
+	else
+		self.parent.updateBus[self] = nil
+	end
+end
+
+function IXRNumericUpDown:Update()
+	self:UpdateVisualValue()
+end
+
+-- update_visual_value
+function IXRNumericUpDown:UpdateVisualValue()
+	local metadata = GetModule("ixr_module_options").ixr_options.get_metadata(self.script_name, self.variable_name)
+	if metadata ~= nil and metadata.update_visual_value ~= nil then
+		local new_value = metadata.update_visual_value
+		metadata.update_visual_value = nil
+		GetModule("ixr_module_options").ixr_options.set_metadata(self.script_name, self.variable_name, metadata)
+		self:OnIncomingUpdateVisualValue(new_value)
+	end
+end
+
+function IXRNumericUpDown:OnIncomingUpdateVisualValue(new_value)
+	if self.spin_float:Value() == new_value then
+		return
+	end
+	self.is_pushed_from_code = true
+	self:SetValue(new_value)
+end
+
+function IXRNumericUpDown:SetValue(new_value)
+	self.spin_float:SetValue(self.value)
+	self:OnChangeState()
+end
+
+function IXRNumericUpDown:OnChangeState()
+	if self.on_change_callback then
+		self.on_change_callback(self.spin_float:Value(), self.is_pushed_from_code)
+	end
+	self.is_pushed_from_code = false
+end
+
 class "IXRComboBox" (CUIStatic)
 function IXRComboBox:__init(parent, shell, default_value_index, list_values, _callback, script_name, variable_name)
 	super()
@@ -17,7 +87,9 @@ function IXRComboBox:__init(parent, shell, default_value_index, list_values, _ca
 	
 	self.combo_box = parent.xml:InitComboBox("main_dialog:list_template", shell)
 	for i, v in ipairs(self.list_values) do
-		self.combo_box:AddItem(v["option_display_name"], i)
+		if not self:IsIndexDisabled(i) then
+			self.combo_box:AddItem(v["option_display_name"], i)
+		end
 	end
 	
 	self:SetValueIndex(default_value_index)
@@ -83,7 +155,7 @@ function IXRComboBox:SetValueIndex(index)
 	end
 	
 	self.value_index = index
-	self.combo_box:SetCurrentIdx(index)
+	self.combo_box:SetCurrentIdx(index-1)
 	self.combo_box:OnListItemSelect()
 	
 	self:OnChangeState()
@@ -483,21 +555,6 @@ function script_options_dialog:add_option_shell(fn_fillable)
 	return shell
 end
 
---[[
-function register_numeric_up_down(name_controll, x, y, alpha, default_value, min_value, max_value, value_offset, _ref, _callback, script_name, variable_name)
-	if _ref == nil then
-		_ref = get_menu_ref()
-	end
-	
-	name_controll = name_controll .. "_numeric_up_down_"
-	set_controll(name_controll, IXRNumericUpDown(name_controll, x, y, alpha, default_value, min_value, max_value, value_offset, _callback, _ref, script_name, variable_name))
-	get_controll(name_controll):Show(true)
-	register_controll(name_controll)
-	
-	return get_controll(name_controll)
-end
-]]
-
 function script_options_dialog:PickControl(option_data, shell)
 	local controll_type = option_data["controll_data"]["controll"]
 	local group_name = option_data["group_name"] or nil
@@ -545,22 +602,19 @@ function script_options_dialog:PickControl(option_data, shell)
 			script_name, 
 			variable_name
 		)
-	--[[
+	
 	elseif controll_type == "numeric_up_down" then
-		return register_numeric_up_down(
-			tostring(controll_type) .. tostring(option_key_name),
-			parent_element_width - ixr_options.controlls_defines.numeric_up_down_width - 3.5,
-			4,
-			ixr_options.controlls_defines.numeric_up_down_alpha,
+		return IXRNumericUpDown(
+			self,
+			shell,
 			option_data["controll_data"]["default_value"],
 			option_data["controll_data"]["min_value"],
 			option_data["controll_data"]["max_value"],
 			option_data["controll_data"]["value_offset"],
-			option_bg,
 			__callback_handler,
 			script_name, 
 			variable_name
-		)	]]
+		)
 	elseif controll_type == "track_bar" then
 		return IXRTrackBar(
 			self,
