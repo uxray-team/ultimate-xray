@@ -287,6 +287,7 @@ function IXRCheckBox:__init(parent, shell, state, _callback, script_name, variab
 	
 	self.check_box = parent.xml:InitCheck("main_dialog:check_template", shell)
 	self.check_box:Show(false)
+	parent:AddCallback(self.check_box, ui_events.BUTTON_CLICKED, self.OnChangeState, parent)
 	self:Show(true)
 end
 
@@ -538,6 +539,7 @@ end
 
 function script_options_dialog:InitCallBacks()
 	self:AddCallback("btn_exit",			ui_events.BUTTON_CLICKED,		self.OnBtnExit,			self)
+	self:AddCallback("btn_save",			ui_events.BUTTON_CLICKED,		self.OnBtnSave,			self)
 	self:AddCallback("btn_back",			ui_events.BUTTON_CLICKED,		self.OnBtnBack,			self)
 	self:AddCallback("list_window", 		ui_events.LIST_ITEM_CLICKED, 	self.OnListItemClicked,	self)
 end
@@ -741,6 +743,10 @@ function script_options_dialog:OnBtnBack()
 	self.options_scroll:Show(false)
 	self.list_box:Show(true)	
 	self.optionsScrollShown = false
+end
+
+function script_options_dialog:OnBtnSave()
+	ffx_io_utils.write_string_file(ffx_json_lib.json_encode(GetModule("ixr_module_options").ixr_options.options_storage), GetModule("ixr_module_options")._get_option_storage_path(), "w+")
 end
 
 function script_options_dialog:OnKeyboard(dik, keyboard_action)
