@@ -87,11 +87,6 @@ function main_menu:InitControls()
 		gamepad_led(255, 255, 0)
 	end
 	SendScriptCallback("main_menu_on_init_controlls", self)
-	
-	action_repeaters():Register(self, key_bindings.kUI_DOWN,0,0)
-	action_repeaters():Register(self, key_bindings.kUI_UP,0,0)
-	action_repeaters():Register(self, key_bindings.kUI_LEFT,0,0)
-	action_repeaters():Register(self, key_bindings.kUI_RIGHT,0,0)
 	-- IX-Ray end
 end
 
@@ -115,8 +110,11 @@ function main_menu:InitCallBacks()
 	self:AddCallback("btn_save",		ui_events.BUTTON_CLICKED,				self.OnButton_save_clicked,			self)
 	-- multiplayer
 	if (IsSupportMP()) then -- IX-Ray: Optional multiplayer check
-		self:AddCallback("btn_multiplayer", ui_events.BUTTON_CLICKED,				self.OnButton_multiplayer_clicked,	self)
+		self:AddCallback("btn_multiplayer", ui_events.BUTTON_CLICKED,			self.OnButton_multiplayer_clicked,	self)
 	end
+	-- UX-Ray script options
+	self:AddCallback("btn_script_options",     ui_events.BUTTON_CLICKED,		self.OnButton_script_options_clicked,		self)
+	-- load
 	-- quit
 	self:AddCallback("btn_quit",		ui_events.BUTTON_CLICKED,				self.OnButton_quit_clicked,			self)
 	self:AddCallback("btn_quit_to_mm",	ui_events.BUTTON_CLICKED,				self.OnButton_disconnect_clicked,	self)
@@ -294,6 +292,18 @@ function main_menu:OnButton_options_clicked()
 	self:Show(false)
 end
 
+function main_menu:OnButton_script_options_clicked()
+	if self.script_opt_dlg == nil then
+		self.script_opt_dlg = ui_script_options.script_options_dialog()
+		self.script_opt_dlg.owner = self
+	end
+
+	self.script_opt_dlg:FillList()
+	self.script_opt_dlg:ShowDialog(true)
+	self:HideDialog()
+	self:Show(false)
+end
+
 -- IX-Ray start
 function main_menu:OnBtnEnglish()
 	local console = get_console()
@@ -343,11 +353,6 @@ end
 function main_menu:OnKeyboard(dik, keyboard_action)  --virtual function
 	CUIScriptWnd.OnKeyboard(self,dik,keyboard_action)
 	
-	local hold = false
-	if GetModule("ixr_options") and GetModule("ixr_options").on_press_key(dik, keyboard_action, hold) then -- вернёт true если было совпадение по кнопке с опциями
-		return true
-	end
-	
 	local bind = dik_to_bind(dik)
 	local console = get_console()
 	
@@ -377,21 +382,9 @@ function main_menu:OnKeyboard(dik, keyboard_action)  --virtual function
 	return true
 end
 
-function main_menu:OnKeyboardHold(dik)  --virtual function
-	if GetModule("ixr_options") and GetModule("ixr_options").on_press_key(dik, nil, true) then -- вернёт true если было совпадение по кнопке с опциями
-		return true
-	end
-
-	return true
-end
-
 function main_menu:OnGamepadKey(dik, gamepad_action)  --virtual function
 	CUIScriptWnd.OnGamepadKey(self,dik,gamepad_action)
 
-	if GetModule("ixr_options") and GetModule("ixr_options").on_gamepad_key(dik, gamepad_action) then -- вернёт true если было совпадение по кнопке с опциями
-		return true
-	end
-	
 	local bind = dik_to_bind(dik)
 	local bindUI = dik_to_bind(dik, action_groups.agUIGeneral)
 	local console = get_console()
@@ -405,25 +398,11 @@ function main_menu:OnGamepadKey(dik, gamepad_action)  --virtual function
 				sounds_shared.play_decline_sound()
 				self.OnButton_return_game()                      --' xStream 02.2008
 			end
-		elseif bindUI == key_bindings.kUI_ACTION_2 then
-			if GetModule("ixr_options") then
-				GetModule("ixr_options").on_btn_options_ixr_clicked()
-			end
 		end
 
 	end
 
 	return true
-end
-
-function main_menu:OnGamepadKeyHold(dik)  --virtual function
-	CUIScriptWnd.OnGamepadKeyHold(self,dik)
-	
-	if GetModule("ixr_options") and GetModule("ixr_options").on_gamepad_key_hold(dik, nil) then -- вернёт true если было совпадение по кнопке с опциями
-		return true
-	end
-	
-	return false
 end
 
 function main_menu:OnMenuReloaded()
@@ -447,7 +426,7 @@ function main_menu:ReloadGamepadLegend()
 			self.opt_dlg.dlg_controller_layout:ReloadGamepadTextures()
 		end
 	end
-	if GetModule("ixr_options") then
-		GetModule("ixr_options").get_controll("gamepad_legend"):ReloadLegend()
+	if self.script_opt_dlg then
+		self.script_opt_dlg.gamepad_legend:ReloadLegend()
 	end
 end
