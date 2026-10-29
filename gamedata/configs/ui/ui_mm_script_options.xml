@@ -1,0 +1,127 @@
+<w>
+	<background x="0" y="0" width="1024" height="768">
+    <auto_static x="190" y="250" width="336" height="176">
+      <texture width="336" height="176">ui\video_window</texture>
+    </auto_static>
+
+    <auto_static width="1024" height="768">
+      <texture>ui_inGame2_opt_background</texture>
+    </auto_static>
+	</background>
+	
+  	<gamepad_legend x="0" y="724" width="1024" height="30" spacing="5">
+		<auto_static x="0" y="0" width="22" height="30">
+			<text font="graffiti19" vert_align="c">st_ixray_framework_addons_ud</text>
+			<window_name>framework_gp_ud</window_name>
+		</auto_static>	
+		<auto_static x="0" y="0" width="22" height="30">
+			<window_name>framework_gp_accept</window_name>
+			<text font="graffiti19" vert_align="c">st_ixray_framework_options_accept</text>
+		</auto_static>
+		<auto_static x="0" y="0" width="22" height="30">
+			<text font="graffiti19" vert_align="c">st_ixray_framework_options_save</text>
+		</auto_static>
+		<auto_static x="0" y="0" width="22" height="30">
+			<text font="graffiti19" vert_align="c">ui_mm_back_gp</text>
+		</auto_static>
+	</gamepad_legend>
+	
+	<addon_item x="0" y="0" width="650" height="90">
+		<icon x="6" y="21" width="48" height="48" stretch="1">
+			<texture>ui\ui_noise</texture>
+		</icon>	
+		<title x="60" y="0" width="200" height="20">
+			<text font="letterica18" color="ui_2"/>
+		</title>	
+		<script_name x="60" y="20" width="200" height="20">
+			<text font="letterica16" color="ui_3"/>
+		</script_name>	
+		<addon_name x="60" y="35" width="200" height="20">
+			<text font="letterica16" color="ui_3"/>
+		</addon_name>	
+		<addon_version x="60" y="50" width="200" height="20">
+			<text font="letterica16" color="ui_3"/>
+		</addon_version>	
+		<addon_authors x="60" y="65" width="200" height="20">
+			<text font="letterica16" color="ui_3"/>
+		</addon_authors>	
+	</addon_item>
+	
+	<main_dialog>
+		<dialog x="120" y="29" width="785" height="712" stretch="1">
+			<texture>ui_inGame2_main_window</texture>
+		    <auto_static x="70" y="19" width="678" height="33">
+				<text font="graffiti32" r="170" g="170" b="170" align="c">ui_mm_script_options</text>
+			</auto_static>
+		</dialog>
+
+		<list_frame x="70" y="61" width="689" height="590">
+			<texture>ui_inGame2_servers_list_frame</texture>
+		</list_frame>
+  	
+		<list x="80" y="71" width="669" height="570" item_height="90" can_select="1" always_show_scroll="1">
+			<font font="letterica16" r="216" g="186" b="140" />
+		</list>
+	  	
+		<options_scroll x="80" y="71" width="669" height="570" always_show_scroll="1"/>
+		
+		<templ_item width="650" height="30"/>
+
+        <cap_header_setup x="20" y="0" width="143" height="15">
+			<text font="letterica16" r="170" g="170" b="170" vert_align="c"/>
+        </cap_header_setup>
+        <header_setup x="0" y="7" width="646" height="15">
+            <texture>ui_inGame2_servers_list_button</texture>
+        </header_setup>
+
+		<cap_template x="20" y="0" width="143" height="21">
+			<text font="letterica16" r="170" g="170" b="170" vert_align="c"/>
+		</cap_template>
+        <selection_color r="255" g="255" b="255"/>
+		
+		<track_template_float x="394" y="0" width="245" height="21" show_value="1"/>
+		<track_template_int x="394" y="0" width="245" height="21" is_integer="1" show_value="1"/>
+		<check_template x="380" y="0" width="44" height="29">
+	        <texture>ui_inGame2_checkbox</texture>
+		</check_template>
+		<list_template x="394" y="0" width="245" height="21">
+			<text_color>
+				<e r="216" g="186" b="140"/>
+				<d color="ui_gray"/>
+			</text_color>
+			<list_font_s r="240" g="217" b="182"/>
+			<list_font	 r="216" g="186" b="140" font="letterica16"/>
+		</list_template>
+		<spin_template x="394" y="0" width="245" height="21" horz="1"/>		
+		
+		<edit_box x="394" y="0" width="245" height="23" file_name_mode="1">
+			<texture>ui_inGame2_edit_box_1</texture>
+			<text x="3" font="letterica18" r="240" g="217" b="182"/>
+		</edit_box>
+		
+		<btn_save x="278" y="676" width="131" height="26" stretch="1">
+			<text font="letterica18" align="c">ui_mm_save</text>
+			<texture>ui_inGame2_Mp_bigbuttone</texture>
+            <text_color>
+                <e r="170" g="170" b="170"/>
+            </text_color>
+		</btn_save>
+			
+		<btn_back x="418" y="676" width="131" height="26" stretch="1">
+			<text font="letterica18" align="c">ui_mm_back</text>
+			<texture>ui_inGame2_Mp_bigbuttone</texture>
+            <text_color>
+                <e r="170" g="170" b="170"/>
+            </text_color>
+		</btn_back>
+		
+		<btn_exit x="348" y="676" width="131" height="26" stretch="1">
+			<text font="letterica18" align="c">ui_inv_exit</text>
+			<texture>ui_inGame2_Mp_bigbuttone</texture>
+            <text_color>
+                <e r="170" g="170" b="170"/>
+            </text_color>
+		</btn_exit>
+
+	</main_dialog>
+</w>

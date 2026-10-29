@@ -1,12 +1,10 @@
 -- File:        UI_MAIN_MENU.SCRIPT
 -- Description: Load Dialog for STALKER
 -- Created:     28.10.2004
--- Last edit:	10.01.2015
+-- Lasd edit:	18.01.2006
 -- Copyright:   2004 GSC Game World
 -- Author:      Serhiy Vynnychenko (narrator@gsc-game.kiev.ua)
 -- Version:     0.9
-
-local SKIP_FACTION_SELECTION = false -- TRUE to disable faction selection menu and start normally
 
 class "main_menu" (CUIScriptWnd)
 
@@ -61,9 +59,9 @@ function main_menu:InitControls()
 	self.message_box = CUIMessageBoxEx()
 	self:Register(self.message_box, "msg_box")
 
-	local _ver = self.main_xml:InitStatic("static_version",self)
-	local mm						= _G.main_menu.get_main_menu()
-	_ver:TextControl():SetText("Call of Chernobyl ver. " .. (_G.GAME_VERSION))
+	local _ver = self.main_xml:InitStatic("static_version", self)
+	local mm = _G.main_menu.get_main_menu()
+	_ver:TextControl():SetText("ver. " .. mm:GetGSVer())
 	
 	-- IX-Ray start
 	if self.main_xml:NodeExist("english_lang", 0) then
@@ -89,11 +87,6 @@ function main_menu:InitControls()
 		gamepad_led(255, 255, 0)
 	end
 	SendScriptCallback("main_menu_on_init_controlls", self)
-
-	action_repeaters():Register(self, key_bindings.kUI_DOWN,0,0)
-	action_repeaters():Register(self, key_bindings.kUI_UP,0,0)
-	action_repeaters():Register(self, key_bindings.kUI_LEFT,0,0)
-	action_repeaters():Register(self, key_bindings.kUI_RIGHT,0,0)
 	-- IX-Ray end
 end
 
@@ -111,17 +104,17 @@ function main_menu:InitCallBacks()
 	self:AddCallback("btn_spawn",		ui_events.BUTTON_CLICKED,				self.OnButton_load_spawn,			self)
 	-- options
 	self:AddCallback("btn_options",     ui_events.BUTTON_CLICKED,				self.OnButton_options_clicked,		self)
-    -- AtmosFear options
-	self:AddCallback("btn_af_options",  ui_events.BUTTON_CLICKED,				self.OnButton_af_options_clicked,	self)
-	-- end AtmosFear options
 	-- load
 	self:AddCallback("btn_load",        ui_events.BUTTON_CLICKED,				self.OnButton_load_clicked,			self)
 	-- save
 	self:AddCallback("btn_save",		ui_events.BUTTON_CLICKED,				self.OnButton_save_clicked,			self)
 	-- multiplayer
 	if (IsSupportMP()) then -- IX-Ray: Optional multiplayer check
-		self:AddCallback("btn_multiplayer", ui_events.BUTTON_CLICKED,				self.OnButton_multiplayer_clicked,	self)
+		self:AddCallback("btn_multiplayer", ui_events.BUTTON_CLICKED,			self.OnButton_multiplayer_clicked,	self)
 	end
+	-- UX-Ray script options
+	self:AddCallback("btn_script_options",     ui_events.BUTTON_CLICKED,		self.OnButton_script_options_clicked,		self)
+	-- load
 	-- quit
 	self:AddCallback("btn_quit",		ui_events.BUTTON_CLICKED,				self.OnButton_quit_clicked,			self)
 	self:AddCallback("btn_quit_to_mm",	ui_events.BUTTON_CLICKED,				self.OnButton_disconnect_clicked,	self)
@@ -148,10 +141,6 @@ function main_menu:InitCallBacks()
 	SendScriptCallback("main_menu_on_init_callbacks", self)
 end
 function main_menu:OnMsgOk()
-	if (self.mbox_mode == 2) then
-		local console = get_console()
-		console:execute("quit")
-	end
 	self.mbox_mode = 0
 end
 
@@ -236,43 +225,26 @@ end
 function main_menu:OnButton_new_novice_game()
 	local console = get_console()
 	console:execute("g_game_difficulty gd_novice")
-	self:ShowFactionUI()
+	self:StartGame()
 end
 
 function main_menu:OnButton_new_stalker_game()
 	local console = get_console()
 	console:execute("g_game_difficulty gd_stalker")
-	self:ShowFactionUI()
+	self:StartGame()
 end
 
 function main_menu:OnButton_new_veteran_game()
 	local console = get_console()
 	console:execute("g_game_difficulty gd_veteran")
-	self:ShowFactionUI()
+	self:StartGame()
 end
 
 function main_menu:OnButton_new_master_game()
 	local console = get_console()
 	console:execute("g_game_difficulty gd_master")
-	self:ShowFactionUI()
+	self:StartGame()
 end
-
-local faction_ui
-function main_menu:ShowFactionUI()
-	if (SKIP_FACTION_SELECTION) then 
-		self:StartGame() 
-		return 
-	end
-	if not (faction_ui) then
-		faction_ui = ui_mm_faction_select and ui_mm_faction_select.faction_ui(self)
-	end
-
-	if (faction_ui) then
-		faction_ui:ShowDialog(true)
-		self:HideDialog()
-		self:Show(false)
-	end
-end 
 
 function main_menu:StartGame()
 	local console = get_console()
@@ -320,19 +292,17 @@ function main_menu:OnButton_options_clicked()
 	self:Show(false)
 end
 
--- AtmosFear options dialog
-function main_menu:OnButton_af_options_clicked()
-	if self.af_opt_dlg == nil then
-		self.af_opt_dlg = atmosfear_options.af_options_dialog()
-		self.af_opt_dlg.owner = self
+function main_menu:OnButton_script_options_clicked()
+	if self.script_opt_dlg == nil then
+		self.script_opt_dlg = ui_script_options.script_options_dialog()
+		self.script_opt_dlg.owner = self
 	end
 
-	self.af_opt_dlg:SetCurrentValues()
-	self.af_opt_dlg:ShowDialog(true)
+	self.script_opt_dlg:FillList()
+	self.script_opt_dlg:ShowDialog(true)
 	self:HideDialog()
 	self:Show(false)
 end
--- End AtmosFear options dialog
 
 -- IX-Ray start
 function main_menu:OnBtnEnglish()
@@ -383,11 +353,6 @@ end
 function main_menu:OnKeyboard(dik, keyboard_action)  --virtual function
 	CUIScriptWnd.OnKeyboard(self,dik,keyboard_action)
 	
-	local hold = false
-	if GetModule("ixr_options") and GetModule("ixr_options").on_press_key(dik, keyboard_action, hold) then -- вернёт true если было совпадение по кнопке с опциями
-		return true
-	end
-	
 	local bind = dik_to_bind(dik)
 	local console = get_console()
 	
@@ -417,21 +382,9 @@ function main_menu:OnKeyboard(dik, keyboard_action)  --virtual function
 	return true
 end
 
-function main_menu:OnKeyboardHold(dik)  --virtual function
-	if GetModule("ixr_options") and GetModule("ixr_options").on_press_key(dik, nil, true) then -- вернёт true если было совпадение по кнопке с опциями
-		return true
-	end
-
-	return true
-end
-
 function main_menu:OnGamepadKey(dik, gamepad_action)  --virtual function
 	CUIScriptWnd.OnGamepadKey(self,dik,gamepad_action)
 
-	if GetModule("ixr_options") and GetModule("ixr_options").on_gamepad_key(dik, gamepad_action) then -- вернёт true если было совпадение по кнопке с опциями
-		return true
-	end
-	
 	local bind = dik_to_bind(dik)
 	local bindUI = dik_to_bind(dik, action_groups.agUIGeneral)
 	local console = get_console()
@@ -445,25 +398,11 @@ function main_menu:OnGamepadKey(dik, gamepad_action)  --virtual function
 				sounds_shared.play_decline_sound()
 				self.OnButton_return_game()                      --' xStream 02.2008
 			end
-		elseif bindUI == key_bindings.kUI_ACTION_2 then
-			if GetModule("ixr_options") then
-				GetModule("ixr_options").on_btn_options_ixr_clicked()
-			end
 		end
 
 	end
 
 	return true
-end
-
-function main_menu:OnGamepadKeyHold(dik)  --virtual function
-	CUIScriptWnd.OnGamepadKeyHold(self,dik)
-	
-	if GetModule("ixr_options") and GetModule("ixr_options").on_gamepad_key_hold(dik, nil) then -- вернёт true если было совпадение по кнопке с опциями
-		return true
-	end
-	
-	return false
 end
 
 function main_menu:OnMenuReloaded()
@@ -487,7 +426,7 @@ function main_menu:ReloadGamepadLegend()
 			self.opt_dlg.dlg_controller_layout:ReloadGamepadTextures()
 		end
 	end
-	if GetModule("ixr_options") then
-		GetModule("ixr_options").get_controll("gamepad_legend"):ReloadLegend()
+	if self.script_opt_dlg then
+		self.script_opt_dlg.gamepad_legend:ReloadLegend()
 	end
 end

@@ -1,0 +1,1144 @@
+class "IXRNumericUpDown" (CUIStatic)
+function IXRNumericUpDown:__init(parent, shell, default_value, min_value, max_value, value_offset, _callback, script_name, variable_name)
+	super()
+	
+	self.is_pushed_from_code = false
+	self.script_name = script_name
+	self.variable_name = variable_name
+	
+	self.visible = false
+	self.parent = parent
+	
+	self.on_change_callback = _callback
+	
+	self.spin_float = parent.xml:InitSpinFlt("main_dialog:spin_template", shell)
+	self.spin_float:SetMin(min_value)
+	self.spin_float:SetMax(max_value)
+	self.spin_float:SetStep(value_offset)
+	self.spin_float:Show(false)
+	parent:AddCallback(self.spin_float, ui_events.BUTTON_CLICKED, self.OnChangeState, parent)
+	
+	self:SetValue(default_value)
+	self:Show(true)
+end
+
+function IXRNumericUpDown:Show(flag)
+	self.visible = flag
+	self.spin_float:Show(flag)
+	
+	if flag then
+		self:OnChangeState()
+		self.parent.updateBus[self] = function () self:Update() end
+	else
+		self.parent.updateBus[self] = nil
+	end
+end
+
+function IXRNumericUpDown:Update()
+	self:UpdateVisualValue()
+end
+
+-- update_visual_value
+function IXRNumericUpDown:UpdateVisualValue()
+	local metadata = GetModule("ixr_module_options").ixr_options.get_metadata(self.script_name, self.variable_name)
+	if metadata ~= nil and metadata.update_visual_value ~= nil then
+		local new_value = metadata.update_visual_value
+		metadata.update_visual_value = nil
+		GetModule("ixr_module_options").ixr_options.set_metadata(self.script_name, self.variable_name, metadata)
+		self:OnIncomingUpdateVisualValue(new_value)
+	end
+end
+
+function IXRNumericUpDown:OnIncomingUpdateVisualValue(new_value)
+	if self.spin_float:Value() == new_value then
+		return
+	end
+	self.is_pushed_from_code = true
+	self:SetValue(new_value)
+end
+
+function IXRNumericUpDown:SetValue(new_value)
+	self.spin_float:SetValue(self.value)
+	self:OnChangeState()
+end
+
+function IXRNumericUpDown:OnChangeState()
+	if self.on_change_callback then
+		self.on_change_callback(self.spin_float:Value(), self.is_pushed_from_code)
+	end
+	self.is_pushed_from_code = false
+end
+
+class "IXRComboBox" (CUIStatic)
+function IXRComboBox:__init(parent, shell, default_value_index, list_values, _callback, script_name, variable_name)
+	super()
+	
+	self.parent = parent
+	self.visible = false
+	self.value_index = nil
+	self.list_values = list_values
+	
+	self.is_pushed_from_code = false
+	self.script_name = script_name
+	self.variable_name = variable_name
+	self.disabled_ids = {}
+	self:RefreshDisabledIds()
+	
+	self.on_change_callback = _callback
+	
+	self.combo_box = parent.xml:InitComboBox("main_dialog:list_template", shell)
+	for i, v in ipairs(self.list_values) do
+		if not self:IsIndexDisabled(i) then
+			self.combo_box:AddItem(v["option_display_name"], i)
+		end
+	end
+	
+	self:SetValueIndex(default_value_index)
+	self:Show(true)
+end
+
+function IXRComboBox:RefreshDisabledIds()
+	local metadata = GetModule("ixr_module_options").ixr_options.get_metadata(self.script_name, self.variable_name)
+	local disabled_ids = {}
+	if metadata ~= nil and metadata.disabled_ids ~= nil then
+		self.disabled_ids = metadata.disabled_ids
+	end
+end
+
+-- update_visual_value
+function IXRComboBox:UpdateVisualValue()
+	local metadata = GetModule("ixr_module_options").ixr_options.get_metadata(self.script_name, self.variable_name)
+	if metadata ~= nil and metadata.update_visual_value ~= nil then
+		local new_value = metadata.update_visual_value
+		metadata.update_visual_value = nil
+		GetModule("ixr_module_options").ixr_options.set_metadata(self.script_name, self.variable_name, metadata)
+		self:OnIncomingUpdateVisualValue(new_value)
+	end
+end
+
+function IXRComboBox:OnIncomingUpdateVisualValue(new_value_index)
+	if self.value_index == new_value_index then
+		return
+	end
+	
+	self.is_pushed_from_code = true
+	self:SetValueIndex(new_value_index)
+end
+
+function IXRComboBox:Update()
+	self:RefreshDisabledIds()
+	self:UpdateVisualValue()
+end
+
+function IXRComboBox:Show(flag)
+	self.visible = flag
+	self.combo_box:Show(flag)
+	
+	if flag then
+		self:OnChangeState()
+		self.parent.updateBus[self] = function () self:Update() end
+	else
+		self.parent.updateBus[self] = nil
+	end
+end
+
+function IXRComboBox:SetValueIndex(index)
+	if #self.list_values == 0 then
+		return
+	end
+	
+	if index < 1 then
+		index = 1
+	end
+	
+	if index > #self.list_values then
+		index = #self.list_values
+	end
+	
+	self.value_index = index
+	self.combo_box:SetCurrentIdx(index-1)
+	self.combo_box:OnListItemSelect()
+	
+	self:OnChangeState()
+end
+
+function IXRComboBox:IsIndexDisabled(item_index)
+	if #self.disabled_ids <= 0 then
+		return false
+	end
+	
+	for k, v in pairs(self.disabled_ids) do
+		if item_index == v then
+			return true
+		end
+	end
+	
+	return false
+end
+
+function IXRComboBox:GetAllowedIndexes()	
+	local indexes = {}
+	for i, v in ipairs(self.list_values) do
+		if not self:IsIndexDisabled(i) then
+			table.insert(indexes, i)
+		end
+	end
+
+	return indexes
+end
+
+function IXRComboBox:GetValue()
+	return self.value_index
+end
+
+function IXRComboBox:OnChangeState()
+	if self.on_change_callback and not self:IsIndexDisabled(self.value_index) then
+		self.on_change_callback(self:GetValue(), self.is_pushed_from_code)
+	end
+	self.is_pushed_from_code = false
+end
+
+function IXRComboBox:SetHighlighted(v)
+	self.combo_box:SetHighlighted(v)
+end
+
+class "IXRTextBox" (CUIStatic)
+function IXRTextBox:__init(parent, shell, default_value, _callback, script_name, variable_name)
+	super()
+	
+	self.parent = parent
+	self.is_pushed_from_code = false
+	self.script_name = script_name
+	self.variable_name = variable_name
+	
+	self.value = nil
+	self.on_change_callback = _callback
+	
+	self.edit_box = parent.xml:InitEditBox("main_dialog:edit_box", shell)
+	self.edit_box:Show(false)
+	
+	self:SetValue(default_value)
+	self:Show(true)
+end
+
+-- update_visual_value
+function IXRTextBox:UpdateVisualValue()
+	local metadata = GetModule("ixr_module_options").ixr_options.get_metadata(self.script_name, self.variable_name)
+	if metadata ~= nil and metadata.update_visual_value ~= nil then
+		local new_value = metadata.update_visual_value
+		metadata.update_visual_value = nil
+		GetModule("ixr_module_options").ixr_options.set_metadata(self.script_name, self.variable_name, metadata)
+		self:OnIncomingUpdateVisualValue(new_value)
+	end
+end
+
+function IXRTextBox:OnIncomingUpdateVisualValue(new_value)
+	if self:GetValue() == new_value then
+		return
+	end
+	
+	self.is_pushed_from_code = true
+	self:SetValue(new_value)
+end
+
+function IXRTextBox:Update()
+	if self.edit_box:GetText() ~= self.value then
+		self:OnChangeState()
+	end
+	
+	self:UpdateVisualValue()
+end
+
+function IXRTextBox:Show(flag)
+	self.edit_box:Show(flag)
+	
+	if flag then
+		self:OnChangeState()
+		self.parent.updateBus[self] = function () self:Update() end
+	else
+		self.parent.updateBus[self] = nil
+	end
+end
+
+function IXRTextBox:OnChangeState()
+	if self.on_change_callback then
+		self.on_change_callback(self:GetValue(), self.is_pushed_from_code)
+	end
+	self.is_pushed_from_code = false
+end
+
+function IXRTextBox:SetValue(value)
+	self.value = value
+	self.edit_box:SetText(self.value)
+	self:OnChangeState()
+end
+
+function IXRTextBox:GetValue()
+	self.value = self.edit_box:GetText()
+
+	return self.value
+end
+
+class "IXRCheckBox" (CUIStatic)
+function IXRCheckBox:__init(parent, shell, state, _callback, script_name, variable_name)
+	super()
+	self.parent = parent
+	
+	self.is_pushed_from_code = false
+	self.script_name = script_name
+	self.variable_name = variable_name
+	
+	self.on_change_callback = _callback
+	
+	self.check_box = parent.xml:InitCheck("main_dialog:check_template", shell)
+	self.check_box:Show(false)
+	parent:AddCallback(self.check_box, ui_events.BUTTON_CLICKED, self.OnChangeState, parent)
+	self:Show(true)
+end
+
+function IXRCheckBox:Show(flag)
+	self.check_box:Show(flag)
+	
+	if flag then
+		self:OnChangeState()
+		self.parent.updateBus[self] = function () self:Update() end
+	else
+		self.parent.updateBus[self] = nil
+	end
+end
+
+function IXRCheckBox:Update()
+	self:UpdateVisualValue()
+end
+
+-- update_visual_value
+function IXRCheckBox:UpdateVisualValue()
+	local metadata = GetModule("ixr_module_options").ixr_options.get_metadata(self.script_name, self.variable_name)
+	if metadata ~= nil and metadata.update_visual_value ~= nil then
+		local new_value = metadata.update_visual_value
+		metadata.update_visual_value = nil
+		GetModule("ixr_module_options").ixr_options.set_metadata(self.script_name, self.variable_name, metadata)
+		self:OnIncomingUpdateVisualValue(new_value)
+	end
+end
+
+function IXRCheckBox:OnIncomingUpdateVisualValue(new_state)
+	if self.check_box:GetCheck() == new_state then
+		return
+	end
+	self.is_pushed_from_code = true
+	self.check_box:SetCheck(new_state)
+end
+
+function IXRCheckBox:OnChangeState()
+	if self.on_change_callback then
+		self.on_change_callback(self.check_box:GetCheck(), self.is_pushed_from_code)
+	end
+	self.is_pushed_from_code = false
+end
+
+function IXRCheckBox:SetHighlighted(v)
+	self.check_box:SetHighlighted(v)
+end
+
+class "IXRTrackBar" (CUIStatic)
+function IXRTrackBar:__init(parent, shell, default_value, min_value, max_value, value_offset, use_ceil, _callback, script_name, variable_name)
+	super()
+	
+	self.parent = parent
+	self.script_visible_controlls = nil
+	
+	self.is_pushed_from_code = false
+	self.script_name = script_name
+	self.variable_name = variable_name
+	
+	self.use_ceil = use_ceil
+	self.visible = false
+	self.value = 0.0
+	
+	self.on_change_callback = _callback
+	
+	if use_ceil then
+		self.controll_track_bar = parent.xml:InitTrackBar("main_dialog:track_template_int", shell)
+		self.controll_track_bar:SetOptIBounds(min_value, max_value)
+	else
+		self.controll_track_bar = parent.xml:InitTrackBar("main_dialog:track_template_float", shell)
+		self.controll_track_bar:SetOptFBounds(min_value, max_value)
+	end
+	
+	self.controll_track_bar:SetStep(value_offset)
+	parent:AddCallback(self.controll_track_bar, ui_events.TRACK_VALUE_CHANGED, self.OnChangeState, parent)
+	
+	if use_ceil then
+		self.controll_track_bar:SetIValue(default_value)
+	else
+		self.controll_track_bar:SetFValue(default_value)
+	end
+	self:Show(true)
+end
+
+function IXRTrackBar:Show(flag, skip_callbacks)
+	if skip_callbacks == nil then 
+		skip_callbacks = false
+	end
+	
+	self.visible = flag
+	self.controll_track_bar:Show(flag)
+	
+	if not skip_callbacks then
+		if flag then
+			self:OnChangeState()
+			self.parent.updateBus[self] = function () self:Update() end
+		else
+			self.parent.updateBus[self] = nil
+		end
+	end
+end
+
+function IXRTrackBar:Update()
+	local metadata = GetModule("ixr_module_options").ixr_options.get_metadata(self.script_name, self.variable_name)
+	self:UpdateVisualValue(metadata)
+	self:UpdateControllVisibility(metadata)
+end
+
+function IXRTrackBar:UpdateControllVisibility(metadata)
+	if metadata ~= nil and self.script_visible_controlls ~= metadata.visible_controlls then
+		self.script_visible_controlls = metadata.visible_controlls
+		self:Show(metadata.visible_controlls, true)
+	end
+end
+
+
+function IXRTrackBar:UpdateVisualValue(metadata)
+	if metadata ~= nil and metadata.update_visual_value ~= nil then
+		local new_value = metadata.update_visual_value
+		metadata.update_visual_value = nil
+		GetModule("ixr_module_options").ixr_options.set_metadata(self.script_name, self.variable_name, metadata)
+		
+		self:OnIncomingUpdateVisualValue(new_value)
+		self.value = self.controll_track_bar:GetFValue()
+	end
+end
+
+function IXRTrackBar:OnIncomingUpdateVisualValue(new_value_index)
+	if self.value == new_value_index then
+		return
+	end
+	
+	self.is_pushed_from_code = true
+	if use_ceil then
+		self.controll_track_bar:SetIValue(new_value_index)
+	else
+		self.controll_track_bar:SetFValue(new_value_index)
+	end
+end
+
+function IXRTrackBar:OnChangeState()
+	if self.visible and self.on_change_callback then
+		if self.use_ceil then
+			self.on_change_callback(math.ceil(self.value), self.is_pushed_from_code)
+		else
+			self.on_change_callback(self.value, self.is_pushed_from_code)
+		end
+	end
+	self.is_pushed_from_code = false
+end
+
+function IXRTrackBar:SetHighlighted(v)
+	self.controll_track_bar:SetHighlighted(v)
+end
+
+class "AddonItem" (CUIListBoxItem)
+
+function AddonItem:__init(parent, script_name, options_variables, addon_info) super()	
+	self.option_title = game.translate_string(addon_info.options_title) or addon_info.options_title
+	self.icon_path = "ui\\ixr_options\\icons\\addon_icon"
+	
+	if addon_info.icon_path ~= nil then
+		self.icon_path = addon_info.icon_path
+	end
+	
+	self.options_addon_name = addon_name
+	if addon_info.options_addon_name ~= nil then
+		self.options_addon_name =  game.translate_string(tostring(addon_info.options_addon_name)) or tostring(addon_info.options_addon_name)
+	end
+	
+	self.options_script_version = addon_version
+	if addon_info.options_script_version ~= nil then
+		self.options_script_version = tostring(addon_info.options_script_version)
+	end
+	
+	
+	self.options_authors_text = addon_authors
+	if addon_info.options_authors_text ~= nil then
+		self.options_authors_text = tostring(addon_info.options_authors_text)
+	end
+	
+	self.addon_script_name = script_name
+	self.options_variables = options_variables
+	
+	self.addon_icon = parent.xml:InitStatic("addon_item:icon", self)
+	self.addon_icon:InitTexture(self.icon_path)
+	
+	if addon_info.options_title ~= nil then
+		self.addon_title = parent.xml:InitStatic("addon_item:title", self)
+		self.addon_title:SetText(self.option_title)
+	end
+	
+	self.script_name = parent.xml:InitStatic("addon_item:script_name", self)
+	self.script_name:SetText("Script: " .. self.addon_script_name)
+	
+	self.addon_status = parent.xml:InitStatic("addon_item:addon_name", self)
+	self.addon_status:SetText("Addon: " .. self.options_addon_name)
+	
+	self.addon_version = parent.xml:InitStatic("addon_item:addon_version", self)
+	self.addon_version:SetText("Version: " .. self.options_script_version)
+	
+	self.addon_authors = parent.xml:InitStatic("addon_item:addon_authors", self)
+	self.addon_authors:SetText("Authors: " .. tostring(self.options_authors_text))
+end
+
+class "script_options_dialog" (CUIScriptWnd)
+
+function script_options_dialog:__init() super()
+	self.focusList = {}
+	self.focusIndex = 1
+	
+	self.updateBus = {}
+	self.updateTimer = 0
+	
+	self.optionsScrollShown = false
+    self:InitControls()
+    self:InitCallBacks()
+	
+	action_repeaters():Register(self, key_bindings.kUI_UP, 0, 0)
+	action_repeaters():Register(self, key_bindings.kUI_DOWN, 0, 0)
+	action_repeaters():Register(self, key_bindings.kUI_LEFT, 0, 0)
+	action_repeaters():Register(self, key_bindings.kUI_RIGHT, 0, 0)
+end
+
+function script_options_dialog:__finalize()
+	action_repeaters():UnregisterOwner(self)
+end
+
+function script_options_dialog:InitControls()
+	self:SetWndRect				(Frect():set(0,0,1024,768))
+	self:Enable					(true)
+
+	self.xml					= CScriptXmlInit()
+	self.xml:ParseFile			("ui_mm_script_options.xml")
+
+	self.xml:InitStatic			("background", self)
+	self.dialog					= self.xml:InitStatic("main_dialog:dialog", self)
+
+	self.xml:InitFrame			("main_dialog:list_frame",self.dialog)
+
+	self.list_box				= self.xml:InitListBox("main_dialog:list",self.dialog)
+	self.list_box:ShowSelectedItem(true)
+	self:Register				(self.list_box, "list_window")
+
+	self.options_scroll			= self.xml:InitScrollView("main_dialog:options_scroll",self.dialog)
+	self:Register				(self.options_scroll, "options_scroll")
+	self.options_scroll:Show	(false)
+
+	self.btn_exit 				= self.xml:Init3tButton("main_dialog:btn_exit", self.dialog)
+	self:Register				(self.btn_exit, "btn_exit")
+	
+	self.btn_save 				= self.xml:Init3tButton("main_dialog:btn_save", self.dialog)
+	self:Register				(self.btn_save, "btn_save")
+	
+	self.btn_back 				= self.xml:Init3tButton("main_dialog:btn_back", self.dialog)
+	self:Register				(self.btn_back, "btn_back")
+	
+	self.default_text_color 	= self.xml:GetColor("main_dialog:cap_template:text", 0)
+	self.selection_text_color 	= self.xml:GetColor("main_dialog:selection_color", 0)
+	
+	self.gamepad_legend 		= self.xml:InitGamepadLegend("gamepad_legend", self)
+	self:Register				(self.gamepad_legend, "gamepad_legend")
+end
+
+function script_options_dialog:InitCallBacks()
+	self:AddCallback("btn_exit",			ui_events.BUTTON_CLICKED,		self.OnBtnExit,			self)
+	self:AddCallback("btn_save",			ui_events.BUTTON_CLICKED,		self.OnBtnSave,			self)
+	self:AddCallback("btn_back",			ui_events.BUTTON_CLICKED,		self.OnBtnBack,			self)
+	self:AddCallback("list_window", 		ui_events.LIST_ITEM_CLICKED, 	self.OnListItemClicked,	self)
+end
+
+function script_options_dialog:add_option_shell(fn_fillable)
+	local shell = self.xml:InitStatic("main_dialog:templ_item", nil)
+	
+	if fn_fillable ~= nil then
+		fn_fillable(shell)
+	end
+	
+	self.options_scroll:AddWindow(shell, false)
+	self.options_scroll:SetAutoDelete(false)
+	
+	return shell
+end
+
+function script_options_dialog:PickControl(option_data, shell)
+	local controll_type = option_data["controll_data"]["controll"]
+	local group_name = option_data["group_name"] or nil
+	local variable_name = option_data["variable_name"]
+	local script_name = option_data["script_name"]
+	
+	local __callback_handler = function (value, is_value_from_code)
+		GetModule("ixr_module_options").ixr_options.set_variable_value(script_name, variable_name, value)
+		option_data["controll_data"]["default_value"] = value
+		
+		if option_data["_callback"] ~= nil then
+			if controll_type == "combo_box" then
+				option_data["_callback"](group_name, variable_name, option_data["controll_data"]["list_values"][value]["option_return_value"], is_value_from_code)
+			else
+				option_data["_callback"](group_name, variable_name, value, is_value_from_code)
+			end
+		end
+	end
+	
+	if controll_type == "check_box" then
+		return IXRCheckBox(
+			self,
+			shell,
+			option_data["controll_data"]["default_value"],
+			__callback_handler,
+			script_name, 
+			variable_name
+			)
+	elseif controll_type == "text_box" then
+		return IXRTextBox(
+			self,
+			shell,
+			option_data["controll_data"]["default_value"],
+			__callback_handler,
+			script_name, 
+			variable_name
+			)
+	elseif controll_type == "combo_box" then
+		return IXRComboBox(
+			self,
+			shell,
+			option_data["controll_data"]["default_value"],
+			option_data["controll_data"]["list_values"],
+			__callback_handler,
+			script_name, 
+			variable_name
+		)
+	
+	elseif controll_type == "numeric_up_down" then
+		return IXRNumericUpDown(
+			self,
+			shell,
+			option_data["controll_data"]["default_value"],
+			option_data["controll_data"]["min_value"],
+			option_data["controll_data"]["max_value"],
+			option_data["controll_data"]["value_offset"],
+			__callback_handler,
+			script_name, 
+			variable_name
+		)
+	elseif controll_type == "track_bar" then
+		return IXRTrackBar(
+			self,
+			shell,
+			option_data["controll_data"]["default_value"],
+			option_data["controll_data"]["min_value"],
+			option_data["controll_data"]["max_value"], 
+			option_data["controll_data"]["value_offset"],
+			option_data["controll_data"]["use_ceil"],
+			__callback_handler,
+			script_name,
+			variable_name
+		)
+	end
+end
+
+function script_options_dialog:AddSingleUngrouppedOption(option_data)
+	local display_text = option_data["display_text"]
+	self:add_option_shell(function (_shell)		
+		local control_text = self.xml:InitStatic("main_dialog:cap_template", _shell)
+		control_text:SetText( game.translate_string(tostring(display_text)) )				
+		
+		local controll_ref = self:PickControl(option_data, _shell)
+		table.insert(self.focusList, {control_text, controll_ref, _shell} )
+
+		local _metadata = GetModule("ixr_module_options").ixr_options.get_metadata(option_data["script_name"], option_data["variable_name"])
+		_metadata.controll_type = option_data["controll_data"]["controll"]
+		_metadata.controll_ref = controll_ref
+		_metadata.script_name = option_data["script_name"]
+		_metadata.variable_name = option_data["variable_name"]
+		GetModule("ixr_module_options").ixr_options.set_metadata(option_data["script_name"], option_data["variable_name"], _metadata)
+		
+	end)
+end
+
+function script_options_dialog:add_option_group(group_display_text, group_options)
+	local shell_header = self:add_option_shell()
+	
+	local group_bg = self.xml:InitFrameLine("main_dialog:header_setup", shell_header)
+	
+	local group_name_control = self.xml:InitStatic("main_dialog:cap_header_setup", group_bg)
+	group_name_control:SetText(game.translate_string(tostring(group_display_text)))
+	
+	for k, option_data in pairs(group_options) do
+		local display_text = option_data["display_text"]
+		local shell_option = self:add_option_shell()
+	
+		local option_name_controll = self.xml:InitStatic("main_dialog:cap_template", shell_option)
+		option_name_controll:SetText( game.translate_string(tostring(display_text)) )
+		local controll_ref = self:PickControl(option_data, shell_option)
+		table.insert(self.focusList, {option_name_controll, controll_ref, shell_option} )
+		
+		local _metadata = GetModule("ixr_module_options").ixr_options.get_metadata(option_data["script_name"], option_data["variable_name"])
+		_metadata.controll_type = option_data["controll_data"]["controll"]
+		_metadata.controll_ref = controll_ref
+		_metadata.script_name = option_data["script_name"]
+		_metadata.variable_name = option_data["variable_name"]
+		GetModule("ixr_module_options").ixr_options.set_metadata(option_data["script_name"], option_data["variable_name"], _metadata)
+	end
+end
+
+function script_options_dialog:OnDrawOptions(item)
+	local ungroupped_controlls = {}
+	local groupped_controlls = {}
+	local groups_order = {}
+	
+	for _variable_name, option_data in pairs(item.options_variables) do
+		if option_data["group_name"] == nil then
+			table.insert(ungroupped_controlls, option_data)
+		else
+			if groupped_controlls[tostring(option_data["group_name"])] == nil then
+				groupped_controlls[tostring(option_data["group_name"])] = {}
+				table.insert(groups_order, option_data["group_name"])
+			end
+			
+			table.insert(groupped_controlls[tostring(option_data["group_name"])], option_data)
+		end
+	end
+	
+	self.focusList = {}
+	
+	local cnt_ungroupped_controlls = #ungroupped_controlls
+	if cnt_ungroupped_controlls > 0 then
+		for i=1, cnt_ungroupped_controlls do
+			if ungroupped_controlls[i] then
+				self:AddSingleUngrouppedOption(ungroupped_controlls[i])
+			end
+		end
+	end
+	
+	local cnt_groups_order = #groups_order
+	if cnt_groups_order > 0 then
+		for i=1, cnt_groups_order do
+			if groupped_controlls[groups_order[i]] then
+				self:add_option_group(groupped_controlls[groups_order[i]][1]["group_name"], groupped_controlls[groups_order[i]])
+			end
+		end
+	end
+	
+	self.focusIndex = 1
+	self:OnElementSetSelected(self.focusIndex, true)
+	return true
+end
+
+function script_options_dialog:OnListItemClicked()
+	if self.list_box:GetSize()==0 then 
+		return 
+	end
+
+	local item = self.list_box:GetSelectedItem()
+		
+	self.optionsScrollShown = true
+	self.list_box:Show(false)
+	self.options_scroll:Clear()
+	self.options_scroll:Show(false)
+	if self:OnDrawOptions(item) then
+		self.options_scroll:Show(true)
+	end
+end
+
+function script_options_dialog:OnBtnExit()
+	self.owner:ShowDialog(true)
+	self:HideDialog()
+	self.owner:Show(true)
+end
+
+function script_options_dialog:OnBtnBack()
+	self.options_scroll:Show(false)
+	self.list_box:Show(true)	
+	self.optionsScrollShown = false
+end
+
+function script_options_dialog:OnBtnSave()
+	ffx_io_utils.write_string_file(ffx_json_lib.json_encode(GetModule("ixr_module_options").ixr_options.options_storage), GetModule("ixr_module_options")._get_option_storage_path(), "w+")
+end
+
+function script_options_dialog:OnKeyboard(dik, keyboard_action)
+	local res = CUIScriptWnd.OnKeyboard(self,dik,keyboard_action)
+
+	if res==false then
+
+		local bind = dik_to_bind(dik)
+
+		if keyboard_action == ui_events.WINDOW_KEY_PRESSED then
+			if bind == key_bindings.kQUIT then
+				if self.optionsScrollShown then
+					self:OnBtnBack()
+				else
+					self:OnBtnExit()
+				end
+			end
+
+		end
+	end
+
+	return res
+end
+
+function script_options_dialog:Update()
+	CUIScriptWnd.Update(self)
+	
+	if self.updateTimer <= device().dwtime_continual then 
+		self.updateTimer = device().dwtime_continual + 100
+
+		for k, v in pairs(self.updateBus) do
+			if type(v) == "function" then v() end
+		end
+	end
+	
+	self.btn_exit:Show(not self.optionsScrollShown and not main_menu.in_controller_mode())
+	self.btn_save:Show(self.optionsScrollShown and not main_menu.in_controller_mode())
+	self.btn_back:Show(self.optionsScrollShown and not main_menu.in_controller_mode())
+	
+	if self.optionsScrollShown then
+		local elementCap = self.focusList[self.focusIndex][1]
+		if main_menu.in_controller_mode() then 
+			elementCap:SetTextColor(self.selection_text_color)
+		else
+			elementCap:SetTextColor(self.default_text_color)
+		end
+			
+		local element = self.focusList[self.focusIndex][2]
+		local elementInfo = class_info(element)
+		local elementClass = elementInfo.name
+		
+		if elementClass == "IXRComboBox" 
+		or elementClass == "IXRCheckBox" 
+		or elementClass == "IXRTrackBar" 
+		then
+			element:SetHighlighted(main_menu.in_controller_mode())
+		end
+	end
+	
+	-- for gamepad legend
+	local text_ud		= self:GetStatic("framework_gp_ud")	
+	if text_ud then
+		text_ud:Show(not self.optionsScrollShown)
+	end
+end
+
+function script_options_dialog:FillList()
+	self.list_box:RemoveAll()
+	
+	local sorted_addons_names = {}
+	-- сборка листа сортировки для именованных аддонов
+	for options_script_name, options_variables in pairs(GetModule("ixr_module_options").getOptions()) do
+		if GetModule("ixr_module_options").getOptionsAddonInfo()[options_script_name] and GetModule("ixr_module_options").getOptionsAddonInfo()[options_script_name].options_addon_name ~= nil then
+			if not ffx_table_utils.is_contains(sorted_addons_names, GetModule("ixr_module_options").getOptionsAddonInfo()[options_script_name].options_addon_name) then
+				table.insert(sorted_addons_names, GetModule("ixr_module_options").getOptionsAddonInfo()[options_script_name].options_addon_name)
+			end
+		end
+	end
+	
+	-- сортировка по именованным аддонам
+	for i, addon_name in ipairs(sorted_addons_names) do
+		for options_script_name, options_variables in pairs(GetModule("ixr_module_options").getOptions()) do
+			if GetModule("ixr_module_options").getOptionsAddonInfo()[options_script_name] and addon_name == GetModule("ixr_module_options").getOptionsAddonInfo()[options_script_name].options_addon_name then
+				self.list_box:AddExistingItem(AddonItem(
+					self,
+					tostring(options_script_name).. ".script",
+					options_variables,
+					GetModule("ixr_module_options").getOptionsAddonInfo()[options_script_name] or {}
+				))
+			end
+		end
+	end
+	
+	-- сортировка в конец безымянных аддонов
+	for options_script_name, options_variables in pairs(GetModule("ixr_module_options").getOptions()) do
+		if ((not GetModule("ixr_module_options").getOptionsAddonInfo()[options_script_name]) or  GetModule("ixr_module_options").getOptionsAddonInfo()[options_script_name].options_addon_name == nil) then
+			self.list_box:AddExistingItem(AddonItem(
+				self,
+				tostring(options_script_name).. ".script",
+				options_variables,
+				GetModule("ixr_module_options").getOptionsAddonInfo()[options_script_name] or {}
+			))
+		end
+	end
+end
+
+function script_options_dialog:OnGamepadKey(key, action)
+	local bind = dik_to_bind(key)
+	local bindUI = dik_to_bind(key, action_groups.agUIGeneral)
+	
+	if action and action ~= ui_events.WINDOW_KEY_PRESSED then
+		return false
+	end
+	
+	if bindUI == key_bindings.kUI_BACK then
+		local element = self.focusList[self.focusIndex][2]
+		local elementInfo = class_info(element)
+		local elementClass = elementInfo.name
+	
+		sounds_shared.play_decline_sound()
+		if elementClass == 'IXRComboBox' and element.combo_box:IsListShown() then
+			element.combo_box:ShowList(false)
+		elseif self.optionsScrollShown then
+			self:OnBtnBack()
+		else
+			self:OnBtnExit()
+		end
+		return true
+	elseif bindUI == key_bindings.kUI_ACCEPT then
+		if self.optionsScrollShown then
+			local element = self.focusList[self.focusIndex][2]
+			self:OnElementAbuttonPress(element)
+		else
+			sounds_shared.play_select_sound()
+			self:OnListItemClicked()
+		end
+		return true
+	elseif bindUI == key_bindings.kUI_ACTION_2 then
+		self:OnBtnSave()
+		return true
+	elseif bindUI == key_bindings.kUI_UP then
+		if self.optionsScrollShown then
+			local element = self.focusList[self.focusIndex][2]
+			local elementInfo = class_info(element)
+			local elementClass = elementInfo.name
+			if elementClass == 'IXRComboBox' and element.combo_box:IsListShown() then
+				sounds_shared.play_select_sound()
+				element.combo_box:GetListBox():PrevItem(true)
+			else
+				sounds_shared.play_select_sound()
+				self:OnElementChangeSelection(-1, true)
+			end
+		else
+			self.list_box:PrevItem(true)
+			sounds_shared.play_switch_sound()
+		end
+		action_repeaters():SetActionStarted(self, key_bindings.kUI_UP)
+		return true
+	elseif bindUI == key_bindings.kUI_DOWN then
+		if self.optionsScrollShown then
+			local element = self.focusList[self.focusIndex][2]
+			local elementInfo = class_info(element)
+			local elementClass = elementInfo.name
+			if elementClass == 'IXRComboBox' and element.combo_box:IsListShown() then
+				sounds_shared.play_select_sound()
+				element.combo_box:GetListBox():NextItem(true)
+			else
+				sounds_shared.play_select_sound()
+				self:OnElementChangeSelection(1, true)
+			end
+		else
+			self.list_box:NextItem(true)
+			sounds_shared.play_switch_sound()
+		end
+		action_repeaters():SetActionStarted(self, key_bindings.kUI_DOWN)
+		return true
+	elseif bindUI == key_bindings.kUI_LEFT then
+		if self.optionsScrollShown then
+			local element = self.focusList[self.focusIndex][2]
+			self:OnElementGpadPress(element, false)
+			action_repeaters():SetActionStarted(self, key_bindings.kUI_LEFT)
+		end
+		return true
+	elseif bindUI == key_bindings.kUI_RIGHT then
+		if self.optionsScrollShown then
+			local element = self.focusList[self.focusIndex][2]
+			self:OnElementGpadPress(element, true)
+			action_repeaters():SetActionStarted(self, key_bindings.kUI_RIGHT)
+		end
+		return true
+	end
+	
+	return false
+end
+
+function script_options_dialog:OnGamepadKeyHold(key)
+	local bind = dik_to_bind(key)
+	local bindUI = dik_to_bind(key, action_groups.agUIGeneral)
+	
+	if bindUI == key_bindings.kUI_UP then
+		if action_repeaters():CanRepeatActionNow(self, key_bindings.kUI_UP) 
+		and not any_binded_key_for_action_pressed_c(key_bindings.kUI_DOWN) then
+			if self.optionsScrollShown then
+				local element = self.focusList[self.focusIndex][2]
+				local elementInfo = class_info(element)
+				local elementClass = elementInfo.name
+				if elementClass == 'IXRComboBox' and element.combo_box:IsListShown() then
+					sounds_shared.play_select_sound()
+					element.combo_box:GetListBox():PrevItem(true)
+				else
+					sounds_shared.play_select_sound()
+					self:OnElementChangeSelection(-1, true)
+				end
+			else
+				self.list_box:PrevItem(true)
+				sounds_shared.play_switch_sound()
+			end
+		end
+		return true
+	elseif bindUI == key_bindings.kUI_DOWN then
+		if action_repeaters():CanRepeatActionNow(self, key_bindings.kUI_DOWN) 
+		and not any_binded_key_for_action_pressed_c(key_bindings.kUI_UP) then
+			if self.optionsScrollShown then
+				local element = self.focusList[self.focusIndex][2]
+				local elementInfo = class_info(element)
+				local elementClass = elementInfo.name
+				if elementClass == 'IXRComboBox' and element.combo_box:IsListShown() then
+					sounds_shared.play_select_sound()
+					element.combo_box:GetListBox():NextItem(true)
+				else
+					sounds_shared.play_select_sound()
+					self:OnElementChangeSelection(1, true)
+				end
+			else
+				self.list_box:NextItem(true)
+				sounds_shared.play_switch_sound()
+			end
+		end
+		return true
+	elseif bindUI == key_bindings.kUI_LEFT then
+		if action_repeaters():CanRepeatActionNow(self, key_bindings.kUI_LEFT) 
+		and not any_binded_key_for_action_pressed_c(key_bindings.kUI_RIGHT)
+		and self.optionsScrollShown then
+			local element = self.focusList[self.focusIndex][2]
+			self:OnElementGpadPress(element, false)
+		end
+		return true
+	elseif bindUI == key_bindings.kUI_RIGHT then
+		if action_repeaters():CanRepeatActionNow(self, key_bindings.kUI_RIGHT) 
+		and not any_binded_key_for_action_pressed_c(key_bindings.kUI_LEFT)
+		and self.optionsScrollShown then
+			local element = self.focusList[self.focusIndex][2]
+			self:OnElementGpadPress(element, true)
+		end
+		return true
+	end
+	
+	return false
+end
+
+function script_options_dialog:OnElementAbuttonPress(element)
+	local elementInfo = class_info(element)
+	local elementClass = elementInfo.name
+	
+	sounds_shared.play_switch_sound()
+	if elementClass == 'IXRCheckBox' then
+		element.check_box:Toggle()
+	elseif elementClass == 'IXRComboBox' then
+		if element.combo_box:IsListShown() then
+			element.combo_box:OnListItemSelect()
+		else
+			element.combo_box:ShowList(true)
+		end
+	end
+end
+
+function script_options_dialog:check_range(newFocusIndex, offset, loop)
+	local eltCount = #self.focusList
+
+	if newFocusIndex > eltCount then
+		if loop then
+			return 1
+		else
+			return -1
+		end
+	elseif newFocusIndex < 1 then
+		if loop then
+			return eltCount
+		else
+			return -1
+		end
+	end
+
+	return newFocusIndex
+end
+
+function script_options_dialog:OnElementChangeSelection(offset, loop)
+
+	local newFocusIndex = self.focusIndex + offset
+
+	newFocusIndex = self:check_range(newFocusIndex, offset, loop)
+	if newFocusIndex == -1 then
+		return false
+	end
+
+	self:OnElementSetSelected(self.focusIndex, false)
+	self.focusIndex = newFocusIndex
+	self:OnElementSetSelected(self.focusIndex, true)
+	return true
+end
+
+function script_options_dialog:OnElementSetSelected(eltIndex, on)
+
+	if self.focusList == nil then
+		return 
+	end
+
+	local eltCount = #self.focusList
+	
+	if eltIndex < 1 or eltIndex > eltCount then
+		return
+	end
+	
+	local focusRecord = self.focusList[eltIndex]
+	local element = focusRecord[2]
+	local elementInfo = class_info(element)
+	local elementClass = elementInfo.name
+	
+	if elementClass == "IXRComboBox" 
+	or elementClass == "IXRCheckBox" 
+	or elementClass == "IXRTrackBar" 
+	then
+		element:SetHighlighted(on)
+	end
+	
+	local caption = focusRecord[1]:TextControl()
+	
+	if on then
+		caption:SetTextColor(self.selection_text_color)
+		
+		--for advanced video settings, make autoscroll		
+		local elementParent = focusRecord[1]:GetParent()
+		
+		local scroll = self.options_scroll
+		local lpos = scroll:GetMinScrollPos()
+		local rpos = scroll:GetMaxScrollPos()
+		local lrdif = (rpos - lpos)
+			
+		local ratio = elementParent:GetWndPos().y / self.options_scroll:GetPadSize().y
+			
+		local spos = lpos + lrdif * ratio - lrdif * (3 / eltCount)
+			
+		self.options_scroll:SetScrollPos(spos)
+	else
+		caption:SetTextColor(self.default_text_color)
+	end
+end
+
+function script_options_dialog:OnElementGpadPress(element, right)
+	local elementInfo = class_info(element)
+	local elementClass = elementInfo.name
+
+	if elementClass == 'IXRTrackBar' then
+		sounds_shared.play_switch_sound()
+		if right then
+			element.controll_track_bar:StepRight()
+		else
+			element.controll_track_bar:StepLeft()
+		end
+	end
+end
