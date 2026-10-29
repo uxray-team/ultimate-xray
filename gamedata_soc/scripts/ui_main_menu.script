@@ -353,11 +353,6 @@ end
 function main_menu:OnKeyboard(dik, keyboard_action)  --virtual function
 	CUIScriptWnd.OnKeyboard(self,dik,keyboard_action)
 	
-	local hold = false
-	if GetModule("ixr_options") and GetModule("ixr_options").on_press_key(dik, keyboard_action, hold) then -- вернёт true если было совпадение по кнопке с опциями
-		return true
-	end
-	
 	local bind = dik_to_bind(dik)
 	local console = get_console()
 	
