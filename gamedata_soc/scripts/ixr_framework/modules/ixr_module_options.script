@@ -214,24 +214,9 @@ Return: (nil|bool|int|float|string|table|function)
 ]]
 function set_visible_option(var_name, visible)
 	local script_name = ffx_callable_utils.find_caller_source(3)
-	
-	--[[
-		metadata.background_controll_ref = option_bg
-		metadata.background_controll_color =  GetARGB(alpha, 225, 225, 225)
-		metadata.label_controll_ref = CTRLText
-		metadata.label_controll_color = GetARGB(255, 200, 200, 200)
-
-		metadata.visible_controlls
-		metadata.visible_background
-		metadata.gray_background
-		metadata.gray_label
-	--]]
-	
 	local metadata = ixr_options.get_metadata(script_name, var_name)
 	
 	metadata.visible_controlls = visible
-	metadata.gray_label = (not visible)
-	metadata.gray_background = (not visible)
 	
 	ixr_options.set_metadata(script_name, var_name, metadata)
 	
@@ -1141,12 +1126,6 @@ function register_framewindow(name_controll, static, x, y, width, height)
 	register_controll(name_controll)
 end
 
-function register_gamepad_legend(name_controll, static)
-	set_controll(name_controll, get_options_xml():InitGamepadLegend(static, get_menu_ref()))
-	get_controll(name_controll):Show(false)
-	register_controll(name_controll)
-end
-
 function register_button(name_controll, static, x, y, width, height, _callback)
 	set_controll(name_controll, get_options_xml():Init3tButton(static, get_menu_ref()))
 	get_controll(name_controll):SetStretchTexture(true)
@@ -1421,7 +1400,6 @@ function _on_main_menu_init_controlls(_ref)
 	--register_scroll_view("options_scroll", "scroll_v", 320, 270, 670, 400)
 	register_scroll_view("options_scroll", "scroll_v", 320, 125, 670, 550) -- (name_controll, scroll_section, x, y, width, height)
 	register_framewindow("framewindow_gamepad", "frame_window", 33, 108, 250, 575)
-	register_gamepad_legend("gamepad_legend", "gamepad_legend")
 	get_controll("options_scroll"):Show(false)
 end
 
@@ -1821,7 +1799,6 @@ function IXRTrackBar:__init(controll_name, x, y, alpha, default_value, min_value
 	
 	self.script_visible_controlls = nil
 	self.script_visible_background = nil
-	self.script_gray_label = nil
 	self.script_gray_background = nil
 	
 	self.is_pushed_from_code = false
@@ -1903,18 +1880,6 @@ function IXRTrackBar:Update()
 	self:UpdateControllVisibility(metadata)
 end
 
---[[
-metadata.background_controll_ref = option_bg
-metadata.background_controll_color =  GetARGB(alpha, 225, 225, 225)
-metadata.label_controll_ref = CTRLText
-metadata.label_controll_color = GetARGB(255, 200, 200, 200)
-
-metadata.visible_controlls
-metadata.visible_background
-metadata.gray_label
-metadata.gray_background
---]]
-
 function IXRTrackBar:UpdateControllVisibility(metadata)
 	if metadata ~= nil and self.script_visible_controlls ~= metadata.visible_controlls then
 		self.script_visible_controlls = metadata.visible_controlls
@@ -1925,28 +1890,6 @@ function IXRTrackBar:UpdateControllVisibility(metadata)
 		self.script_visible_background = metadata.visible_background
 		if metadata.script_visible_background ~= nil then
 			metadata.background_controll_ref:Show(metadata.visible_background)
-		end
-	end
-	
-	if metadata ~= nil and self.script_visible_background ~= metadata.gray_label then
-		self.script_gray_label = metadata.gray_label
-		if metadata.label_controll_ref ~= nil then
-			if metadata.gray_label then
-				metadata.label_controll_ref:TextControl():SetTextColor(GetARGB(255, 100, 100, 100))
-			else
-				metadata.label_controll_ref:TextControl():SetTextColor(metadata.label_controll_color)
-			end
-		end
-	end
-	
-	if metadata ~= nil and self.script_visible_background ~= metadata.gray_background then
-		self.script_gray_background = metadata.gray_background
-		if metadata.background_controll_ref ~= nil then
-			if metadata.gray_background then
-				metadata.background_controll_ref:SetTextureColor(GetARGB(50, 225, 225, 225))
-			else
-				metadata.background_controll_ref:SetTextureColor(metadata.background_controll_color)
-			end
 		end
 	end
 end

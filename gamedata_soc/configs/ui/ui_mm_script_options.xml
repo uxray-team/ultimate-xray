@@ -11,7 +11,24 @@
 		  <texture>ui\ui_mm_rug02</texture>
 		</auto_static>
 	</background>
-  
+	
+  	<gamepad_legend x="0" y="724" width="1024" height="30" spacing="5">
+		<auto_static x="0" y="0" width="22" height="30">
+			<text font="graffiti19" vert_align="c">st_ixray_framework_addons_ud</text>
+			<window_name>framework_gp_ud</window_name>
+		</auto_static>	
+		<auto_static x="0" y="0" width="22" height="30">
+			<window_name>framework_gp_accept</window_name>
+			<text font="graffiti19" vert_align="c">st_ixray_framework_options_accept</text>
+		</auto_static>
+		<auto_static x="0" y="0" width="22" height="30">
+			<text font="graffiti19" vert_align="c">st_ixray_framework_options_save</text>
+		</auto_static>
+		<auto_static x="0" y="0" width="22" height="30">
+			<text font="graffiti19" vert_align="c">ui_mm_back_gp</text>
+		</auto_static>
+	</gamepad_legend>
+	
 	<addon_item x="0" y="0" width="650" height="90">
 		<icon x="6" y="21" width="48" height="48" stretch="1">
 			<texture>ui\ui_noise</texture>
@@ -63,6 +80,7 @@
 		<cap_template x="20" y="0" width="143" height="21">
 			<text font="letterica16" color="ui_6" vert_align="c"/>
 		</cap_template>
+        <selection_color r="255" g="255" b="255"/>
 		
 		<track_template_float x="394" y="0" width="245" height="21" show_value="1"/>
 		<track_template_int x="394" y="0" width="245" height="21" is_integer="1" show_value="1"/>

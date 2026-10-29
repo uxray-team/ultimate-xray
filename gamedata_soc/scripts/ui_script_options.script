@@ -197,6 +197,10 @@ function IXRComboBox:OnChangeState()
 	self.is_pushed_from_code = false
 end
 
+function IXRComboBox:SetHighlighted(v)
+	self.combo_box:SetHighlighted(v)
+end
+
 class "IXRTextBox" (CUIStatic)
 function IXRTextBox:__init(parent, shell, default_value, _callback, script_name, variable_name)
 	super()
@@ -332,6 +336,10 @@ function IXRCheckBox:OnChangeState()
 	self.is_pushed_from_code = false
 end
 
+function IXRCheckBox:SetHighlighted(v)
+	self.check_box:SetHighlighted(v)
+end
+
 class "IXRTrackBar" (CUIStatic)
 function IXRTrackBar:__init(parent, shell, default_value, min_value, max_value, value_offset, use_ceil, _callback, script_name, variable_name)
 	super()
@@ -435,6 +443,10 @@ function IXRTrackBar:OnChangeState()
 	self.is_pushed_from_code = false
 end
 
+function IXRTrackBar:SetHighlighted(v)
+	self.controll_track_bar:SetHighlighted(v)
+end
+
 class "AddonItem" (CUIListBoxItem)
 
 function AddonItem:__init(parent, script_name, options_variables, addon_info) super()	
@@ -535,6 +547,12 @@ function script_options_dialog:InitControls()
 	
 	self.btn_back 				= self.xml:Init3tButton("main_dialog:btn_back", self.dialog)
 	self:Register				(self.btn_back, "btn_back")
+	
+	self.default_text_color 	= self.xml:GetColor("main_dialog:cap_template:text", 0)
+	self.selection_text_color 	= self.xml:GetColor("main_dialog:selection_color", 0)
+	
+	self.gamepad_legend 		= self.xml:InitGamepadLegend("gamepad_legend", self)
+	self:Register				(self.gamepad_legend, "gamepad_legend")
 end
 
 function script_options_dialog:InitCallBacks()
@@ -640,6 +658,7 @@ function script_options_dialog:AddSingleUngrouppedOption(option_data)
 		control_text:SetText( game.translate_string(tostring(display_text)) )				
 		
 		local controll_ref = self:PickControl(option_data, _shell)
+		table.insert(self.focusList, {control_text, controll_ref, _shell} )
 
 		local _metadata = GetModule("ixr_module_options").ixr_options.get_metadata(option_data["script_name"], option_data["variable_name"])
 		_metadata.controll_type = option_data["controll_data"]["controll"]
@@ -666,7 +685,8 @@ function script_options_dialog:add_option_group(group_display_text, group_option
 		local option_name_controll = self.xml:InitStatic("main_dialog:cap_template", shell_option)
 		option_name_controll:SetText( game.translate_string(tostring(display_text)) )
 		local controll_ref = self:PickControl(option_data, shell_option)
-			
+		table.insert(self.focusList, {option_name_controll, controll_ref, shell_option} )
+		
 		local _metadata = GetModule("ixr_module_options").ixr_options.get_metadata(option_data["script_name"], option_data["variable_name"])
 		_metadata.controll_type = option_data["controll_data"]["controll"]
 		_metadata.controll_ref = controll_ref
@@ -714,6 +734,8 @@ function script_options_dialog:OnDrawOptions(item)
 		end
 	end
 	
+	self.focusIndex = 1
+	self:OnElementSetSelected(self.focusIndex, true)
 	return true
 end
 
@@ -759,13 +781,9 @@ function script_options_dialog:OnKeyboard(dik, keyboard_action)
 		if keyboard_action == ui_events.WINDOW_KEY_PRESSED then
 			if bind == key_bindings.kQUIT then
 				if self.optionsScrollShown then
-					self.options_scroll:Show(false)
-					self.list_box:Show(true)	
-					self.optionsScrollShown = false
+					self:OnBtnBack()
 				else
-					self.owner:ShowDialog(true)
-					self:HideDialog()
-					self.owner:Show(true)
+					self:OnBtnExit()
 				end
 			end
 
@@ -789,6 +807,37 @@ function script_options_dialog:Update()
 	self.btn_exit:Show(not self.optionsScrollShown and not main_menu.in_controller_mode())
 	self.btn_save:Show(self.optionsScrollShown and not main_menu.in_controller_mode())
 	self.btn_back:Show(self.optionsScrollShown and not main_menu.in_controller_mode())
+	
+	if self.optionsScrollShown then
+		local elementCap = self.focusList[self.focusIndex][1]
+		if main_menu.in_controller_mode() then 
+			elementCap:SetTextColor(self.selection_text_color)
+		else
+			elementCap:SetTextColor(self.default_text_color)
+		end
+			
+		local element = self.focusList[self.focusIndex][2]
+		local elementInfo = class_info(element)
+		local elementClass = elementInfo.name
+		
+		if elementClass == "IXRComboBox" 
+		or elementClass == "IXRCheckBox" 
+		or elementClass == "IXRTrackBar" 
+		then
+			element:SetHighlighted(main_menu.in_controller_mode())
+		end
+	end
+	
+	-- for gamepad legend
+	local text_accept		= self:GetStatic("framework_gp_accept")	
+	if text_accept then
+		text_accept:Show(self.optionsScrollShown)
+	end
+
+	local text_ud		= self:GetStatic("framework_gp_ud")	
+	if text_ud then
+		text_ud:Show(self.optionsScrollShown)
+	end
 end
 
 function script_options_dialog:FillList()
@@ -827,6 +876,272 @@ function script_options_dialog:FillList()
 				options_variables,
 				GetModule("ixr_module_options").getOptionsAddonInfo()[options_script_name] or {}
 			))
+		end
+	end
+end
+
+function script_options_dialog:OnGamepadKey(key, action)
+	local bind = dik_to_bind(key)
+	local bindUI = dik_to_bind(key, action_groups.agUIGeneral)
+	
+	if action and action ~= ui_events.WINDOW_KEY_PRESSED then
+		return false
+	end
+	
+	if bindUI == key_bindings.kUI_BACK then
+		local element = self.focusList[self.focusIndex][2]
+		local elementInfo = class_info(element)
+		local elementClass = elementInfo.name
+	
+		sounds_shared.play_decline_sound()
+		if elementClass == 'IXRComboBox' and element.combo_box:IsListShown() then
+			element.combo_box:ShowList(false)
+		elseif self.optionsScrollShown then
+			self:OnBtnBack()
+		else
+			self:OnBtnExit()
+		end
+		return true
+	elseif bindUI == key_bindings.kUI_ACCEPT then
+		if self.optionsScrollShown then
+			local element = self.focusList[self.focusIndex][2]
+			self:OnElementAbuttonPress(element)
+		else
+			sounds_shared.play_select_sound()
+			self:OnListItemClicked()
+		end
+		return true
+	elseif bindUI == key_bindings.kUI_ACTION_2 then
+		self:OnBtnSave()
+		return true
+	elseif bindUI == key_bindings.kUI_UP then
+		if self.optionsScrollShown then
+			local element = self.focusList[self.focusIndex][2]
+			local elementInfo = class_info(element)
+			local elementClass = elementInfo.name
+			if elementClass == 'IXRComboBox' and element.combo_box:IsListShown() then
+				sounds_shared.play_select_sound()
+				element.combo_box:GetListBox():PrevItem(true)
+			else
+				sounds_shared.play_select_sound()
+				self:OnElementChangeSelection(-1, true)
+			end
+		else
+			self.list_box:PrevItem(true)
+			sounds_shared.play_switch_sound()
+		end
+		action_repeaters():SetActionStarted(self, key_bindings.kUI_UP)
+		return true
+	elseif bindUI == key_bindings.kUI_DOWN then
+		if self.optionsScrollShown then
+			local element = self.focusList[self.focusIndex][2]
+			local elementInfo = class_info(element)
+			local elementClass = elementInfo.name
+			if elementClass == 'IXRComboBox' and element.combo_box:IsListShown() then
+				sounds_shared.play_select_sound()
+				element.combo_box:GetListBox():NextItem(true)
+			else
+				sounds_shared.play_select_sound()
+				self:OnElementChangeSelection(1, true)
+			end
+		else
+			self.list_box:NextItem(true)
+			sounds_shared.play_switch_sound()
+		end
+		action_repeaters():SetActionStarted(self, key_bindings.kUI_DOWN)
+		return true
+	elseif bindUI == key_bindings.kUI_LEFT then
+		if self.optionsScrollShown then
+			local element = self.focusList[self.focusIndex][2]
+			self:OnElementGpadPress(element, false)
+			action_repeaters():SetActionStarted(self, key_bindings.kUI_LEFT)
+		end
+		return true
+	elseif bindUI == key_bindings.kUI_RIGHT then
+		if self.optionsScrollShown then
+			local element = self.focusList[self.focusIndex][2]
+			self:OnElementGpadPress(element, true)
+			action_repeaters():SetActionStarted(self, key_bindings.kUI_RIGHT)
+		end
+		return true
+	end
+	
+	return false
+end
+
+function script_options_dialog:OnGamepadKeyHold(key)
+	local bind = dik_to_bind(key)
+	local bindUI = dik_to_bind(key, action_groups.agUIGeneral)
+	
+	if bindUI == key_bindings.kUI_UP then
+		if action_repeaters():CanRepeatActionNow(self, key_bindings.kUI_UP) 
+		and not any_binded_key_for_action_pressed_c(key_bindings.kUI_DOWN) then
+			if self.optionsScrollShown then
+				local element = self.focusList[self.focusIndex][2]
+				local elementInfo = class_info(element)
+				local elementClass = elementInfo.name
+				if elementClass == 'IXRComboBox' and element.combo_box:IsListShown() then
+					sounds_shared.play_select_sound()
+					element.combo_box:GetListBox():PrevItem(true)
+				else
+					sounds_shared.play_select_sound()
+					self:OnElementChangeSelection(-1, true)
+				end
+			else
+				self.list_box:PrevItem(true)
+				sounds_shared.play_switch_sound()
+			end
+		end
+		return true
+	elseif bindUI == key_bindings.kUI_DOWN then
+		if action_repeaters():CanRepeatActionNow(self, key_bindings.kUI_DOWN) 
+		and not any_binded_key_for_action_pressed_c(key_bindings.kUI_UP) then
+			if self.optionsScrollShown then
+				local element = self.focusList[self.focusIndex][2]
+				local elementInfo = class_info(element)
+				local elementClass = elementInfo.name
+				if elementClass == 'IXRComboBox' and element.combo_box:IsListShown() then
+					sounds_shared.play_select_sound()
+					element.combo_box:GetListBox():NextItem(true)
+				else
+					sounds_shared.play_select_sound()
+					self:OnElementChangeSelection(1, true)
+				end
+			else
+				self.list_box:NextItem(true)
+				sounds_shared.play_switch_sound()
+			end
+		end
+		return true
+	elseif bindUI == key_bindings.kUI_LEFT then
+		if action_repeaters():CanRepeatActionNow(self, key_bindings.kUI_LEFT) 
+		and not any_binded_key_for_action_pressed_c(key_bindings.kUI_RIGHT)
+		and self.optionsScrollShown then
+			local element = self.focusList[self.focusIndex][2]
+			self:OnElementGpadPress(element, false)
+		end
+		return true
+	elseif bindUI == key_bindings.kUI_RIGHT then
+		if action_repeaters():CanRepeatActionNow(self, key_bindings.kUI_RIGHT) 
+		and not any_binded_key_for_action_pressed_c(key_bindings.kUI_LEFT)
+		and self.optionsScrollShown then
+			local element = self.focusList[self.focusIndex][2]
+			self:OnElementGpadPress(element, true)
+		end
+		return true
+	end
+	
+	return false
+end
+
+function script_options_dialog:OnElementAbuttonPress(element)
+	local elementInfo = class_info(element)
+	local elementClass = elementInfo.name
+	
+	sounds_shared.play_switch_sound()
+	if elementClass == 'IXRCheckBox' then
+		element.check_box:Toggle()
+	elseif elementClass == 'IXRComboBox' then
+		if element.combo_box:IsListShown() then
+			element.combo_box:OnListItemSelect()
+		else
+			element.combo_box:ShowList(true)
+		end
+	end
+end
+
+function script_options_dialog:check_range(newFocusIndex, offset, loop)
+	local eltCount = #self.focusList
+
+	if newFocusIndex > eltCount then
+		if loop then
+			return 1
+		else
+			return -1
+		end
+	elseif newFocusIndex < 1 then
+		if loop then
+			return eltCount
+		else
+			return -1
+		end
+	end
+
+	return newFocusIndex
+end
+
+function script_options_dialog:OnElementChangeSelection(offset, loop)
+
+	local newFocusIndex = self.focusIndex + offset
+
+	newFocusIndex = self:check_range(newFocusIndex, offset, loop)
+	if newFocusIndex == -1 then
+		return false
+	end
+
+	self:OnElementSetSelected(self.focusIndex, false)
+	self.focusIndex = newFocusIndex
+	self:OnElementSetSelected(self.focusIndex, true)
+	return true
+end
+
+function script_options_dialog:OnElementSetSelected(eltIndex, on)
+
+	if self.focusList == nil then
+		return 
+	end
+
+	local eltCount = #self.focusList
+	
+	if eltIndex < 1 or eltIndex > eltCount then
+		return
+	end
+	
+	local focusRecord = self.focusList[eltIndex]
+	local element = focusRecord[2]
+	local elementInfo = class_info(element)
+	local elementClass = elementInfo.name
+	
+	if elementClass == "IXRComboBox" 
+	or elementClass == "IXRCheckBox" 
+	or elementClass == "IXRTrackBar" 
+	then
+		element:SetHighlighted(on)
+	end
+	
+	local caption = focusRecord[1]:TextControl()
+	
+	if on then
+		caption:SetTextColor(self.selection_text_color)
+		
+		--for advanced video settings, make autoscroll		
+		local elementParent = focusRecord[1]:GetParent()
+		
+		local scroll = self.options_scroll
+		local lpos = scroll:GetMinScrollPos()
+		local rpos = scroll:GetMaxScrollPos()
+		local lrdif = (rpos - lpos)
+			
+		local ratio = elementParent:GetWndPos().y / self.options_scroll:GetPadSize().y
+			
+		local spos = lpos + lrdif * ratio - lrdif * (3 / eltCount)
+			
+		self.options_scroll:SetScrollPos(spos)
+	else
+		caption:SetTextColor(self.default_text_color)
+	end
+end
+
+function script_options_dialog:OnElementGpadPress(element, right)
+	local elementInfo = class_info(element)
+	local elementClass = elementInfo.name
+
+	if elementClass == 'IXRTrackBar' then
+		sounds_shared.play_switch_sound()
+		if right then
+			element.controll_track_bar:StepRight()
+		else
+			element.controll_track_bar:StepLeft()
 		end
 	end
 end
