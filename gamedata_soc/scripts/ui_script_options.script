@@ -538,6 +538,7 @@ function script_options_dialog:InitControls()
 
 	self.options_scroll			= self.xml:InitScrollView("main_dialog:options_scroll",self.dialog)
 	self:Register				(self.options_scroll, "options_scroll")
+	self.options_scroll:Show	(false)
 
 	self.btn_exit 				= self.xml:Init3tButton("main_dialog:btn_exit", self.dialog)
 	self:Register				(self.btn_exit, "btn_exit")
@@ -829,14 +830,9 @@ function script_options_dialog:Update()
 	end
 	
 	-- for gamepad legend
-	local text_accept		= self:GetStatic("framework_gp_accept")	
-	if text_accept then
-		text_accept:Show(self.optionsScrollShown)
-	end
-
 	local text_ud		= self:GetStatic("framework_gp_ud")	
 	if text_ud then
-		text_ud:Show(self.optionsScrollShown)
+		text_ud:Show(not self.optionsScrollShown)
 	end
 end
 
