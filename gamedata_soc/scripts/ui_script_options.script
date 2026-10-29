@@ -16,6 +16,7 @@ function IXRNumericUpDown:__init(parent, shell, default_value, min_value, max_va
 	self.spin_float:SetMax(max_value)
 	self.spin_float:SetStep(value_offset)
 	self.spin_float:Show(false)
+	parent:AddCallback(self.spin_float, ui_events.BUTTON_CLICKED, self.OnChangeState, parent)
 	
 	self:SetValue(default_value)
 	self:Show(true)

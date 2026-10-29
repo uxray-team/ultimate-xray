@@ -1,7 +1,10 @@
 <w>
-    <file name="ui\ui_ixray_ex">
+	<file name="ui\ui_ixray_ex">
         <texture id="ui_wp_prop_distantion" x="230" y="4" width="19" height="19" />
         <texture id="ui_am_condition" x="230" y="23" width="19" height="19" />
+        <texture id="ui_am_prop_explo" x="230" y="42" width="19" height="19" />
+        <texture id="ui_am_prop_strike" x="230" y="61" width="19" height="19" />
+        <texture id="ui_am_prop_wound" x="230" y="80" width="19" height="19" />
         <texture id="ui_car_panel_back" x="0" y="0" width="220" height="120" />
         <texture id="ui_car_panel_engine" x="0" y="180" width="22" height="22" />
         <texture id="ui_car_panel_light" x="30" y="180" width="22" height="22" />
@@ -15,7 +18,17 @@
         <texture id="ui_inGame2_spin_box_button_horz_bottom_e" x="268" y="0" width="12" height="19" />
         <texture id="ui_inGame2_spin_box_button_horz_bottom_h" x="268" y="21" width="12" height="19" />
         <texture id="ui_inGame2_spin_box_button_horz_bottom_t" x="268" y="42" width="12" height="19" />
-	
+		
+        <texture id="ui_inGame2_spin_box_button_horz_soc_top_d" x="310" y="63" width="12" height="19" />
+        <texture id="ui_inGame2_spin_box_button_horz_soc_top_e" x="310" y="0" width="12" height="19" />
+        <texture id="ui_inGame2_spin_box_button_horz_soc_top_h" x="310" y="21" width="12" height="19" />
+        <texture id="ui_inGame2_spin_box_button_horz_soc_top_t" x="310" y="42" width="12" height="19" />
+ 		
+        <texture id="ui_inGame2_spin_box_button_horz_soc_bottom_d" x="295" y="63" width="12" height="19" />
+        <texture id="ui_inGame2_spin_box_button_horz_soc_bottom_e" x="295" y="0" width="12" height="19" />
+        <texture id="ui_inGame2_spin_box_button_horz_soc_bottom_h" x="295" y="21" width="12" height="19" />
+        <texture id="ui_inGame2_spin_box_button_horz_soc_bottom_t" x="295" y="42" width="12" height="19" />
+		
 		<texture id="ui_inv_item_selector_lt" x="0" y="256" width="1" height="1" /><!-- TOP LEFT -->
 		<texture id="ui_inv_item_selector_t" x="1" y="256" width="62" height="1" /><!-- TOP -->
 		<texture id="ui_inv_item_selector_rt" x="63" y="256" width="1" height="1" /><!-- TOP RIGHT -->
@@ -45,8 +58,8 @@
 		<texture id="ui_inv_item_selector_tri_lb" x="128" y="319" width="1" height="1" /><!-- BOTTOM LEFT -->
 		<texture id="ui_inv_item_selector_tri_b" x="129" y="319" width="62" height="1" /><!-- BOTTOM -->
 		<texture id="ui_inv_item_selector_tri_rb" x="191" y="319" width="1" height="1" /><!-- BOTTOM RIGHT -->
-  </file>
-   <file name="ui\ui_flags">
+	</file>
+	<file name="ui\ui_flags">
     	<texture id="ui_flag_usa_cop_e" x="0" y="128" width="128" height="128" />
 	    <texture id="ui_flag_usa_cop_h" x="128" y="128" width="128" height="128" />
 	    <texture id="ui_flag_usa_cop_t" x="256" y="128" width="128" height="128" />
@@ -71,8 +84,8 @@
 	    <texture id="ui_flag_russia_cs_h" x="512" y="0" width="128" height="128" />
 	    <texture id="ui_flag_russia_cs_t" x="640" y="0" width="128" height="128" />
 	    <texture id="ui_flag_russia_cs_d" x="384" y="0" width="128" height="128" />
-   </file>
-   <file name="ui\ui_actor_newsmanager_icons">
-    <texture id="ui_ixray_spawn_icon"     	x="332" y="423" width="83" height="47" />
-   </file>
+	</file>
+	<file name="ui\ui_iconstotal">
+		<texture id="ui_ixray_spawn_icon"     	x="0" y="94"  width="83" height="47" />
+	</file>
 </w>
