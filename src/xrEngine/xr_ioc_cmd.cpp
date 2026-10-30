@@ -849,7 +849,7 @@ void CCC_Register()
 	CMD4(CCC_Float,		"gyroscope_deadzone",		&CGamepadService::GyroscopeDeadZone, 0.01f, 1.f);
 	CMD4(CCC_Float,		"gyroscope_sensitivity",	&CGamepadService::GyroscopeSensitivity, 0.01f, 2.5f);
 
-	CMD4(CCC_Float,		"touchpad_sens",			&psTouchpadSens,		1.0f, 50.0f);
+	CMD4(CCC_Float,		"touchpad_sens",			&psTouchpadSens,		0.1f, 10.0f);
 
 #ifndef MASTER_GOLD
 	// Other

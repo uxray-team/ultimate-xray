@@ -5,7 +5,6 @@ class ENGINE_API IInputReceiver
 public:
 	virtual ~IInputReceiver() = default;
 
-	void			IR_GetLastMouseDelta			(Ivector2& p);
 	void			IR_GetMousePosScreen			(Ivector2& p);
 	void			IR_GetMousePosReal				(Ivector2 &p);
 	void			IR_GetMousePosIndependent		(Fvector2 &f);

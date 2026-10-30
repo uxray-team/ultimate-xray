@@ -19,7 +19,7 @@ ENGINE_API bool		psGamepadInvert		= false;
 ENGINE_API bool		psGyroscopeInvertX	= false;
 ENGINE_API bool		psGyroscopeInvertY	= false;
 
-ENGINE_API float	psTouchpadSens		= 20.0f;
+ENGINE_API float	psTouchpadSens		= 4.0f;
 
 static bool g_exclusive	= true;
 static void on_error_dialog			(bool before)
@@ -35,7 +35,7 @@ static void on_error_dialog			(bool before)
 	pInput->acquire();
 }
 
-CInput::CInput(bool bExclusive, int deviceForInit)
+CInput::CInput(bool bExclusive)
 {
 	g_exclusive = !!bExclusive;
 
@@ -49,6 +49,10 @@ CInput::CInput(bool bExclusive, int deviceForInit)
 	iCapture(&dummyController);
 	Debug.set_on_dialog(&on_error_dialog);
 
+	for (u8 i = 0; i < COUNT_FINGERS_TOUCHPAD; i++)
+	{
+		TouchpadFingerPresent[i] = false;
+	}
 	Device.seqAppActivate.Add(this);
 	Device.seqAppDeactivate.Add(this, REG_PRIORITY_HIGH);
 	Device.seqFrame.Add(this, REG_PRIORITY_HIGH);
@@ -214,12 +218,6 @@ void CInput::GamepadGyroscopeUpdate(Fvector3 value)
 {
 	Gyroscope += value;
 	gyroscopeMoved = true;
-}
-
-void CInput::TouchpadUpdate(Fvector2 value)
-{
-	Touchpad.add(value);
-	touchpadMoved = true;
 }
 
 #define MOUSE_1		(SDL_SCANCODE_COUNT + 100)
@@ -469,13 +467,20 @@ void CInput::TouchpadUpdate()
 		return;
 	}
 
-	if (touchpadMoved) 
+	for (u8 i = 0; i < 2; i++)
 	{
-		cbStack.back()->IR_OnTouchpadMove(Touchpad);
-		touchpadMoved = false;
+		if (!TouchpadFingerPresent[i])
+		{
+			continue;
+		}
+		Fvector2 posDelta = TouchpadAbsPosition[i];
+		posDelta.sub(TouchpadAbsPositionPrev[i]);
+		if (!fsimilar(posDelta.magnitude(), EPS_L))
+		{
+			cbStack.back()->IR_OnTouchpadMove(posDelta);
+		}
+		TouchpadAbsPositionPrev[i] = TouchpadAbsPosition[i];
 	}
-
-	Touchpad.set(0.0f, 0.0f);
 }
 
 #pragma warning(pop)
@@ -504,11 +509,6 @@ void CInput::iCapture(IInputReceiver *p)
 
 	cbStack.push_back(p);
 	cbStack.back()->IR_OnActivate();
-}
-
-void CInput::iGetLastMouseDelta(Ivector2& p)
-{
-	R_ASSERT(false);
 }
 
 void CInput::iRelease(IInputReceiver *p)
@@ -584,46 +584,6 @@ IInputReceiver* CInput::CurrentIR()
 }
 
 
-unsigned char CInput::GetConnectedInputDeviceCount(void) const noexcept
-{
-	R_ASSERT2(false, "todo: implement");
-	return 0;
-}
-
-void CInput::GetConnectedInputDevices(CInputDevice(&devices)[DEF_XR_INPUT_MAX_INPUT_CONNECTED_DEVICES_COUNT]) noexcept
-{
-	GetConnectedInputKeyboards(devices);
-	GetConnectedInputGamepads(devices);
-	GetConnectedInputMouses(devices);
-}
-
-void CInput::GetInfoAboutConnectedInputDevices(const CInputDevice(&devices)[DEF_XR_INPUT_MAX_INPUT_CONNECTED_DEVICES_COUNT], CInputDeviceVendorInfo(&infos)[DEF_XR_INPUT_MAX_INPUT_CONNECTED_DEVICES_COUNT]) noexcept
-{
-	for (unsigned char i = 0; i < DEF_XR_INPUT_MAX_INPUT_CONNECTED_DEVICES_COUNT; ++i)
-	{
-		CInputDeviceVendorInfo& info = infos[i];
-
-		FillVendorInfo(devices[i],	info);
-	}
-}
-
-unsigned char CInput::GetConnectedInputDeviceCount(eInputDeviceType type) const noexcept
-{
-	R_ASSERT2(false, "todo: implement");
-	return 0;
-}
-
-bool CInput::GetVendorInfoAboutInputDevice(const CInputDevice* pDevice, CInputDeviceVendorInfo* pInfo) const noexcept
-{
-	R_ASSERT2(false, "todo: implement");
-	return false;
-}
-
-bool CInput::GetVendorInfoAboutInputDevice(const CInputDevice& device, CInputDeviceVendorInfo* pInfo) const noexcept
-{
-	return GetVendorInfoAboutInputDevice(&device, pInfo);
-}
-
 void CInput::unacquire()
 {
 	SDL_SetWindowRelativeMouseMode(g_AppInfo.Window, false);
@@ -642,181 +602,6 @@ void  CInput::feedback(u16 s1, u16 s2, float time)
 	{
 		GGamepadService->Rumble(s1, s2, time * 1000);
 	}
-}
-
-bool CInput::FillVendorInfo(const CInputDevice& device, CInputDeviceVendorInfo& info) noexcept
-{
-	switch (device.type)
-	{
-	case eInputDeviceType::keyboard:
-	{
-		if (device.handle != u32(-1))
-		{
-			const char* pName = SDL_GetKeyboardNameForID((device.handle));
-
-			if (pName)
-			{
-				std::memcpy(info.name, pName, sizeof(info.name));
-				info.name[(sizeof(info.name)/sizeof(info.name[0])) - 1] = 0;
-			}
-		}
-
-		break;
-	}
-	case eInputDeviceType::gamepad:
-	{
-		SDL_Joystick* joystick = SDL_OpenJoystick((device.handle));
-
-		if (joystick) {
-			const char* name = SDL_GetJoystickName(joystick);
-			u16 vendor = SDL_GetJoystickVendor(joystick);
-			u16 product = SDL_GetJoystickProduct(joystick);
-			u16 version = SDL_GetJoystickFirmwareVersion(joystick);
-			const char* serial = SDL_GetJoystickSerial(joystick);
-
-			
-			if (name)
-			{
-				std::memcpy(info.name, name, sizeof(info.name));
-				info.name[(sizeof(info.name) / sizeof(info.name[0])) - 1] = 0;
-			}
-
-			if (serial)
-			{
-				std::memcpy(info.data2, serial, sizeof(info.data2));
-				info.name[(sizeof(info.data2) / sizeof(info.data2[0])) - 1] = 0;
-			}
-
-			u16* pWrite = (u16*)&info.data[0];
-
-			*pWrite = vendor;
-
-			pWrite = (u16*)&info.data[2];
-
-			*pWrite = product;
-
-			pWrite = (u16*)&info.data[4];
-
-			*pWrite = version;
-
-			SDL_CloseJoystick(joystick);
-		}
-
-		break;
-	}
-	case eInputDeviceType::mouse:
-	{
-		if (device.handle)
-		{
-			const char* pName = SDL_GetMouseNameForID((device.handle));
-
-			if (pName)
-			{
-				std::memcpy(info.name, pName, sizeof(info.name));
-				info.name[(sizeof(info.name) / sizeof(info.name[0])) - 1] = 0;
-			}
-		}
-
-		break;
-	}
-	default:
-	{
-		R_ASSERT(false && "unsupported device");
-		break;
-	}
-	}
-
-
-	return true;
-}
-
-bool CInput::GetConnectedInputKeyboards(CInputDevice(&pool)[DEF_XR_INPUT_MAX_INPUT_CONNECTED_DEVICES_COUNT], unsigned char max_keyboards /*= DEF_XR_INPUT_MAX_INPUT_CONNECTED_KEYBOARD_COUNT*/) noexcept
-{
-	bool result = false;
-
-	int count = -1;
-	SDL_KeyboardID* pKeyboards = SDL_GetKeyboards(&count);
-
-	result = !!(pKeyboards);
-
-	if (!pKeyboards)
-		return result;
-
-	if (static_cast<unsigned char>(count) > max_keyboards)
-	{
-		count = max_keyboards;
-	}
-
-	unsigned char index = static_cast<unsigned char>(eInputDeviceType::keyboard);
-	for (unsigned char i = 0; i < count; ++i)
-	{
-		pool[index].handle = u32(pKeyboards[i]);
-		pool[index].type = eInputDeviceType::keyboard;
-
-		index += i;
-	}
-
-	return result;
-}
-
-bool CInput::GetConnectedInputMouses(CInputDevice(&pool)[DEF_XR_INPUT_MAX_INPUT_CONNECTED_DEVICES_COUNT], unsigned char max_mouses /*= DEF_XR_INPUT_MAX_INPUT_CONNECTED_MOUSE_COUNT*/) noexcept
-{
-	bool result = false;
-
-	int count = -1;
-	SDL_MouseID* pMouses = SDL_GetMice(&count);
-
-	result = !!(pMouses);
-
-	if (!pMouses)
-		return result;
-
-	if (static_cast<unsigned char>(count) > max_mouses)
-	{
-		count = max_mouses;
-	}
-
-	unsigned char index = static_cast<unsigned char>(eInputDeviceType::mouse);
-	for (unsigned char i = 0; i < count; ++i)
-	{
-		pool[index].handle = u32(pMouses[i]);
-		pool[index].type = eInputDeviceType::mouse;
-
-		index += i;
-	}
-
-	return result;
-}
-
-bool CInput::GetConnectedInputGamepads(CInputDevice(&pool)[DEF_XR_INPUT_MAX_INPUT_CONNECTED_DEVICES_COUNT], unsigned char max_gamepads /*= DEF_XR_INPUT_MAX_INPUT_CONNECTED_GAMEPAD_COUNT*/) noexcept
-{
-	bool result = false;
-
-	int count = -1;
-	SDL_JoystickID* pGamepads = SDL_GetGamepads(&count);
-
-	result = !!(pGamepads);
-
-	bool check = SDL_HasGamepad();
-
-	if (!pGamepads)
-		return result;
-
-	if (static_cast<unsigned char>(count) > max_gamepads)
-	{
-		count = max_gamepads;
-	}
-
-	unsigned char index = static_cast<unsigned char>(eInputDeviceType::gamepad);
-	for (unsigned char i = 0; i < count; ++i)
-	{
-		pool[index].handle = u32(pGamepads[i]);
-		pool[index].type = eInputDeviceType::gamepad;
-
-		index += i;
-	}
-
-	return result;
 }
 
 void CInput::SetControllerMode(bool val)

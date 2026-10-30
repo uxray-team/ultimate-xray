@@ -16,12 +16,6 @@ void	IInputReceiver::IR_Release						(void)
 	pInput->iRelease(this);
 }
 
-void	IInputReceiver::IR_GetLastMouseDelta			(Ivector2& p)
-{
-	VERIFY(pInput);
-	pInput->iGetLastMouseDelta( p );
-}
-
 void IInputReceiver::IR_OnDeactivate					(void)
 {
 	for (size_t i = 0; i < CInput::COUNT_KB_BUTTONS; i++)

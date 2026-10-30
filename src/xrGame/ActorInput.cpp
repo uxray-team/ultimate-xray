@@ -813,7 +813,7 @@ void CActor::IR_OnTouchpadMove(Fvector2 value)
 	float LookFactor = GetLookFactor();
 
 	CCameraBase* C = cameras[cam_active];
-	float scale = (C->f_fov / g_fov) / LookFactor * 0.01f;
+	float scale = (C->f_fov / g_fov) / LookFactor * psTouchpadSens;
 
 	if (CWeapon* wpn = iitem != nullptr ? iitem->cast_weapon() : nullptr)
 	{
@@ -826,13 +826,13 @@ void CActor::IR_OnTouchpadMove(Fvector2 value)
 
 	if (value.x)
 	{
-		float d = (psGyroscopeInvertY ? -1 : 1) * value.x * scale;
+		float d = value.x * scale;
 		cam_Active()->Move((d < 0) ? kLEFT : kRIGHT, std::abs(d));
 	}
 
 	if (value.y)
 	{
-		float d = (psGyroscopeInvertX ? -1 : 1) * value.y * scale;
+		float d = value.y * scale;
 		cam_Active()->Move((d > 0) ? kUP : kDOWN, std::abs(d));
 	}
 }

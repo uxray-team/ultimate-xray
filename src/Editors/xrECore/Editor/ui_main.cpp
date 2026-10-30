@@ -693,7 +693,7 @@ bool TUI::OnCreate()
 	extern CDB::COLLIDER XRC;
 	XRC.ray_options(CDB::OPT_ONLYNEAREST | CDB::OPT_CULL);
 
-	pInput			= new CInput(false, all_device_key);
+	pInput			= new CInput(false);
 
 	Console = new CConsole();
 	Console->Initialize();

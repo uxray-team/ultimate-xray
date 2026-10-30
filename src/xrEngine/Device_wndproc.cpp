@@ -44,11 +44,6 @@ bool CRenderDevice::on_event	(SDL_Event& Event)
 				{
 					g_pStringTable->ReparseKeyBindings();
 				}
-
-				if (pInput->receive_gamepad_addedorremoved)
-				{
-					pInput->receive_gamepad_addedorremoved((Event.jdevice.which), true);
-				}
 			}
 			break;
 		}
@@ -121,73 +116,20 @@ bool CRenderDevice::on_event	(SDL_Event& Event)
 		}
 		case SDL_EVENT_GAMEPAD_TOUCHPAD_DOWN:
 		{
-			if (Event.gtouchpad.finger == 0)
-			{
-				fingerInitialPos.set(Event.gtouchpad.x, Event.gtouchpad.y);
-			}
-			GGamepadService->TouchpadFingersCount++;
+			pInput->TouchpadFingerPresent[Event.gtouchpad.finger] = true;
+			pInput->SetTouchpadAbsoulutePosPrev({Event.gtouchpad.x, Event.gtouchpad.y}, Event.gtouchpad.finger);
+			pInput->SetTouchpadAbsoulutePos({Event.gtouchpad.x, Event.gtouchpad.y}, Event.gtouchpad.finger);
 			break;
 		}
 		case SDL_EVENT_GAMEPAD_TOUCHPAD_MOTION:
 		{
-			if (Event.gtouchpad.finger == 0)
-			{
-				Fvector2 pos;
-				pos.set(Event.gtouchpad.x, Event.gtouchpad.y);
-				pos.sub(fingerInitialPos);
-				if (pos.magnitude() > 0.1f)
-				{
-					pInput->SetTouchpadMode(true);
-				}
-				else
-				{
-					break;
-				}
-				pInput->TouchpadUpdate(pos);
-			}
+			pInput->SetTouchpadAbsoulutePos({Event.gtouchpad.x, Event.gtouchpad.y}, Event.gtouchpad.finger);
 			break;
 		}
 		case SDL_EVENT_GAMEPAD_TOUCHPAD_UP:
 		{
-			pInput->SetControllerMode(true);
+			pInput->TouchpadFingerPresent[Event.gtouchpad.finger] = false;
 			pInput->SetTouchpadMode(false);
-			GGamepadService->TouchpadFingersCount--;
-			break;
-		}
-		case SDL_EVENT_KEYBOARD_ADDED:
-		{
-			if (pInput->receive_keyboard_addedorremoved)
-			{
-				pInput->receive_keyboard_addedorremoved((Event.kdevice.which), true);
-			}
-
-			break;
-		}
-		case SDL_EVENT_KEYBOARD_REMOVED:
-		{
-			if (pInput->receive_keyboard_addedorremoved)
-			{
-				pInput->receive_keyboard_addedorremoved(0, false);
-			}
-
-			break;
-		}
-		case SDL_EVENT_MOUSE_ADDED:
-		{
-			if (pInput->receive_mouse_addedorremoved)
-			{
-				pInput->receive_mouse_addedorremoved((Event.mdevice.which), true);
-			}
-
-			break;
-		}
-		case SDL_EVENT_MOUSE_REMOVED:
-		{
-			if (pInput->receive_mouse_addedorremoved)
-			{
-				pInput->receive_mouse_addedorremoved(0, false);
-			}
-
 			break;
 		}
 	}
