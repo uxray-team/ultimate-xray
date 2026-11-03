@@ -1289,7 +1289,11 @@ void CLevel::OnSessionTerminate		(const char* reason)
 
 u32	GameID()
 {
-	return Game().Type();
+	if (g_pGameLevel)
+	{
+		return Game().Type();
+	}
+	return 0;
 }
 
 #include "CustomDetectorZones.h"
