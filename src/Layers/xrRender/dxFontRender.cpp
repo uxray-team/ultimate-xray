@@ -112,7 +112,7 @@ void dxFontRender::RenderBase(CGameFont& owner)
 
 			if(str.align)
 			{
-				float width = (float)owner.WidthOf(str.string);
+				float width = (float)owner.WidthOf(str.string, str.iconSizeCoef);
 
 				switch(str.align) {
 					case CGameFont::alCenter:
@@ -171,8 +171,11 @@ void dxFontRender::RenderBase(CGameFont& owner)
 							icon.texture_name = texName;
 							icon.file_name = fileName;
 							icon.rect = rect;
-							icon.pos = {X, Y};
-							icon.sz = owner.sizeOfImage(rect);
+							icon.sz = owner.sizeOfImage(rect, str.iconSizeCoef);
+
+							Fvector2 iconPos{X, Y};
+							iconPos.y -= (icon.sz.y - owner.GetHeight()) / 2.0f;
+							icon.pos = iconPos;
 							icon.alpha = color_get_A(owner.dwCurrentColor);
 
 							IconsToRender.push_back(icon);
@@ -201,8 +204,11 @@ void dxFontRender::RenderBase(CGameFont& owner)
 							icon.texture_name = texName;
 							icon.file_name = fileName;
 							icon.rect = rect;
-							icon.pos = {X, Y};
-							icon.sz = owner.sizeOfImage(rect);
+							icon.sz = owner.sizeOfImage(rect, str.iconSizeCoef);
+
+							Fvector2 iconPos{X, Y};
+							iconPos.y -= (icon.sz.y - owner.GetHeight()) / 2.0f;
+							icon.pos = iconPos;
 							icon.alpha = color_get_A(owner.dwCurrentColor);
 
 							IconsToRender.push_back(icon);

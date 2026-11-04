@@ -422,6 +422,8 @@ bool CUIXmlInit::InitText(CUIXml& xml_doc, const char* path, int index, CUILines
 
 	ApplyShadowsToLines(xml_doc, path, index, pLines);
 
+	pLines->SetGamepadIconSize(xml_doc.ReadAttribFlt(path, index, "icon_size", 1.0f));
+
 	return true;
 }
 ////////////////////////////////////////////////////////////////////////////////////////////

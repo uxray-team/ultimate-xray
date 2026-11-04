@@ -449,8 +449,9 @@ void CGameFont::MasterOut(
 	rs.gradientColor = dwGradientColor;
 	rs.height = fCurrentHeight;
 	rs.align = eCurrentAlignment;
-	rs.gradient = fGradientEnabled;
-	rs.gradientMode = fGradientMode;
+	rs.gradient = bGradientEnabled;
+	rs.gradientMode = eGradientMode;
+	rs.iconSizeCoef = fIconSizeCoef;
 	int vs_sz = vsprintf(rs.string, fmt, p);
 
 	if (!IsUTF8(rs.string))
@@ -525,7 +526,7 @@ void CGameFont::OutRight(float x)
 	float max_str_size_in_px = 0.f;
 	
 	for (const String& str : strings)
-		max_str_size_in_px = std::max(max_str_size_in_px, WidthOf(str.string));
+		max_str_size_in_px = std::max(max_str_size_in_px, WidthOf(str.string, str.iconSizeCoef));
 	
 	fCurrentX = static_cast<float>(Device.TargetWidth) - max_str_size_in_px - x;
 }
@@ -603,7 +604,7 @@ size_t DynamicFontLen(T String)
 	}
 }
 
-float CGameFont::WidthOf(const char* str)
+float CGameFont::WidthOf(const char* str, float icon_size_coef)
 {
 	if (!str || !str[0]) return 0;
 
@@ -623,7 +624,7 @@ float CGameFont::WidthOf(const char* str)
 				Frect rect;
 				shared_str fn;
 				g_pGamePersistent->GetTextureParams(g_FontManager->GamepadButtonMappings[wideStr[i]], rect, fn);
-				size += sizeOfImage(rect).x;
+				size += sizeOfImage(rect, icon_size_coef).x;
 			}
 			else
 			{
@@ -650,7 +651,7 @@ float CGameFont::WidthOf(const char* str)
 					Frect rect;
 					shared_str fn;
 					g_pGamePersistent->GetTextureParams(g_FontManager->GamepadButtonMappings[cp], rect, fn);
-					size += sizeOfImage(rect).x;
+					size += sizeOfImage(rect, icon_size_coef).x;
 					i += 2;
 				}
 			}
@@ -665,6 +666,12 @@ float CGameFont::WidthOf(const char* str)
 	}
 
 	return size;
+}
+
+Fvector2 CGameFont::sizeOfImage(Frect rect, float coef)
+{
+	float sc = fCurrentHeight / rect.height() * coef;
+	return { rect.width() * sc, rect.height() * sc };
 }
 
 wchar_t CP1251ConvertationTable[] =

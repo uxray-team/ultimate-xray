@@ -19,6 +19,7 @@ void CUIGamepadLegend::Draw()
 		}
 		if (W->ui_cast_static())
 		{
+			W->ui_cast_static()->TextItemControl()->SetGamepadIconSize(1.5f);
 			W->ui_cast_static()->AdjustWidthToText();
 		}
 		totalWidth += W->GetWndSize().x;

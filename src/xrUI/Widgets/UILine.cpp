@@ -20,7 +20,8 @@
 		int				num;
 	};
 	xr_vector<DBGList>	dbg_list_lines;
-	UI_API void dump_list_lines(){
+	UI_API void dump_list_lines()
+	{
 		Msg("------Total  Lines %d",dbg_list_lines.size());
 		xr_vector<DBGList>::iterator _it = dbg_list_lines.begin();
 		for(;_it!=dbg_list_lines.end();++_it)
@@ -30,7 +31,8 @@
 UI_API void dump_list_lines(){}
 #endif
 
-CUILine::CUILine(){
+CUILine::CUILine()
+{
 	m_tmpLine = nullptr;
 #ifdef LOG_ALL_LINES
 	ListLinesCount++;
@@ -40,7 +42,8 @@ CUILine::CUILine(){
 #endif
 }
 
-CUILine::~CUILine(){
+CUILine::~CUILine()
+{
 	xr_delete(m_tmpLine);
 
 #ifdef LOG_ALL_LINES
@@ -58,7 +61,8 @@ CUILine::~CUILine(){
 #endif
 }
 
-CUILine::CUILine(const CUILine& other){
+CUILine::CUILine(const CUILine& other)
+{
 	m_subLines = other.m_subLines;
 	m_tmpLine = nullptr;
 #ifdef LOG_ALL_LINES
@@ -69,27 +73,33 @@ CUILine::CUILine(const CUILine& other){
 #endif
 }
 
-CUILine& CUILine::operator =(const CUILine& other){
+CUILine& CUILine::operator =(const CUILine& other)
+{
 	m_subLines = other.m_subLines;
 	xr_delete(m_tmpLine);
 	return (*this);
 }
 
-void CUILine::AddSubLine(const xr_string& str, u32 color){
+void CUILine::AddSubLine(const xr_string& str, u32 color, float icon_sz)
+{
 	CUISubLine sline;
 	sline.m_color = color;
 	sline.m_text = str;
+	sline.m_icon_size = icon_sz;
 	m_subLines.push_back(sline);
 }
 
-void CUILine::AddSubLine(const char* str, u32 color){
+void CUILine::AddSubLine(const char* str, u32 color, float icon_sz)
+{
 	CUISubLine sline;
 	sline.m_color = color;
 	sline.m_text = str;
+	sline.m_icon_size = icon_sz;
 	m_subLines.push_back(sline);
 }
 
-void CUILine::AddSubLine(const CUISubLine* subLine){
+void CUILine::AddSubLine(const CUISubLine* subLine)
+{
 	m_subLines.push_back(*subLine);
 }
 
@@ -124,7 +134,7 @@ void CUILine::Draw(CGameFont* pFont, float x, float y, u32 colorOverride) const{
 	for (int i=0; i<size; i++)
 	{
 		m_subLines[i].Draw(pFont, x+length, y, colorOverride);
-		float ll = pFont->WidthOf(m_subLines[i].m_text.c_str()); //. all ok
+		float ll = pFont->WidthOf(m_subLines[i].m_text.c_str(), m_subLines[i].m_icon_size); //. all ok
 		UI().ClientToScreenScaledWidth(ll);
 		length	+= ll;
 	}
@@ -138,7 +148,7 @@ void CUILine::DrawWS(CGameFont* pFont, float x, float y, u32 colorOverride) cons
 	for (int i = 0; i < size; i++)
 	{
 		m_subLines[i].DrawWS(pFont, x + length, y, colorOverride);
-		float ll = pFont->WidthOf(m_subLines[i].m_text.c_str()); //. all ok
+		float ll = pFont->WidthOf(m_subLines[i].m_text.c_str(), m_subLines[i].m_icon_size); //. all ok
 		length += ll;
 	}
 }
@@ -161,7 +171,7 @@ void DrawJustifiedInternal(
 	for (int i = 0; i < size; ++i)
 	{
 		const xr_string& text = subLines[i].m_text;
-		float ll = pFont->WidthOf(text.c_str());
+		float ll = pFont->WidthOf(text.c_str(), subLines[i].m_icon_size);
 		if (!worldSpace)
 		{
 			// WidthOf is in font/screen pixels; convert to UI units (same as CUILine::Draw).
@@ -187,7 +197,7 @@ void DrawJustifiedInternal(
 			for (int i = 0; i < size; ++i)
 			{
 				subLines[i].DrawWS(pFont, x + length, y, colorOverride);
-				length += pFont->WidthOf(subLines[i].m_text.c_str());
+				length += pFont->WidthOf(subLines[i].m_text.c_str(), subLines[i].m_icon_size);
 			}
 		}
 		else
@@ -196,7 +206,7 @@ void DrawJustifiedInternal(
 			for (int i = 0; i < size; ++i)
 			{
 				subLines[i].Draw(pFont, x + length, y, colorOverride);
-				float ll = pFont->WidthOf(subLines[i].m_text.c_str());
+				float ll = pFont->WidthOf(subLines[i].m_text.c_str(), subLines[i].m_icon_size);
 				UI().ClientToScreenScaledWidth(ll);
 				length += ll;
 			}
@@ -219,6 +229,7 @@ void DrawJustifiedInternal(
 			const u32 alpha = (color_get_A(colorOverride) * color_get_A(sbl.m_color)) / 255;
 			drawColor = subst_alpha(colorOverride, alpha);
 		}
+		pFont->SetIconSize(sbl.m_icon_size);
 		pFont->SetColor(drawColor);
 
 		size_t pos = 0;
@@ -234,7 +245,7 @@ void DrawJustifiedInternal(
 
 				const int spaces = int(end - pos);
 				const xr_string spaceRun = text.substr(pos, end - pos);
-				float runW = pFont->WidthOf(spaceRun.c_str());
+				float runW = pFont->WidthOf(spaceRun.c_str(), sbl.m_icon_size);
 				if (!worldSpace)
 				{
 					UI().ClientToScreenScaledWidth(runW);
@@ -260,7 +271,7 @@ void DrawJustifiedInternal(
 				pFont->Out(UI().ClientToScreenScaledX(cursor), UI().ClientToScreenScaledY(y), "%s", word.c_str());
 			}
 
-			float wordW = pFont->WidthOf(word.c_str());
+			float wordW = pFont->WidthOf(word.c_str(), sbl.m_icon_size);
 			if (!worldSpace)
 			{
 				UI().ClientToScreenScaledWidth(wordW);

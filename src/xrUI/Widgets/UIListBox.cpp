@@ -378,7 +378,7 @@ float CUIListBox::GetLongestLength()
 	{
 		if (CUIListBoxItem* item = child->ui_cast_list_box_item())
 		{
-			float tmp_len = item->GetFont()->WidthOf(item->GetText()); //all ok
+			float tmp_len = item->GetFont()->WidthOf(item->GetText(), item->GetTextItem()->TextItemControl()->GetGamepadIconSize()); //all ok
 			UI().ClientToScreenScaledWidth(tmp_len);
 
 			if (tmp_len > len)

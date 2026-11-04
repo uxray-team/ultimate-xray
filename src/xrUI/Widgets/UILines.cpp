@@ -126,7 +126,7 @@ void CUILines::ReloadText()
 	SetTextST(m_text_src.c_str());
 }
 
-float get_str_width(CGameFont*pFont, int ch)
+float get_str_width(CGameFont*pFont, int ch, float icon_size_coef)
 {
 	if (ch < 0)
 	{
@@ -135,7 +135,7 @@ float get_str_width(CGameFont*pFont, int ch)
 	if (ch >= GAMEPAD_GLYPH_START && ch <= GAMEPAD_GLYPH_END)
 	{
 		Frect rect = CUITextureMaster::GetTextureRect(g_FontManager->GamepadButtonMappings[ch]);
-		float w = pFont->sizeOfImage(rect).x + pFont->GetLetterSpacing();
+		float w = pFont->sizeOfImage(rect, icon_size_coef).x + pFont->GetLetterSpacing();
 		UI().ClientToScreenScaledWidth(w);
 		return w;
 	}
@@ -164,6 +164,7 @@ void CUILines::ParseText(bool force)
 		CUISubLine			subline;
 		subline.m_text = m_text.c_str();
 		subline.m_color = GetTextColor();
+		subline.m_icon_size = m_textIconSize;
 		line->AddSubLine(&subline);
 	}
 
@@ -189,10 +190,10 @@ void CUILines::ParseText(bool force)
 				{
 					bNewLines = true;
 					*pszTemp = '\0';
-					ptmp_line->AddSubLine(pszSearch, tcolor);
+					ptmp_line->AddSubLine(pszSearch, tcolor, m_textIconSize);
 					pszSearch = pszTemp + 2;
 				}
-				ptmp_line->AddSubLine(pszSearch, tcolor);
+				ptmp_line->AddSubLine(pszSearch, tcolor, m_textIconSize);
 			}
 			line->Clear();
 			xr_free(line);
@@ -220,7 +221,7 @@ void CUILines::ParseText(bool force)
 				const char* pszText = line->m_subLines[i].m_text.c_str();
 				const u32 tcolor = line->m_subLines[i].m_color;
 				VERIFY(pszText);
-				tmp_line.AddSubLine(pszText, tcolor);
+				tmp_line.AddSubLine(pszText, tcolor, m_textIconSize);
 			}
 			m_lines.push_back(tmp_line);
 			tmp_line.Clear();
@@ -237,7 +238,7 @@ void CUILines::ParseText(bool force)
 					VERIFY((uPartLen > 0) && (uPartLen < 4096));
 					strncpy_s(szTempLine, pszText + uFrom, uPartLen);
 					szTempLine[uPartLen] = '\0';
-					tmp_line.AddSubLine(szTempLine, tcolor);
+					tmp_line.AddSubLine(szTempLine, tcolor, m_textIconSize);
 					m_lines.push_back(tmp_line);
 					tmp_line.Clear();
 					// Compiler bug :)
@@ -246,7 +247,7 @@ void CUILines::ParseText(bool force)
 #pragma warning( default : 4244 )
 				}
 				strncpy_s(szTempLine, pszText + uFrom, 4096);
-				tmp_line.AddSubLine(szTempLine, tcolor);
+				tmp_line.AddSubLine(szTempLine, tcolor, m_textIconSize);
 				m_lines.push_back(tmp_line);
 				tmp_line.Clear();
 			}
@@ -260,7 +261,7 @@ void CUILines::ParseText(bool force)
 		string4096								buff;
 		bool has_space_from_prev = false;
 		float curr_width = 0.0f;
-		float __eps = get_str_width(m_pFont, '1');//hack -(
+		float __eps = get_str_width(m_pFont, '1', m_textIconSize);//hack -(
 		for (u32 sbl_idx = 0; sbl_idx < sbl_cnt; ++sbl_idx)
 		{
 			bool b_last_subl = (sbl_idx == sbl_cnt - 1);
@@ -290,7 +291,7 @@ void CUILines::ParseText(bool force)
 					last_space_idx = idx;
 				}
 
-				float w1 = get_str_width(m_pFont, utf16text != nullptr ? utf16text[idx] : sbl.m_text[idx]);
+				float w1 = get_str_width(m_pFont, utf16text != nullptr ? utf16text[idx] : sbl.m_text[idx], m_textIconSize);
 				bool bOver = (curr_width + w1 + __eps > max_width);
 
 				if (bOver || b_last_ch)
@@ -321,12 +322,12 @@ void CUILines::ParseText(bool force)
 						{
 							strncpy_s(buff, sizeof(buff), sbl.m_text.c_str() + curr_w_pos, idx - curr_w_pos + 1);
 						}
-						tmp_line.AddSubLine(buff, sbl.m_color);
+						tmp_line.AddSubLine(buff, sbl.m_color, m_textIconSize);
 						curr_w_pos = idx + 1;
 					} else
 					{
 						buff[0] = '\0';
-						tmp_line.AddSubLine(buff, sbl.m_color);
+						tmp_line.AddSubLine(buff, sbl.m_color, m_textIconSize);
 					}
 				}
 				else
@@ -411,6 +412,21 @@ void CUILines::SetTextGradient(bool val)
 	m_pFont->SetGradient(val);
 }
 
+void CUILines::SetGamepadIconSize(float sz)
+{
+	if (sz == m_textIconSize)
+	{
+		return;
+	}
+	uFlags.set(flNeedReparse, true);
+	m_textIconSize = sz;
+}
+
+float CUILines::GetGamepadIconSize()
+{
+	return m_textIconSize;
+}
+
 const char* GetElipsisText(CGameFont* pFont, float width, const char* source_text, LPSTR buff, int buff_len)
 {
 	float text_len					= pFont->WidthOf(source_text);
@@ -482,6 +498,7 @@ void CUILines::DrawInternal(float x, float y, bool worldSpace)
 
 	R_ASSERT(m_pFont);
 	m_pFont->SetGradientColor(m_dwTextGradientColor);
+	m_pFont->SetIconSize(m_textIconSize);
 
 	const u32 textAlpha = color_get_A(m_dwTextColor);
 	u32 outlineColor = 0;
@@ -738,7 +755,7 @@ CUILine* CUILines::ParseTextToColoredLine(const xr_string& str)
 	do 
 	{
 		CutFirstColoredTextEntry(entry, color, tmp);		
-		line->AddSubLine(entry, subst_alpha(color, color_get_A(GetTextColor())));
+		line->AddSubLine(entry, subst_alpha(color, color_get_A(GetTextColor())), m_textIconSize);
 	} 
 	while (tmp.size()>0);
 

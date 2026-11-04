@@ -25,6 +25,7 @@ const CUISubLine*	Cut2Pos(int i);
 
 	xr_string	m_text;
 	u32			m_color;
+	float		m_icon_size = 1.f;
 	CUISubLine* m_pTempLine;
 	bool		m_last_in_line;
 };

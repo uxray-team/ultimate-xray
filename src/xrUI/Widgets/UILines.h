@@ -45,6 +45,8 @@ CGameFont::EGradientMode	GetTextGradientMode()						{return m_eTextGradientMode;
 			void			SetTextShadow								(const SUIOutlineParams& params);
 			bool			GetTextShadowEnabled						() const { return m_textShadow.enabled; }
 			const SUIOutlineParams& GetTextShadow						() const { return m_textShadow; }
+			void			SetGamepadIconSize							(float sz);
+			float			GetGamepadIconSize							();
 
 			void			Draw										(float x, float y);
 			void			DrawWS										(float x, float y); // TODO Emmis: временое решение для рендера текста субтитров
@@ -84,6 +86,7 @@ protected:
 	u32						m_dwTextColor;
 	u32						m_dwTextGradientColor;
 	SUIOutlineParams		m_textShadow;
+	float					m_textIconSize = 1.0f;
 
 	CGameFont*				m_pFont;
 

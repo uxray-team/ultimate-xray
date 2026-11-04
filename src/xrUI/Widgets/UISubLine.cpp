@@ -102,6 +102,7 @@ void CUISubLine::Draw(CGameFont* pFont, float x, float y, u32 colorOverride) con
 		drawColor = subst_alpha(colorOverride, alpha);
 	}
 	pFont->SetColor(drawColor);
+	pFont->SetIconSize(m_icon_size);
 	pFont->Out(UI().ClientToScreenScaledX(x), UI().ClientToScreenScaledY(y), "%s", m_text.c_str());
 }
 
@@ -114,5 +115,6 @@ void CUISubLine::DrawWS(CGameFont* pFont, float x, float y, u32 colorOverride) c
 		drawColor = subst_alpha(colorOverride, alpha);
 	}
 	pFont->SetColor(drawColor);
+	pFont->SetIconSize(m_icon_size);
 	pFont->Out(x, y, "%s", m_text.c_str());
 }

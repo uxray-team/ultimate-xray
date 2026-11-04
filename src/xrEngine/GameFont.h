@@ -58,6 +58,7 @@ private:
 		bool gradient;
 		EGradientMode gradientMode;
 		u32 gradientColor;
+		float iconSizeCoef;
 	};
 
 	struct BaseData
@@ -74,9 +75,9 @@ protected:
 	float fCurrentHeight = 0.0f;
 	float fCurrentX = 0.0f;
 	float fCurrentY = 0.0f;
-	bool fGradientEnabled = false;
+	bool bGradientEnabled = false;
 	float fCurrentWidthCoef = 1.0f;
-	EGradientMode fGradientMode = gm_vert;
+	EGradientMode eGradientMode = gm_vert;
 	float fIconSizeCoef = 1.0f;
 
 	u32 uFlags;
@@ -141,8 +142,8 @@ public:
 	u16 SplitByWidth(u16* puBuffer, u16 uBufferSize, float fTargetWidth, const char* pszText);
 	u16 GetCutLengthPos(float fTargetWidth, const char* pszText);
 
-	void SetGradient(bool val) { fGradientEnabled = val; }
-	void SetGradientMode(EGradientMode mode) { fGradientMode = mode; }
+	void SetGradient(bool val) { bGradientEnabled = val; }
+	void SetGradientMode(EGradientMode mode) { eGradientMode = mode; }
 
 	/**
 	 * 
@@ -260,9 +261,9 @@ public:
 
 	// returns symbol width in pixels
 	float WidthOf(int ch);
-	float WidthOf(const char* str);
+	float WidthOf(const char* str, float icon_size_coef = 1.0f);
 
-	Fvector2 sizeOfImage(Frect rect);
+	Fvector2 sizeOfImage(Frect rect, float coef);
 
 private:
 	float LetterSpacing = 0; //that must be in CUIText from new font system
