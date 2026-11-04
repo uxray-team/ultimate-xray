@@ -7,9 +7,10 @@
 ////////////////////////////////////////////////////////////////////////////
 
 #include "stdafx.h"
-
+#include "IGame_Persistent.h"
 #include "line_editor.h"
 #include "xr_ioc_cmd.h"
+#include "IGame_Level.h"
 
 void CConsole::Register_callbacks()
 {
@@ -222,7 +223,11 @@ void CConsole::Show_cmd()
 
 void CConsole::Hide_cmd()
 {
-	Hide();
+	bool bGame = g_dedicated_server ? false : (g_pGameLevel && g_pGameLevel->bReady) || (g_pGamePersistent && g_pGamePersistent->m_pMainMenu && g_pGamePersistent->m_pMainMenu->IsActive());
+	if (bGame)
+	{
+		Hide();
+	}
 }
 
 void CConsole::Hide_cmd_esc()
@@ -232,5 +237,5 @@ void CConsole::Hide_cmd_esc()
 		m_disable_tips = true;
 		return;
 	}
-	Hide();
+	Hide_cmd();
 }
