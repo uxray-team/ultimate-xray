@@ -886,15 +886,17 @@ function script_options_dialog:OnGamepadKey(key, action)
 	end
 	
 	if bindUI == key_bindings.kUI_BACK then
-		local element = self.focusList[self.focusIndex][2]
-		local elementInfo = class_info(element)
-		local elementClass = elementInfo.name
-	
-		sounds_shared.play_decline_sound()
-		if elementClass == 'IXRComboBox' and element.combo_box:IsListShown() then
-			element.combo_box:ShowList(false)
-		elseif self.optionsScrollShown then
-			self:OnBtnBack()
+		if self.optionsScrollShown then
+			local element = self.focusList[self.focusIndex][2]
+			local elementInfo = class_info(element)
+			local elementClass = elementInfo.name
+		
+			sounds_shared.play_decline_sound()
+			if elementClass == 'IXRComboBox' and element.combo_box:IsListShown() then
+				element.combo_box:ShowList(false)
+			else
+				self:OnBtnBack()
+			end
 		else
 			self:OnBtnExit()
 		end
