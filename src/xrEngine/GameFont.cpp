@@ -525,7 +525,7 @@ void CGameFont::OutRight(float x)
 	float max_str_size_in_px = 0.f;
 	
 	for (const String& str : strings)
-		max_str_size_in_px = std::max(max_str_size_in_px, SizeOf_(str.string));
+		max_str_size_in_px = std::max(max_str_size_in_px, WidthOf(str.string));
 	
 	fCurrentX = static_cast<float>(Device.TargetWidth) - max_str_size_in_px - x;
 }
@@ -542,27 +542,7 @@ void CGameFont::OutBottom(float y)
 
 void CGameFont::OutSkip(float val)
 {
-	fCurrentY += val * CurrentHeight_();
-}
-
-float CGameFont::SizeOf_(int cChar)
-{
-	if (cChar < 0)
-	{
-		cChar = u8(cChar);
-	}
-
-	return WidthOf(cChar);
-}
-
-float CGameFont::SizeOf_(const char* s)
-{
-	return WidthOf(s);
-}
-
-float CGameFont::CurrentHeight_()
-{
-	return GetHeight();
+	fCurrentY += val * GetHeight();
 }
 
 void CGameFont::SetHeight(float S)

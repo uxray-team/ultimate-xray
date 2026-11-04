@@ -77,6 +77,7 @@ protected:
 	bool fGradientEnabled = false;
 	float fCurrentWidthCoef = 1.0f;
 	EGradientMode fGradientMode = gm_vert;
+	float fIconSizeCoef = 1.0f;
 
 	u32 uFlags;
 	u32 dwCurrentColor;
@@ -115,30 +116,11 @@ public:
 	float GetHeight() { return fCurrentHeight; }
 	void  SetAligment(EAligment aligment) { eCurrentAlignment = aligment; }
 
-	void SetWidthCoef(float S) { fCurrentWidthCoef = (S > 1e-6f) ? S : 1.f; }
+	void SetWidthCoef(float S) { fCurrentWidthCoef = (!fis_zero(S)) ? S : 1.f; }
 	float GetWidthCoef() const { return fCurrentWidthCoef; }
 
-	/**
-	 * Извлекает ширину строки.
-	 * @param s строка с текстом.
-	 * @return количество пикселей.
-	 */
-	float SizeOf_(const char* s);
-
-	/**
-	 * Извлекает ширину символа.
-	 * @param s строка, из которой будет извлечена ширина текста в пикселях.
-	 * @return количество пикселей.
-	 */
-	float SizeOf_(int cChar);
-
-
-	/**
-	 * Извлекает высоту текста в пикселях.
-	 * @param s строка, из которой будет извлечена высота текста в пикселях.
-	 * @return количество пикселей.
-	 */
-	float CurrentHeight_();
+	void SetIconSize(float S) { fIconSizeCoef = S; }
+	float GetIconSize() const { return fIconSizeCoef; }
 
 	void OutSetI(float x, float y);
 	void OutSet(float x, float y);
@@ -280,11 +262,7 @@ public:
 	float WidthOf(int ch);
 	float WidthOf(const char* str);
 
-	inline Fvector2 sizeOfImage(Frect rect)
-	{
-		float sc = fCurrentHeight / rect.height();
-		return {rect.width() * sc, rect.height() * sc};
-	}
+	Fvector2 sizeOfImage(Frect rect);
 
 private:
 	float LetterSpacing = 0; //that must be in CUIText from new font system

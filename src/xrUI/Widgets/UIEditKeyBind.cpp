@@ -27,7 +27,7 @@ UI_API u32 cut_string_by_length(CGameFont* pFont, const char* src, LPSTR dst, u3
 		return nPos;
 	} else {
 
-		float	text_len					= pFont->SizeOf_(src);
+		float	text_len					= pFont->WidthOf(src);
 		UI().ClientToScreenScaledWidth		(text_len);
 		VERIFY								(xr_strlen(src)<=dst_size);
 		xr_strcpy							(dst, dst_size, src);
@@ -36,7 +36,7 @@ UI_API u32 cut_string_by_length(CGameFont* pFont, const char* src, LPSTR dst, u3
 		{
 			dst[xr_strlen(dst)-1]			= 0;
 			VERIFY							(xr_strlen(dst));
-			text_len						= pFont->SizeOf_(dst);
+			text_len						= pFont->WidthOf(dst);
 			UI().ClientToScreenScaledWidth	(text_len);
 		}
 

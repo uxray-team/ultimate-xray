@@ -101,8 +101,6 @@ void CUILine::ProcessNewLines()
 {
 	for (u32 i=0; i < m_subLines.size(); i++){
 		StrSize pos = m_subLines[i].m_text.find("\\n");
-//		if (pos != npos)
-//			pos = m_subLines[i].m_text.find('\r');
 
 		if (pos != npos)
 		{
@@ -126,7 +124,7 @@ void CUILine::Draw(CGameFont* pFont, float x, float y, u32 colorOverride) const{
 	for (int i=0; i<size; i++)
 	{
 		m_subLines[i].Draw(pFont, x+length, y, colorOverride);
-		float ll = pFont->SizeOf_(m_subLines[i].m_text.c_str()); //. all ok
+		float ll = pFont->WidthOf(m_subLines[i].m_text.c_str()); //. all ok
 		UI().ClientToScreenScaledWidth(ll);
 		length	+= ll;
 	}
@@ -140,8 +138,7 @@ void CUILine::DrawWS(CGameFont* pFont, float x, float y, u32 colorOverride) cons
 	for (int i = 0; i < size; i++)
 	{
 		m_subLines[i].DrawWS(pFont, x + length, y, colorOverride);
-		float ll = pFont->SizeOf_(m_subLines[i].m_text.c_str()); //. all ok
-		// UI().ClientToScreenScaledWidth(ll);
+		float ll = pFont->WidthOf(m_subLines[i].m_text.c_str()); //. all ok
 		length += ll;
 	}
 }
@@ -164,10 +161,10 @@ void DrawJustifiedInternal(
 	for (int i = 0; i < size; ++i)
 	{
 		const xr_string& text = subLines[i].m_text;
-		float ll = pFont->SizeOf_(text.c_str());
+		float ll = pFont->WidthOf(text.c_str());
 		if (!worldSpace)
 		{
-			// SizeOf_ is in font/screen pixels; convert to UI units (same as CUILine::Draw).
+			// WidthOf is in font/screen pixels; convert to UI units (same as CUILine::Draw).
 			UI().ClientToScreenScaledWidth(ll);
 		}
 		naturalWidth += ll;
@@ -190,7 +187,7 @@ void DrawJustifiedInternal(
 			for (int i = 0; i < size; ++i)
 			{
 				subLines[i].DrawWS(pFont, x + length, y, colorOverride);
-				length += pFont->SizeOf_(subLines[i].m_text.c_str());
+				length += pFont->WidthOf(subLines[i].m_text.c_str());
 			}
 		}
 		else
@@ -199,7 +196,7 @@ void DrawJustifiedInternal(
 			for (int i = 0; i < size; ++i)
 			{
 				subLines[i].Draw(pFont, x + length, y, colorOverride);
-				float ll = pFont->SizeOf_(subLines[i].m_text.c_str());
+				float ll = pFont->WidthOf(subLines[i].m_text.c_str());
 				UI().ClientToScreenScaledWidth(ll);
 				length += ll;
 			}
@@ -237,7 +234,7 @@ void DrawJustifiedInternal(
 
 				const int spaces = int(end - pos);
 				const xr_string spaceRun = text.substr(pos, end - pos);
-				float runW = pFont->SizeOf_(spaceRun.c_str());
+				float runW = pFont->WidthOf(spaceRun.c_str());
 				if (!worldSpace)
 				{
 					UI().ClientToScreenScaledWidth(runW);
@@ -263,7 +260,7 @@ void DrawJustifiedInternal(
 				pFont->Out(UI().ClientToScreenScaledX(cursor), UI().ClientToScreenScaledY(y), "%s", word.c_str());
 			}
 
-			float wordW = pFont->SizeOf_(word.c_str());
+			float wordW = pFont->WidthOf(word.c_str());
 			if (!worldSpace)
 			{
 				UI().ClientToScreenScaledWidth(wordW);

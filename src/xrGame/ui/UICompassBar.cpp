@@ -531,7 +531,7 @@ float CUICompassBar::GetCardinalTextHeight(CUIStatic* textStatic)
     CUILines* lines = textStatic->TextItemControl();
     if (CGameFont* font = lines->GetFont())
     {
-        return font->CurrentHeight_();
+        return font->GetHeight();
     }
 
     return textStatic->GetHeight();
@@ -581,7 +581,7 @@ float CUICompassBar::GetCardinalTextCenterX(const SCompassCardinalEntry& entry) 
     float textW = 0.0f;
     if (caption && *caption)
     {
-        textW = lines->GetFont()->SizeOf_(caption);
+        textW = lines->GetFont()->WidthOf(caption);
         UI().ClientToScreenScaledWidth(textW);
     }
 

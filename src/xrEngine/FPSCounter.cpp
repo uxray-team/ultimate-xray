@@ -79,7 +79,7 @@ void XRay::Hardware::FPSCounter::OnRender()
 
 	if (fps_text_current_pos == 1u || fps_text_current_pos == 3u)
 	{
-		x = static_cast<float>(Device.TargetWidth) - font_->SizeOf_(*text) - text_screen_padding;
+		x = static_cast<float>(Device.TargetWidth) - font_->WidthOf(*text) - text_screen_padding;
 	}
 
 	if (fps_text_current_pos >= 2u)

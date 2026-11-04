@@ -140,7 +140,7 @@ float get_str_width(CGameFont*pFont, int ch)
 		return w;
 	}
 
-	float ll = pFont->SizeOf_(ch) + pFont->GetLetterSpacing();
+	float ll = pFont->WidthOf(ch) + pFont->GetLetterSpacing();
 	UI().ClientToScreenScaledWidth(ll);
 	return ll;
 }
@@ -367,7 +367,7 @@ float CUILines::GetVisibleHeight()
 		if(uFlags.test(flNeedReparse))
 			ParseText	();
 
-		float _curr_h = m_pFont->CurrentHeight_() + m_pFont->GetLineSpacing();
+		float _curr_h = m_pFont->GetHeight() + m_pFont->GetLineSpacing();
 		UI().ClientToScreenScaledHeight(_curr_h);
 		return _curr_h * m_lines.size();
 	}
@@ -413,7 +413,7 @@ void CUILines::SetTextGradient(bool val)
 
 const char* GetElipsisText(CGameFont* pFont, float width, const char* source_text, LPSTR buff, int buff_len)
 {
-	float text_len					= pFont->SizeOf_(source_text);
+	float text_len					= pFont->WidthOf(source_text);
 	UI().ClientToScreenScaledWidth	(text_len);
 
 	if(text_len<width)
@@ -422,7 +422,7 @@ const char* GetElipsisText(CGameFont* pFont, float width, const char* source_tex
 	}else
 	{
 		buff[0]							= 0;
-		float el_len					= pFont->SizeOf_("..");
+		float el_len					= pFont->WidthOf("..");
 		UI().ClientToScreenScaledWidth	(el_len);
 		float total						= 0.0f;
 		u16		pos						= 0;
@@ -430,7 +430,7 @@ const char* GetElipsisText(CGameFont* pFont, float width, const char* source_tex
 		while(total+el_len < width)
 		{
 			int c					= *(source_text+pos);
-			float ch_len					= pFont->SizeOf_(c);
+			float ch_len					= pFont->WidthOf(c);
 			UI().ClientToScreenScaledWidth	(ch_len);
 		
 			if(total+ch_len+el_len < width)
@@ -564,7 +564,7 @@ void CUILines::DrawInternal(float x, float y, bool worldSpace)
 		ParseText();
 
 		float posY = y + oy + GetVIndentByAlign();
-		float height = m_pFont->CurrentHeight_() + m_pFont->GetLineSpacing();
+		float height = m_pFont->GetHeight() + m_pFont->GetLineSpacing();
 		if (!worldSpace)
 		{
 			UI().ClientToScreenScaledHeight(height);

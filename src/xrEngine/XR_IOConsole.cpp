@@ -326,7 +326,7 @@ void CConsole::OnFrame()
 void CConsole::OutFont( const char* text, float& pos_y )
 {
 	CGameFont* pFont = g_FontManager->GetFont(m_fontConsoleName);
-	float str_length = pFont->SizeOf_( text );
+	float str_length = pFont->WidthOf( text );
 	float scr_width  = 0.99f * static_cast<float>(Device.TargetWidth);
 	if (str_length > scr_width) //1024.0f
 	{
@@ -339,7 +339,7 @@ void CConsole::OutFont( const char* text, float& pos_y )
 			one_line[ln + sz] = text[sz];
 			one_line[ln + sz + 1] = 0;
 
-			if (float t = pFont->SizeOf_(one_line + ln); t > scr_width)
+			if (float t = pFont->WidthOf(one_line + ln); t > scr_width)
 			{
 				OutFont(text + sz + 1, pos_y);
 				pos_y -= m_line_height;
@@ -380,7 +380,7 @@ void CConsole::OnRender()
 	m_prompt_width = pFont->WidthOf(ioc_prompt);
 	m_cursor_width = pFont->WidthOf(ch_cursor);
 
-	m_line_height = 2.0f * pFont->CurrentHeight_() / static_cast<float>(Device.TargetHeight);
+	m_line_height = 2.0f * pFont->GetHeight() / static_cast<float>(Device.TargetHeight);
 
 	bool bGame = g_dedicated_server ? false : (g_pGameLevel && g_pGameLevel->bReady) || (g_pGamePersistent && g_pGamePersistent->m_pMainMenu && g_pGamePersistent->m_pMainMenu->IsActive());
 	DrawBackgrounds( bGame );
@@ -417,7 +417,7 @@ void CConsole::OnRender()
 		{
 		case 0: shift_x = relativeX;			break;
 		case 1: shift_x = relativeX * outX;		break;
-		case 2: shift_x = relativeX * (m_prompt_width + pFont->SizeOf_(m_cur_cmd.c_str()) + m_cursor_width);	break;
+		case 2: shift_x = relativeX * (m_prompt_width + pFont->WidthOf(m_cur_cmd.c_str()) + m_cursor_width);	break;
 		case 3: shift_x = relativeX * strWidth;	break;
 		}
 
@@ -437,9 +437,9 @@ void CConsole::OnRender()
 	pFont2->SetColor( cmd_font_color );
 
 	pFont->OutI(-1.0f + outX * relativeX, outY, "%s", strBeforeSelected);
-	outX += pFont->SizeOf_(strBeforeSelected);
+	outX += pFont->WidthOf(strBeforeSelected);
 	pFont2->OutI(-1.0f + outX * relativeX, outY, "%s", strSelected);
-	outX += pFont2->SizeOf_(strSelected);
+	outX += pFont2->WidthOf(strSelected);
 	pFont->OutI(-1.0f + outX * relativeX, outY, "%s", strAfterSelected);
 
 
@@ -534,10 +534,10 @@ void CConsole::DrawBackgrounds(bool bGame)
 	float cmdWidth = 0;
 	if (m_cur_cmd.size() > 0) 
 	{
-		cmdWidth = m_cursor_width + pFont->SizeOf_(m_cur_cmd.c_str());
+		cmdWidth = m_cursor_width + pFont->WidthOf(m_cur_cmd.c_str());
 	}
 
-	float fontHeight = pFont->CurrentHeight_();
+	float fontHeight = pFont->GetHeight();
 	float tipsHeight = std::min(m_tips.size(), (size_t)VIEW_TIPS_COUNT) * fontHeight + 5;
 
 	Frect pr, sr; //background rect, selection rect
@@ -595,11 +595,11 @@ void CConsole::DrawBackgrounds(bool bGame)
 			rect.null();
 			
 			tmp.assign(ts.text.c_str(), ts.begin);
-			rect.x1 = pr.x1 + m_cursor_width + pFont->SizeOf_(tmp.c_str());
+			rect.x1 = pr.x1 + m_cursor_width + pFont->WidthOf(tmp.c_str());
 			rect.y1 = pr.y1 + i * fontHeight;
 
 			tmp.assign(ts.text.c_str(), ts.end);
-			rect.x2 = pr.x1 + m_cursor_width + pFont->SizeOf_(tmp.c_str());
+			rect.x2 = pr.x1 + m_cursor_width + pFont->WidthOf(tmp.c_str());
 			rect.y2 = rect.y1 + fontHeight;
 
 			DrawRect(rect, tips_word_color);

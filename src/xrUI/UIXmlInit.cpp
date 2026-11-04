@@ -406,12 +406,11 @@ bool CUIXmlInit::InitText(CUIXml& xml_doc, const char* path, int index, CUILines
 	else if (_stricmp(mode_str, "down") == 0) { mode = CGameFont::gm_down; }
 	pLines->SetTextGradientMode(mode);
 
-	u32 color2;
 	u32	_R = color_get_R(color) / 2;
 	u32	_G = color_get_G(color) / 2;
 	u32	_B = color_get_B(color) / 2;
 	u32	_A = color_get_A(color);
-	color2 = GetGradientColor(xml_doc, path, index, color_rgba(_R, _G, _B, _A));
+	u32 color2 = GetGradientColor(xml_doc, path, index, color_rgba(_R, _G, _B, _A));
 	pLines->SetTextGradientColor(color2);
 
 	shared_str text = xml_doc.Read(path, index, nullptr);
