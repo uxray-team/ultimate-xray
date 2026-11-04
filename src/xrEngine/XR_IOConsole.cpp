@@ -544,7 +544,7 @@ void CConsole::DrawBackgrounds(bool bGame)
 	pr.x1 = m_prompt_width - m_cursor_width + cmdWidth;
 	pr.x2 = pr.x1 + maxStrWidth + 2 * m_cursor_width;
 
-	pr.y1 = UI_BASE_HEIGHT * 0.5f;
+	pr.y1 = UI_BASE_HEIGHT * ky;
 	pr.y1 *= static_cast<float>(Device.TargetHeight) /UI_BASE_HEIGHT;
 
 	pr.y2 = pr.y1 + tipsHeight;
