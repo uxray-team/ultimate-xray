@@ -16,6 +16,7 @@ function IXRNumericUpDown:__init(parent, shell, default_value, min_value, max_va
 	self.spin_float:SetMax(max_value)
 	self.spin_float:SetStep(value_offset)
 	self.spin_float:Show(false)
+	parent:Register(self.spin_float)
 	parent:AddCallback(self.spin_float, ui_events.BUTTON_CLICKED, self.OnChangeState, parent)
 	
 	self:SetValue(default_value)
@@ -292,7 +293,9 @@ function IXRCheckBox:__init(parent, shell, state, _callback, script_name, variab
 	
 	self.check_box = parent.xml:InitCheck("main_dialog:check_template", shell)
 	self.check_box:Show(false)
+	parent:Register(self.check_box)
 	parent:AddCallback(self.check_box, ui_events.BUTTON_CLICKED, self.OnChangeState, parent)
+	self.check_box:SetCheck(state)
 	self:Show(true)
 end
 
@@ -367,6 +370,7 @@ function IXRTrackBar:__init(parent, shell, default_value, min_value, max_value, 
 	end
 	
 	self.controll_track_bar:SetStep(value_offset)
+	parent:Register(self.controll_track_bar)
 	parent:AddCallback(self.controll_track_bar, ui_events.TRACK_VALUE_CHANGED, self.OnChangeState, parent)
 	
 	if use_ceil then
