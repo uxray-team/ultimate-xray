@@ -12,10 +12,10 @@ function on_game_start()
 		-- ###################################
 		
 		-- Пример трек бара дробный
-		_ref.register_option(nil, "float_track_bar", "Пример трек бара дробный", _ref.track_bar(1.0, 0.0, 100.0, 0.1), this.on_change_value)
+		_ref.register_option(nil, "float_track_bar", "Пример трек бара дробный", _ref.track_bar(1.0, 0.0, 100.0, 0.1), this.on_change_option_value)
 		
 		-- Пример трек бара целочисленный
-		_ref.register_option(nil, "int_track_bar", "Пример трек бара целочисленный", _ref.ceil_track_bar(1.0, 0.0, 100.0, 1.0), this.on_change_value)
+		_ref.register_option(nil, "int_track_bar", "Пример трек бара целочисленный", _ref.ceil_track_bar(1.0, 0.0, 100.0, 1.0), this.on_change_option_value)
 		
 		-- Пример числового пикера
 		_ref.register_option(nil, "float_picker", "Пример числового пикера", _ref.numeric_up_down(0.0, -1.0, 1.0, 0.25), this.on_change_option_value)
@@ -33,7 +33,7 @@ function on_game_start()
 			_ref.combo_box_item("%c[255, 0, 255, 0, 255]Зеленый", true, {0, 255, 0}),						--// в возвращаемое значение можно положить любой lua тип даже функцию
 			_ref.combo_box_item("%c[255, 0, 0, 255]Синий", true, {0, 0, 255}),								--// в возвращаемое значение можно положить любой lua тип даже функцию
 			_ref.combo_box_item("тестовый пункт (не обязательно иметь цвет)", true, {k="test", v=1}),  		--// в возвращаемое значение можно положить любой lua тип даже функцию
-		}), this.on_change_value)
+		}), this.on_change_option_value)
 		
 		-- пример блокировки индексов комбо бокса по переключению чекбокс опции
 		_ref.register_option(nil, "var_3", "Скрыть красный цвет в комбо боксе выбора цветов", _ref.check_box(false), function (group, name, value)
@@ -67,7 +67,7 @@ function on_game_start()
 			SetOptionVisible("int_track_bar_test_switch", value)
 		end)
 		
-		_ref.register_option("Группа c зависимым параметром", "int_track_bar_test_switch", "Пример трек бара целочисленный который вкл выкл чекбоксом выше", _ref.ceil_track_bar(1.0, 0.0, 100.0, 1.0), this.on_change_value)
+		_ref.register_option("Группа c зависимым параметром", "int_track_bar_test_switch", "Пример трек бара целочисленный который вкл выкл чекбоксом выше", _ref.ceil_track_bar(1.0, 0.0, 100.0, 1.0), this.on_change_option_value)
 		
 		-- #############################################
 		-- 		ПРИМЕР РЕАЛИЗАЦИИ ПРЕСЕТА ОПЦИЙ
@@ -117,31 +117,31 @@ function on_game_start()
       --// для смены данных в подчинённых контроллах
       
 		--// здесь разместим тестовые контроллы которыми будем управлять при переключении пресетов
-		_ref.register_option("Пример пресета опций", "var_test_int_track_bar", "Пример трек бара целочисленный", _ref.track_bar(1.0, 0.0, 100.0, 1.0, true), this.on_change_value_preset)
-		_ref.register_option("Пример пресета опций", "var_test_float_track_bar_b", "Пример трек бара дробный", _ref.track_bar(1.0, 0.0, 100.0, 0.25, false), this.on_change_value_preset)
-		_ref.register_option("Пример пресета опций", "var_test_01", "Чекбокс 1", _ref.check_box(true), this.on_change_value_preset)
-		_ref.register_option("Пример пресета опций", "var_test_02", "Чекбокс 2", _ref.check_box(true), this.on_change_value_preset)
-		_ref.register_option("Пример пресета опций", "var_test_03", "Чекбокс 3", _ref.check_box(true), this.on_change_value_preset)
-		_ref.register_option("Пример пресета опций", "var_test_text", "Пример текстового поля ввода", _ref.text_box("1234567890"), this.on_change_value_preset)
-		_ref.register_option("Пример пресета опций", "var_test_float_picker", "Пример числового пикера", _ref.numeric_up_down(0.0, -1.0, 1.0, 0.25), this.on_change_value_preset)
+		_ref.register_option("Пример пресета опций", "var_test_int_track_bar", "Пример трек бара целочисленный", _ref.track_bar(1.0, 0.0, 100.0, 1.0, true), this.on_change_option_value_preset)
+		_ref.register_option("Пример пресета опций", "var_test_float_track_bar_b", "Пример трек бара дробный", _ref.track_bar(1.0, 0.0, 100.0, 0.25, false), this.on_change_option_value_preset)
+		_ref.register_option("Пример пресета опций", "var_test_01", "Чекбокс 1", _ref.check_box(true), this.on_change_option_value_preset)
+		_ref.register_option("Пример пресета опций", "var_test_02", "Чекбокс 2", _ref.check_box(true), this.on_change_option_value_preset)
+		_ref.register_option("Пример пресета опций", "var_test_03", "Чекбокс 3", _ref.check_box(true), this.on_change_option_value_preset)
+		_ref.register_option("Пример пресета опций", "var_test_text", "Пример текстового поля ввода", _ref.text_box("1234567890"), this.on_change_option_value_preset)
+		_ref.register_option("Пример пресета опций", "var_test_float_picker", "Пример числового пикера", _ref.numeric_up_down(0.0, -1.0, 1.0, 0.25), this.on_change_option_value_preset)
 		_ref.register_option("Пример пресета опций", "var_test_color_picker", "Пример комбо бокса", _ref.combo_box(1, {
 			_ref.combo_box_item("%c[255, 255, 255, 255]Не задан (белый)", true, {255, 255, 255}), 
 			_ref.combo_box_item("%c[255, 255, 0, 0]Красный", false, {255, 0, 0}),
 			_ref.combo_box_item("%c[255, 0, 255, 0, 255]Зеленый", true, {0, 255, 0}),
 			_ref.combo_box_item("%c[255, 0, 0, 255]Синий", true, {0, 0, 255}),
-		}), this.on_change_value_preset)
+		}), this.on_change_option_value_preset)
 		
 	end)
 end
 
 -- Функция обработчик настроенная для базовых настроек как пример можно раскоментировать вывод в лог чтобы посомтреть как значение приходит в скрипт
 function on_change_option_value(group, name, value, is_value_from_code)
-	--SemiLog(tostring(script_name()) .. ".script [option change]: group:" .. tostring(group) .." name:".. tostring(name) .. " value:" .. tostring(ffx_json_lib.json_encode(value)))
+	SemiLog(tostring(script_name()) .. ".script [option change]: group:" .. tostring(group) .." name:".. tostring(name) .. " value:" .. tostring(ffx_json_lib.json_encode(value)))
 end
 
 -- Функция обработчик для пресетов настроенная для демонстрации простейшей реализации переключения пресета на пользовательский при ручной попытке сменить настройку
 -- здесь мы развестим функцию для контретного пресета рекомендую делать по уникальному методу в настройказ для упрощения взаимодействий если пресетов на странице настроек несколько одновременно
-function on_change_value_preset(group, name, value, is_value_from_code)
+function on_change_option_value_preset(group, name, value, is_value_from_code)
 	if not is_value_from_code then --// если опция была изменена не через смену ппресета настроек кодом то переключаем пресет на пользовательский 
 		SetOptionsVar("preset_picker", 1) -- сбрасываем пресет на пользовательский (это нужно для того чтобы была возможность выбирать настройки не только через пресет а и в ручную докликивать нужные значения просто меняя пресет на пользовательский)
 	end
