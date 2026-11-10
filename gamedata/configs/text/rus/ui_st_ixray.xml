@@ -718,10 +718,10 @@
 		<text>$$ACTION_UI_ACTION_2$$ Раскладка геймпада</text>
 	</string>
 	<string id="st_gamepad_sensibility">
-		<text>Чувствительность геймпада</text>
+		<text>Чувствительность стика</text>
 	</string>
 	<string id="st_gamepad_invert">
-		<text>Инверсия геймпада</text>
+		<text>Инверсия стика по вертикали</text>
 	</string>
 	<string id="ui_pad_layout_PDA">
 		<text>Открыть КПК</text>

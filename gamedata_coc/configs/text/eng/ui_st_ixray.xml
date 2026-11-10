@@ -718,10 +718,10 @@
 		<text>$$ACTION_UI_ACTION_2$$ Gamepad layout</text>
 	</string>
 	<string id="st_gamepad_sensibility">
-		<text>Gamepad sensitivity</text>
+		<text>Right stick sensitivity</text>
 	</string>
 	<string id="st_gamepad_invert">
-		<text>Invert gamepad</text>
+		<text>Invert right stick movement</text>
 	</string>
 	<string id="ui_pad_layout_PDA">
 		<text>Open PDA</text>
