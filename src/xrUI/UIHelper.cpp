@@ -185,12 +185,25 @@ CUIFrameWindow* UIHelper::CreateFrameWindow(CUIXml& xml, const char* ui_path, CU
 	return ui;
 }
 
-CUI3tButton* UIHelper::Create3tButton( CUIXml& xml, const char* ui_path, CUIWindow* parent )
+CUI3tButton* UIHelper::Create3tButton( CUIXml& xml, const char* ui_path, CUIWindow* parent, bool critical, int node_index )
 {
-	CUI3tButton* ui				= new CUI3tButton();
-	parent->AttachChild			( ui );
-	ui->SetAutoDelete			( true );
-	CUIXmlInit::Init3tButton	( xml, ui_path, 0, ui );
+	// If it's not critical element, then don't crash if it doesn't exist
+	if (!critical && !xml.NavigateToNode(ui_path, node_index))
+	{
+		return nullptr;
+	}
+
+	auto ui = new CUI3tButton();
+	if (!CUIXmlInit::Init3tButton(xml, ui_path, node_index, ui, critical))
+	{
+		R_ASSERT4(!critical, "Failed to create button", ui_path, xml.m_xml_file_name);
+		xr_delete(ui);
+	}
+	else if (parent)
+	{
+		parent->AttachChild(ui);
+		ui->SetAutoDelete(true);
+	}
 	return ui;
 }
 

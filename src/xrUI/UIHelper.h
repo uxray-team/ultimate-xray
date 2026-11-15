@@ -42,7 +42,7 @@ public:
 	static	CUIProgressShape*	CreateProgressShape	( CUIXml& xml, const char* ui_path, CUIWindow* parent );
 	static	CUIFrameLineWnd*	CreateFrameLine		( CUIXml& xml, const char* ui_path, CUIWindow* parent, bool critical = true );
 	static	CUIFrameWindow*		CreateFrameWindow	( CUIXml& xml, const char* ui_path, CUIWindow* parent, bool critical = true );
-	static	CUI3tButton*		Create3tButton		( CUIXml& xml, const char* ui_path, CUIWindow* parent );
+	static	CUI3tButton*		Create3tButton		( CUIXml& xml, const char* ui_path, CUIWindow* parent, bool critical = true, int node_index = 0 );
 	static	CUICheckButton*		CreateCheck			( CUIXml& xml, const char* ui_path, CUIWindow* parent );
 	static	CUIEditBox*			CreateEditBox		( CUIXml& xml, const char* ui_path, CUIWindow* parent );
 	static	CUITrackBar*		CreateTrackBar		( CUIXml& xml, const char* ui_path, CUIWindow* parent );
