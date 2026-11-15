@@ -384,7 +384,15 @@ void CInput::NoInputUpdate()
 		{
 			if (!Pressed) 
 			{
-				cbStack.back()->IR_OnKeyboardRelease((int)i);
+				bool isGamepad = i >= SDL_SCANCODE_COUNT && i < MOUSE_1;
+				if (isGamepad)
+				{
+					cbStack.back()->IR_GamepadKeyRelease((int)i);
+				}
+				else
+				{
+					cbStack.back()->IR_OnKeyboardRelease((int)i);
+				}
 			}
 
 			old_KBState[i] = KBState[i];

@@ -22,7 +22,15 @@ void IInputReceiver::IR_OnDeactivate					(void)
 	{
 		if (IR_GetKeyState(i))
 		{
-			IR_OnKeyboardRelease(i);
+			bool isGamepad = i >= SDL_SCANCODE_COUNT && i < UXR_BUTTONS_COUNT;
+			if (isGamepad)
+			{
+				IR_GamepadKeyRelease(i);
+			}
+			else
+			{
+				IR_OnKeyboardRelease(i);
+			}
 		}
 	}
 	for (size_t i = 0; i < CInput::COUNT_MOUSE_BUTTONS; i++)
