@@ -8,6 +8,7 @@
 #include "../../xrUI/UITextureMaster.h"
 #include "../../xrUI/UICursor.h"
 #include "../../xrUI/Widgets/UI3dStatic.h"
+#include "../../xrEngine/xr_input.h"
 
 CUIRadialMenu::CUIRadialMenu()
 {
@@ -201,6 +202,7 @@ bool CUIRadialMenu::OnGamepadStickAction(int key, Fvector2 value, EUIMessages ga
 				int focus_index = iCeil((angle * sectors_count) / PI_MUL_2) % sectors_count;
 				if (focus_index != selected_index)
 				{
+					pInput->feedback(0, 65535, 0.1f);
 					PlaySnd(eSndSwitch);
 				}
 				selected_index = focus_index;
@@ -225,6 +227,7 @@ bool CUIRadialMenu::OnTouchpadAction(Fvector2 value)
 			int focus_index = iCeil((angle * sectors_count) / PI_MUL_2) % sectors_count;
 			if (focus_index != selected_index)
 			{
+				pInput->feedback(0, 65535, 0.1f);
 				PlaySnd(eSndSwitch);
 			}
 			selected_index = focus_index;
