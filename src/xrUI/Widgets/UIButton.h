@@ -21,6 +21,7 @@ public:
 	virtual void	Update					();
 	virtual void	Enable					(bool status);
 	virtual bool	OnKeyboardAction				(int dik, EUIMessages keyboard_action);
+	virtual bool	OnGamepadKeyAction				(int id, EUIMessages gamepad_action);
 	virtual void	OnFocusLost				();
 
 	//состояния в которых находится кнопка

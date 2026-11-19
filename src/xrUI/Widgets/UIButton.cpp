@@ -217,6 +217,19 @@ bool CUIButton::OnKeyboardAction(int dik, EUIMessages keyboard_action)
 	return inherited::OnKeyboardAction(dik, keyboard_action);
 }
 
+bool CUIButton::OnGamepadKeyAction(int id, EUIMessages gamepad_action)
+{
+	if (WINDOW_KEY_PRESSED == gamepad_action)
+	{
+		if (IsAccelerator(id))
+		{
+			OnClick();
+			return		true;
+		}
+	}
+	return inherited::OnGamepadKeyAction(id, gamepad_action);
+}
+
 void CUIButton::SetAccelerator(int iAccel, int idx)	
 {
 	VERIFY(idx >= 0 && idx < 4);
