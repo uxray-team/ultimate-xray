@@ -88,4 +88,19 @@
 	<file name="ui\ui_iconstotal">
 		<texture id="ui_ixray_spawn_icon"     	x="0" y="94"  width="83" height="47" />
 	</file>
+	<file name="ui\osk\backspace">
+		<texture id="ui_osk_backspace" x="0" y="0"  width="64" height="64" />
+	</file>
+	<file name="ui\osk\swap_lang">
+		<texture id="ui_osk_change_language" x="0" y="0"  width="64" height="64" />
+	</file>
+	<file name="ui\osk\prev_char">
+		<texture id="ui_osk_prev_char" x="0" y="0"  width="64" height="64" />
+	</file>
+	<file name="ui\osk\next_char">
+		<texture id="ui_osk_next_char" x="0" y="0"  width="64" height="64" />
+	</file>
+	<file name="ui\osk\caps">
+		<texture id="ui_osk_caps" x="0" y="0"  width="64" height="64" />
+	</file>
 </w>

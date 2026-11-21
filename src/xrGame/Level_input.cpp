@@ -891,7 +891,7 @@ void CLevel::IR_GamepadKeyRelease(int id)
 	}
 
 	if (!bReady || g_bDisableAllInput	)								return;
-//	if ( CurrentGameUI() && CurrentGameUI()->IR_GamepadKeyRelease(id)) return;
+	if ( CurrentGameUI() && CurrentGameUI()->IR_UIOnGamepadKeyRelease(id)) return;
 //	if (game && game->OnKeyboardRelease(get_binded_action(id)) )		return;
 	if (Device.Paused() 
 #ifdef DEBUG

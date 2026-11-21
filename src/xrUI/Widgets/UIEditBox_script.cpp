@@ -14,7 +14,8 @@ void CUIEditBox::script_register(lua_State *L)
 		.def("SetText",				&CUICustomEdit::SetText)
 		.def("GetText",				&CUICustomEdit::GetText)
 		.def("CaptureFocus",		&CUICustomEdit::CaptureFocus)
-		.def("SetNextFocusCapturer",&CUICustomEdit::SetNextFocusCapturer),		
+		.def("SetNextFocusCapturer",&CUICustomEdit::SetNextFocusCapturer)		
+		.def("ShowOnScreenKeyboard", &CUICustomEdit::ShowOnScreenKeyboard),
 
 		class_<CUIEditBox, CUICustomEdit>("CUIEditBox")
 		.def(						constructor<>())

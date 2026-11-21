@@ -62,6 +62,7 @@ public:
 	void assign_callback(u32 scancode, key_state state, Callback const& callback);
 
 	void insert_character(char c);
+	void insert_character_and_update(char c);
 
 	ICF bool get_key_state(key_state mask) const { return mask ? !!m_key_state.test(mask) : true; }
 	ICF void set_key_state(key_state mask, bool value) { m_key_state.set(mask, value); }
@@ -78,6 +79,9 @@ public:
 	void set_edit(const char* str);
 	void set_selected_mode(bool status) { m_unselected_mode = !status; }
 	bool get_selected_mode() const { return !m_unselected_mode; }
+
+	bool m_capitalize_forced = false;
+	bool get_capitalize() { return (get_key_state(ks_Shift) != get_key_state(ks_CapsLock)) || m_capitalize_forced; }
 
 	line_edit_control(line_edit_control const&);
 	line_edit_control const& operator=(line_edit_control const&);

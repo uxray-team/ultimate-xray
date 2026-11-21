@@ -229,19 +229,18 @@ _keyboard keyboards[] = {
 	{ "kTAB",                   SDL_SCANCODE_TAB,                "Tab" },
 	{ "kSPACE",                 SDL_SCANCODE_SPACE,              "Space" },
 
-	{ "kMINUS",                 SDL_SCANCODE_MINUS,              "Minus" },
-	{ "kEQUALS",                SDL_SCANCODE_EQUALS,             "Equals" },
-	{ "kLBRACKET",              SDL_SCANCODE_LEFTBRACKET,        "Left bracket" },
-	{ "kRBRACKET",              SDL_SCANCODE_RIGHTBRACKET,       "Right bracket" },
-	{ "kBACKSLASH",             SDL_SCANCODE_BACKSLASH,          "Backslash" },
-	{ "kNONUSHASH",             SDL_SCANCODE_NONUSHASH,          "Non US Hash" },
+	{ "kMINUS",                 SDL_SCANCODE_MINUS,              "-" },
+	{ "kEQUALS",                SDL_SCANCODE_EQUALS,             "=" },
+	{ "kLBRACKET",              SDL_SCANCODE_LEFTBRACKET,        "[" },
+	{ "kRBRACKET",              SDL_SCANCODE_RIGHTBRACKET,       "]" },
+	{ "kBACKSLASH",             SDL_SCANCODE_BACKSLASH,          "\\" },
 
-	{ "kSEMICOLON",             SDL_SCANCODE_SEMICOLON,          "Semicolon" },
-	{ "kAPOSTROPHE",            SDL_SCANCODE_APOSTROPHE,         "Apostrophe" },
-	{ "kGRAVE",                 SDL_SCANCODE_GRAVE,              "Grave" },
-	{ "kCOMMA",                 SDL_SCANCODE_COMMA,              "Comma" },
-	{ "kPERIOD",                SDL_SCANCODE_PERIOD,             "Period" },
-	{ "kSLASH",                 SDL_SCANCODE_SLASH,              "Slash" },
+	{ "kSEMICOLON",             SDL_SCANCODE_SEMICOLON,          ";" },
+	{ "kAPOSTROPHE",            SDL_SCANCODE_APOSTROPHE,         "\'" },
+	{ "kGRAVE",                 SDL_SCANCODE_GRAVE,              "~" },
+	{ "kCOMMA",                 SDL_SCANCODE_COMMA,              "," },
+	{ "kPERIOD",                SDL_SCANCODE_PERIOD,             "." },
+	{ "kSLASH",                 SDL_SCANCODE_SLASH,              "/" },
 
 	{ "kCAPITAL",               SDL_SCANCODE_CAPSLOCK,           "Caps Lock" },
 
@@ -540,7 +539,7 @@ void remap_keys()
 	{
 		buff[0] = 0;
 		_keyboard& kb = keyboards[idx];
-		bool res = pInput->get_dik_name(kb.dik, buff, sizeof(buff));
+		bool res = pInput->get_dik_name(kb.dik, buff);
 		kb.key_local_name = res ? buff : kb.key_local_name;
 
 		if (kb.key_local_name.starts_with('k'))

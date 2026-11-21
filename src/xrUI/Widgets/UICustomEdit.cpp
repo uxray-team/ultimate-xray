@@ -6,6 +6,7 @@
 
 #include "../../xrEngine/line_edit_control.h"
 #include "../../xrEngine/xr_input.h"
+#include "UIGamepadKeyboard.h"
 
 CUICustomEdit::CUICustomEdit()
 {
@@ -358,4 +359,22 @@ void CUICustomEdit::CaptureFocus(bool bCapture)
 		GetParent()->SetKeyboardCapture(this, true);
 
 	m_bInputFocus = bCapture; 
+}
+
+void CUICustomEdit::ShowOnScreenKeyboard()
+{
+	GetGamepadKeyboardInstance()->AttachToCustomEdit(this);
+	GetGamepadKeyboardInstance()->ShowDialog(false);
+	CaptureFocus(true);
+}
+
+void CUICustomEdit::InsertCharacter(const char* c)
+{
+	xr_string temp = c;
+
+	if (IsUTF8(temp.c_str()))
+	{
+		temp = Platform::UTF8_to_CP1251(temp);
+	}
+	ec().insert_character_and_update(temp[0]);
 }

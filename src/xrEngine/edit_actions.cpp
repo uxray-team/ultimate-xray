@@ -92,7 +92,7 @@ void type_pair::on_key_press(line_edit_control* const control)
 
 		static _locale_t current_locale = _create_locale(LC_ALL, "");
 
-		if (pInput->get_dik_name(m_dik, (char*)buff, sizeof(buff))) {
+		if (pInput->get_dik_name(m_dik, (char*)buff)) {
 			if (_isalpha_l(buff[0], current_locale) || buff[0] == char(-1)) { // "?" = -1
 				_strlwr_l((char*)buff, current_locale);
 				c = (char)buff[0];
@@ -101,7 +101,7 @@ void type_pair::on_key_press(line_edit_control* const control)
 			}
 		}
 
-		if (control->get_key_state(ks_Shift) != control->get_key_state(ks_CapsLock)) {
+		if (control->get_capitalize()) {
 			c = c_shift;
 		}
 	}
@@ -109,7 +109,7 @@ void type_pair::on_key_press(line_edit_control* const control)
 #endif
 	{
 		c = m_char;
-		if (control->get_key_state(ks_Shift) != control->get_key_state(ks_CapsLock)) {
+		if (control->get_capitalize()) {
 			c = m_char_shift;
 		}
 	}

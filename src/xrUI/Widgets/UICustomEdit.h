@@ -28,8 +28,10 @@ public:
 	virtual void	Draw			();
 	virtual void	Show			(bool status);
 
+			void	ForceCapitalize	(bool bCapitalize) { ec().m_capitalize_forced = bCapitalize; }
 			void	CaptureFocus	(bool bCapture);
 			void	SetNextFocusCapturer(CUICustomEdit* next_capturer) { m_next_focus_capturer = next_capturer; };
+			void	InsertCharacter	(const char* c);
 	
 			void	ClearText		();
 	virtual	void	SetText			(const char* str);
@@ -39,6 +41,7 @@ public:
 			
 			void	SetPasswordMode	(bool mode = true);
 			void	SetPlaceholder	(const char* stId, bool blink = false);
+			void	ShowOnScreenKeyboard();
 
 	virtual CUIWindow* ui_cast_window() { return this; }
 	virtual CUIStatic* ui_cast_static() { return this; }

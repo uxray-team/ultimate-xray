@@ -132,6 +132,7 @@ public:
 	virtual void	IR_OnKeyboardHold				(int dik);
 
 	virtual void	IR_GamepadKeyPress				(int id);
+	virtual void	IR_GamepadKeyRelease			(int id);
 	virtual void	IR_GamepadKeyHold				(int id);
 	virtual void	IR_GamepadUpdateStick			(int id, Fvector2 value);
 	virtual void	IR_OnGyroscopeMove				(Fvector3 value);

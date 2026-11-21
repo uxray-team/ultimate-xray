@@ -1,11 +1,18 @@
 <w>
+		<!-- For on-screen keyboard -->
+		<mapping ascii="57349" texture_id="ui_osk_backspace"/>
+		<mapping ascii="57367" texture_id="ui_osk_change_language"/>
+		<mapping ascii="57404" texture_id="ui_osk_prev_char"/>
+		<mapping ascii="57369" texture_id="ui_osk_next_char"/>		
+		<mapping ascii="57385" texture_id="ui_osk_caps"/>		
+				
 		<!-- Xbox mapping -->
 		<mapping ascii="57344" texture_id="xbox1_controller_a"/>
 		<mapping ascii="57345" texture_id="xbox1_controller_b"/>
 		<mapping ascii="57346" texture_id="xbox1_controller_x"/>
 		<mapping ascii="57347" texture_id="xbox1_controller_y"/>
 		<mapping ascii="57348" texture_id="xbox1_controller_lmenu"/>
-		<!-- 57349 is ignored since it's used for guide button -->
+
 		<mapping ascii="57350" texture_id="xbox1_controller_rmenu"/>
 		<mapping ascii="57351" texture_id="xbox1_controller_lsclick"/>
 		<mapping ascii="57352" texture_id="xbox1_controller_rsclick"/>
@@ -23,7 +30,7 @@
 		<mapping ascii="57364" texture_id="xbox1_controller_rsv"/>
 		<mapping ascii="57365" texture_id="xbox1_controller_ls"/>
 		<mapping ascii="57366" texture_id="xbox1_controller_rs"/>
-		<!-- 57368-57369 are reserved... use them later? -->
+	
 		<mapping ascii="57370" texture_id="xbox1_controller_lt"/>
 		<mapping ascii="57371" texture_id="xbox1_controller_rt"/>
 		<mapping ascii="57372" texture_id="xbox1_controller_lsu"/>
@@ -41,7 +48,7 @@
 		<mapping ascii="57382" texture_id="ps4_controller_x"/>
 		<mapping ascii="57383" texture_id="ps4_controller_y"/>
 		<mapping ascii="57384" texture_id="ps4_controller_lmenu"/>
-		<!-- 57385 is ignored since it's used for PS button -->
+
 		<mapping ascii="57386" texture_id="ps4_controller_rmenu"/>
 		<mapping ascii="57387" texture_id="ps4_controller_lsclick"/>
 		<mapping ascii="57388" texture_id="ps4_controller_rsclick"/>

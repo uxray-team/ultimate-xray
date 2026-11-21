@@ -1011,10 +1011,47 @@
 	<string id="ui_rmw_wpn_laser">
 		<text>$$ACTION_WPN_LASER$$ Laser sight</text>
 	</string>
+	<!-- UX-Ray starts here -->
 	<string id="ui_am_quick_inventory_switch">
 		<text>$$ACTION_UI_TAB_LEFT$$/$$ACTION_UI_TAB_RIGHT$$ Switch inventory</text>
 	</string>
 	<string id="ui_mm_script_options">
 		<text>Script options</text>
+	</string>
+	<string id="ui_mm_save_osk">
+		<text>$$ACTION_UI_ACTION_2$$ Change name</text>
+	</string>
+	<string id="osk_accept">
+		<text>Accept</text>
+		<text_gamepad>$$ACTION_UI_TAB_SEC_RIGHT$$ Accept</text_gamepad>
+	</string>
+	<string id="osk_prev">
+		<!-- hack for icons -->
+		<text></text>
+		<text_gamepad>$$ACTION_UI_TAB_LEFT$$ </text_gamepad>
+	</string>
+	<string id="osk_next">
+		<!-- hack for icons -->
+		<text></text>
+		<text_gamepad>$$ACTION_UI_TAB_RIGHT$$ </text_gamepad>
+	</string>
+	<string id="osk_backspace">
+		<!-- hack for icons -->
+		<text></text>
+		<text_gamepad>$$ACTION_UI_ACTION_1$$ </text_gamepad>
+	</string>
+	<string id="osk_space">
+		<text>Space</text>
+		<text_gamepad>$$ACTION_UI_ACTION_2$$ Space</text_gamepad>
+	</string>
+	<string id="osk_caps">
+		<!-- hack for icons -->
+		<text></text>
+		<text_gamepad>$$ACTION_UI_TAB_SEC_LEFT$$ </text_gamepad>
+	</string>
+	<string id="osk_lang">
+		<!-- hack for icons -->
+		<text></text>
+		<text_gamepad>$$ACTION_ACTORMENU_ACTION$$ </text_gamepad>
 	</string>
 </string_table>

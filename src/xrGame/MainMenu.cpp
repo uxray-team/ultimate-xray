@@ -384,6 +384,16 @@ void	CMainMenu::IR_OnKeyboardRelease			(int dik)
 	CDialogHolder::IR_UIOnKeyboardRelease(dik);
 };
 
+void	CMainMenu::IR_GamepadKeyRelease(int dik)
+{
+	if (!IsActive()) 
+	{
+		return;
+	}
+
+	CDialogHolder::IR_UIOnGamepadKeyRelease(dik);
+};
+
 void	CMainMenu::IR_OnKeyboardHold(int dik)	
 {
 	if(!IsActive()) return;

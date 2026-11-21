@@ -1011,10 +1011,47 @@
 	<string id="ui_rmw_wpn_laser">
 		<text>$$ACTION_WPN_LASER$$ ЛЦУ</text>
 	</string>
+	<!-- UX-Ray starts here -->
 	<string id="ui_am_quick_inventory_switch">
 		<text>$$ACTION_UI_TAB_LEFT$$/$$ACTION_UI_TAB_RIGHT$$ Переключить инвентарь</text>
 	</string>
 	<string id="ui_mm_script_options">
 		<text>Скриптовые опции</text>
+	</string>
+	<string id="ui_mm_save_osk">
+		<text>$$ACTION_UI_ACTION_2$$ Сменить название</text>
+	</string>
+	<string id="osk_accept">
+		<text>Принять</text>
+		<text_gamepad>$$ACTION_UI_TAB_SEC_RIGHT$$ Принять</text_gamepad>
+	</string>
+	<string id="osk_prev">
+		<!-- hack for icons -->
+		<text>оЂј</text>
+		<text_gamepad>$$ACTION_UI_TAB_LEFT$$ оЂј</text_gamepad>
+	</string>
+	<string id="osk_next">
+		<!-- hack for icons -->
+		<text>оЂ™</text>
+		<text_gamepad>$$ACTION_UI_TAB_RIGHT$$ оЂ™</text_gamepad>
+	</string>
+	<string id="osk_backspace">
+		<!-- hack for icons -->
+		<text>оЂ…</text>
+		<text_gamepad>$$ACTION_UI_ACTION_1$$ оЂ…</text_gamepad>
+	</string>
+	<string id="osk_space">
+		<text>Пробел</text>
+		<text_gamepad>$$ACTION_UI_ACTION_2$$ Пробел</text_gamepad>
+	</string>
+	<string id="osk_caps">
+		<!-- hack for icons -->
+		<text>оЂ©</text>
+		<text_gamepad>$$ACTION_UI_TAB_SEC_LEFT$$ оЂ©</text_gamepad>
+	</string>
+	<string id="osk_lang">
+		<!-- hack for icons -->
+		<text>оЂ—</text>
+		<text_gamepad>$$ACTION_ACTORMENU_ACTION$$ оЂ—</text_gamepad>
 	</string>
 </string_table>

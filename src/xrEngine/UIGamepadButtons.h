@@ -217,6 +217,13 @@ SOURCE
 #define ICON_E0BE "\xEE\x82\xBE"
 #define ICON_E0BF "\xEE\x82\xBF"
 
+// On-screen keyboard icons
+#define OSK_BACKSPACE		ICON_E005
+#define OSK_CHANGE_LANG  	ICON_E017
+#define OSK_PREV_CHAR	  	ICON_E03C
+#define OSK_NEXT_CHAR	  	ICON_E019
+#define OSK_CAPS			ICON_E029
+
 /* ============== XBOX ============== */
 
 #define XBOX_A				ICON_E000
@@ -224,7 +231,6 @@ SOURCE
 #define XBOX_X				ICON_E002
 #define XBOX_Y				ICON_E003
 #define XBOX_Back			ICON_E004
-#define XBOX_Guide			ICON_E005 // used for Xbox Game Bar
 #define XBOX_Start			ICON_E006
 #define XBOX_LS 			ICON_E007
 #define XBOX_RS  			ICON_E008
@@ -244,9 +250,6 @@ SOURCE
 #define XBOX_RSTICK_UD  	ICON_E014
 #define XBOX_LSTICK_UDLR  	ICON_E015
 #define XBOX_RSTICK_UDLR  	ICON_E016
-#define XBOX_RESERVED_08  	ICON_E017
-#define XBOX_RESERVED_09  	ICON_E018
-#define XBOX_RESERVED_10  	ICON_E019
 // Triggers
 #define XBOX_LTRIGGER  		ICON_E01A
 #define XBOX_RTRIGGER  		ICON_E01B
@@ -268,7 +271,6 @@ SOURCE
 #define PS4_SQUARE			ICON_E026
 #define PS4_TRIANGLE		ICON_E027
 #define PS4_SHARE			ICON_E028
-#define PS4_HOME			ICON_E029 // PS button
 #define PS4_OPTIONS			ICON_E02A
 #define PS4_L3 				ICON_E02B
 #define PS4_R3  			ICON_E02C
@@ -279,7 +281,7 @@ SOURCE
 #define PS4_DPAD_DOWN	 	ICON_E030
 #define PS4_DPAD_LEFT		ICON_E031
 #define PS4_DPAD_RIGHT  	ICON_E032
-// Only for UI, not a real bindings
+// Only for UI, not real bindings
 #define PS4_DPAD_LR  		ICON_E033
 #define PS4_DPAD_UD  		ICON_E034
 #define PS4_LSTICK_LR	 	ICON_E035
@@ -289,7 +291,6 @@ SOURCE
 #define PS4_LSTICK_UDLR  	ICON_E039
 #define PS4_RSTICK_UDLR  	ICON_E03A
 #define PS4_TOUCHPAD	  	ICON_E03B
-#define PS4_RESERVED_09  	ICON_E03C
 #define PS4_RESERVED_10  	ICON_E03D
 // Triggers
 #define PS4_L2		  		ICON_E03E

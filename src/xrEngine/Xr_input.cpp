@@ -331,7 +331,7 @@ const xr_map<int, char> russian_lookup_key_table = {
 	{ SDL_SCANCODE_Z, 0xFF }, 
 };
 
-bool CInput::get_dik_name(int dik, LPSTR dest_str, int dest_sz)
+bool CInput::get_dik_name(int dik, LPSTR dest_str)
 {
 #ifdef IXR_WINDOWS
 	LANGID lang_locale = PRIMARYLANGID(LOWORD(HandleToLong(GetKeyboardLayout(0))));

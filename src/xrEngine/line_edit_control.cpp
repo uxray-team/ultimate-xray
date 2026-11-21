@@ -386,6 +386,38 @@ void line_edit_control::on_key_press( int sdl_scancode )
 	update_bufs();
 }
 
+void line_edit_control::insert_character_and_update(char c)
+{
+	if (!m_hold_mode)
+	{
+		m_last_key_time = 0.0f;
+		m_accel = 1.0f;
+	}
+	m_mark = true;
+
+	clamp_cur_pos();
+	clear_inserted();
+	compute_positions();
+
+	insert_character(c);
+
+	m_buf_edit_str[m_buffer_size - 1] = 0;
+	clamp_cur_pos();
+
+	add_inserted_text();
+	if (m_mark && (!get_key_state(ks_Shift) || !empty_inserted()))
+	{
+		m_select_start = m_cur_pos;
+	}
+	compute_positions();
+
+	m_repeat_mode = false;
+	m_rep_time = 0.0f;
+
+	update_key_states();
+	update_bufs();
+}
+
 void line_edit_control::on_key_hold( int sdl_scancode )
 {
 	update_key_states();

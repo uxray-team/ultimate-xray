@@ -260,6 +260,8 @@ function save_dialog:OnGamepadKey(key, gamepad_action)  --virtual function
 			self:OnButton_cancel_clicked()		
 		elseif bindUI == key_bindings.kUI_ACTION_1 then
 			self:OnButton_del_clicked()		
+		elseif bindUI == key_bindings.kUI_ACTION_2 then
+			self.editbox:ShowOnScreenKeyboard()		
 		elseif bindUI == key_bindings.kUI_UP then
 			action_repeaters():SetActionStarted(self, key_bindings.kUI_UP)
 			if not any_binded_key_for_action_pressed_c(key_bindings.kUI_DOWN) then

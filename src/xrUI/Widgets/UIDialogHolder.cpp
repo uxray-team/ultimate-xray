@@ -401,6 +401,29 @@ bool CDialogHolder::IR_UIOnKeyboardRelease(int dik)
 	return true;
 }
 
+bool CDialogHolder::IR_UIOnGamepadKeyRelease(int dik)
+{
+	CUIDialogWnd* TIR = TopInputReceiver();
+	if (!TIR)				return false;
+	if (!TIR->IR_process())	return false;
+
+	if (TIR->OnGamepadKeyAction(dik, WINDOW_KEY_RELEASED))
+		return true;
+
+	if (!TIR->StopAnyMove() && g_pGameLevel)
+	{
+		CObject* O = g_pGameLevel->CurrentEntity();
+		if (O)
+		{
+			IInputReceiver* IR = O->GetIIR();
+			if (IR)
+				IR->IR_GamepadKeyRelease(dik);
+			return			(false);
+		}
+	}
+	return true;
+}
+
 bool CDialogHolder::IR_UIOnKeyboardHold(int dik)
 {
 	CUIDialogWnd* TIR		= TopInputReceiver();

@@ -1,0 +1,535 @@
+<w>
+	<main x="0" y="0" width="500" height="160"/>
+	
+	<background x="0" y="0" width="400" height="160" stretch="1">
+		<auto_framewindow x="-5" y="0" width="400" height="160">
+			<texture>ui_inGame2_demo_player_info_window</texture>
+		</auto_framewindow>
+	</background>
+	
+	<!-- Default (English) lang -->
+	<layout language="default">
+		<!-- [1][2][3][4][5][6][7][8][9][0] -->
+		<row>
+			<button x="1" y="2" width="50" height="30" stretch="1" grid_width="1" action="none">
+				<text font="letterica16" align="c" vert_align="c">1</text>
+				<texture>ui_inGame2_button</texture>			
+			</button>
+			<button x="52" y="2" width="50" height="30" stretch="1" grid_width="1" action="none">
+				<text font="letterica16" align="c" vert_align="c">2</text>
+				<texture>ui_inGame2_button</texture>			
+			</button>
+			<button x="103" y="2" width="50" height="30" stretch="1" grid_width="1" action="none">
+				<text font="letterica16" align="c" vert_align="c">3</text>
+				<texture>ui_inGame2_button</texture>			
+			</button>
+			<button x="153" y="2" width="50" height="30" stretch="1" grid_width="1" action="none">
+				<text font="letterica16" align="c" vert_align="c">4</text>
+				<texture>ui_inGame2_button</texture>			
+			</button>
+			<button x="204" y="2" width="50" height="30" stretch="1" grid_width="1" action="none">
+				<text font="letterica16" align="c" vert_align="c">5</text>
+				<texture>ui_inGame2_button</texture>			
+			</button>
+			<button x="255" y="2" width="50" height="30" stretch="1" grid_width="1" action="none">
+				<text font="letterica16" align="c" vert_align="c">6</text>
+				<texture>ui_inGame2_button</texture>			
+			</button>
+			<button x="306" y="2" width="50" height="30" stretch="1" grid_width="1" action="none">
+				<text font="letterica16" align="c" vert_align="c">7</text>
+				<texture>ui_inGame2_button</texture>			
+			</button>
+			<button x="357" y="2" width="50" height="30" stretch="1" grid_width="1" action="none">
+				<text font="letterica16" align="c" vert_align="c">8</text>
+				<texture>ui_inGame2_button</texture>			
+			</button>
+			<button x="408" y="2" width="50" height="30" stretch="1" grid_width="1" action="none">
+				<text font="letterica16" align="c" vert_align="c">9</text>
+				<texture>ui_inGame2_button</texture>			
+			</button>
+			<button x="459" y="2" width="50" height="30" stretch="1" grid_width="1" action="none">
+				<text font="letterica16" align="c" vert_align="c">0</text>
+				<texture>ui_inGame2_button</texture>			
+			</button>
+		</row>
+		<!-- [Q][W][E][R][T][Y][U][I][O][P] -->
+		<row>
+			<button x="1" y="33" width="50" height="30" stretch="1" grid_width="1" action="none">
+				<text font="letterica16" align="c" vert_align="c">q</text>
+				<text_upper>Q</text_upper>
+				<texture>ui_inGame2_button</texture>			
+			</button>
+			<button x="52" y="33" width="50" height="30" stretch="1" grid_width="1" action="none">
+				<text font="letterica16" align="c" vert_align="c">w</text>
+				<text_upper>W</text_upper>
+				<texture>ui_inGame2_button</texture>			
+			</button>
+			<button x="103" y="33" width="50" height="30" stretch="1" grid_width="1" action="none">
+				<text font="letterica16" align="c" vert_align="c">e</text>
+				<text_upper>E</text_upper>
+				<texture>ui_inGame2_button</texture>			
+			</button>
+			<button x="153" y="33" width="50" height="30" stretch="1" grid_width="1" action="none">
+				<text font="letterica16" align="c" vert_align="c">r</text>
+				<text_upper>R</text_upper>
+				<texture>ui_inGame2_button</texture>			
+			</button>
+			<button x="204" y="33" width="50" height="30" stretch="1" grid_width="1" action="none">
+				<text font="letterica16" align="c" vert_align="c">t</text>
+				<text_upper>T</text_upper>
+				<texture>ui_inGame2_button</texture>			
+			</button>
+			<button x="255" y="33" width="50" height="30" stretch="1" grid_width="1" action="none">
+				<text font="letterica16" align="c" vert_align="c">y</text>
+				<text_upper>Y</text_upper>
+				<texture>ui_inGame2_button</texture>			
+			</button>
+			<button x="306" y="33" width="50" height="30" stretch="1" grid_width="1" action="none">
+				<text font="letterica16" align="c" vert_align="c">u</text>
+				<text_upper>U</text_upper>
+				<texture>ui_inGame2_button</texture>			
+			</button>
+			<button x="357" y="33" width="50" height="30" stretch="1" grid_width="1" action="none">
+				<text font="letterica16" align="c" vert_align="c">i</text>
+				<text_upper>I</text_upper>
+				<texture>ui_inGame2_button</texture>			
+			</button>
+			<button x="408" y="33" width="50" height="30" stretch="1" grid_width="1" action="none">
+				<text font="letterica16" align="c" vert_align="c">o</text>
+				<text_upper>O</text_upper>
+				<texture>ui_inGame2_button</texture>			
+			</button>
+			<button x="459" y="33" width="50" height="30" stretch="1" grid_width="1" action="none">
+				<text font="letterica16" align="c" vert_align="c">p</text>
+				<text_upper>P</text_upper>
+				<texture>ui_inGame2_button</texture>			
+			</button>
+		</row>
+		<!-- [A][S][D][F][G][H][J][K][L]['] -->
+		<row>
+			<button x="1" y="64" width="50" height="30" stretch="1" grid_width="1" action="none">
+				<text font="letterica16" align="c" vert_align="c">a</text>
+				<text_upper>A</text_upper>
+				<texture>ui_inGame2_button</texture>			
+			</button>
+			<button x="52" y="64" width="50" height="30" stretch="1" grid_width="1" action="none">
+				<text font="letterica16" align="c" vert_align="c">s</text>
+				<text_upper>S</text_upper>
+				<texture>ui_inGame2_button</texture>			
+			</button>
+			<button x="103" y="64" width="50" height="30" stretch="1" grid_width="1" action="none">
+				<text font="letterica16" align="c" vert_align="c">d</text>
+				<text_upper>D</text_upper>
+				<texture>ui_inGame2_button</texture>			
+			</button>
+			<button x="153" y="64" width="50" height="30" stretch="1" grid_width="1" action="none">
+				<text font="letterica16" align="c" vert_align="c">f</text>
+				<text_upper>F</text_upper>
+				<texture>ui_inGame2_button</texture>			
+			</button>
+			<button x="204" y="64" width="50" height="30" stretch="1" grid_width="1" action="none">
+				<text font="letterica16" align="c" vert_align="c">g</text>
+				<text_upper>G</text_upper>
+				<texture>ui_inGame2_button</texture>			
+			</button>
+			<button x="255" y="64" width="50" height="30" stretch="1" grid_width="1" action="none">
+				<text font="letterica16" align="c" vert_align="c">h</text>
+				<text_upper>H</text_upper>
+				<texture>ui_inGame2_button</texture>			
+			</button>
+			<button x="306" y="64" width="50" height="30" stretch="1" grid_width="1" action="none">
+				<text font="letterica16" align="c" vert_align="c">j</text>
+				<text_upper>J</text_upper>
+				<texture>ui_inGame2_button</texture>			
+			</button>
+			<button x="357" y="64" width="50" height="30" stretch="1" grid_width="1" action="none">
+				<text font="letterica16" align="c" vert_align="c">k</text>
+				<text_upper>K</text_upper>
+				<texture>ui_inGame2_button</texture>			
+			</button>
+			<button x="408" y="64" width="50" height="30" stretch="1" grid_width="1" action="none">
+				<text font="letterica16" align="c" vert_align="c">l</text>
+				<text_upper>L</text_upper>
+				<texture>ui_inGame2_button</texture>			
+			</button>
+			<button x="459" y="64" width="50" height="30" stretch="1" grid_width="1" action="none">
+				<text font="letterica16" align="c" vert_align="c">'</text>
+				<text_upper>"</text_upper>
+				<texture>ui_inGame2_button</texture>			
+			</button>
+		</row>
+		<!-- [Z][X][C][V][B][N][M][,][.][/] -->
+		<row>
+			<button x="1" y="95" width="50" height="30" stretch="1" grid_width="1" action="none">
+				<text font="letterica16" align="c" vert_align="c">z</text>
+				<text_upper>Z</text_upper>
+				<texture>ui_inGame2_button</texture>			
+			</button>
+			<button x="52" y="95" width="50" height="30" stretch="1" grid_width="1" action="none">
+				<text font="letterica16" align="c" vert_align="c">x</text>
+				<text_upper>X</text_upper>
+				<texture>ui_inGame2_button</texture>			
+			</button>
+			<button x="103" y="95" width="50" height="30" stretch="1" grid_width="1" action="none">
+				<text font="letterica16" align="c" vert_align="c">c</text>
+				<text_upper>C</text_upper>
+				<texture>ui_inGame2_button</texture>			
+			</button>
+			<button x="153" y="95" width="50" height="30" stretch="1" grid_width="1" action="none">
+				<text font="letterica16" align="c" vert_align="c">v</text>
+				<text_upper>V</text_upper>
+				<texture>ui_inGame2_button</texture>			
+			</button>
+			<button x="204" y="95" width="50" height="30" stretch="1" grid_width="1" action="none">
+				<text font="letterica16" align="c" vert_align="c">b</text>
+				<text_upper>B</text_upper>
+				<texture>ui_inGame2_button</texture>			
+			</button>
+			<button x="255" y="95" width="50" height="30" stretch="1" grid_width="1" action="none">
+				<text font="letterica16" align="c" vert_align="c">n</text>
+				<text_upper>N</text_upper>
+				<texture>ui_inGame2_button</texture>			
+			</button>
+			<button x="306" y="95" width="50" height="30" stretch="1" grid_width="1" action="none">
+				<text font="letterica16" align="c" vert_align="c">m</text>
+				<text_upper>M</text_upper>
+				<texture>ui_inGame2_button</texture>			
+			</button>
+			<button x="357" y="95" width="50" height="30" stretch="1" grid_width="1" action="none">
+				<text font="letterica16" align="c" vert_align="c">,</text>
+				<text_upper>-</text_upper>
+				<texture>ui_inGame2_button</texture>			
+			</button>
+			<button x="408" y="95" width="50" height="30" stretch="1" grid_width="1" action="none">
+				<text font="letterica16" align="c" vert_align="c">.</text>
+				<text_upper>_</text_upper>
+				<texture>ui_inGame2_button</texture>			
+			</button>
+			<button x="459" y="95" width="50" height="30" stretch="1" grid_width="1" action="none">
+				<text font="letterica16" align="c" vert_align="c">/</text>
+				<text_upper>?</text_upper>
+				<texture>ui_inGame2_button</texture>			
+			</button>
+		</row>
+		<!-- [Caps][Swap lang][Prev][Space][Next][Backspace][Accept] -->
+		<row>
+			<button x="1" y="127" width="50" height="25" stretch="1" grid_width="1" action="caps_lock">
+				<text font="letterica16" align="c" vert_align="c">osk_caps</text>
+				<texture>ui_inGame2_button</texture>			
+			</button>
+			<button x="52" y="127" width="50" height="25" stretch="1" grid_width="1" action="swap_lang">
+				<text font="letterica16" align="c" vert_align="c">osk_lang</text>
+				<texture>ui_inGame2_button</texture>			
+			</button>
+			<button x="103" y="127" width="50" height="25" stretch="1" grid_width="1" action="prev_char">
+				<text font="letterica16" align="c" vert_align="c">osk_prev</text>
+				<texture>ui_inGame2_button</texture>			
+			</button>
+			<button x="153" y="127" width="152" height="25" stretch="1" grid_width="3" action="space" accel="cY">
+				<text font="letterica16" align="c" vert_align="c">osk_space</text>
+				<texture>ui_inGame2_button</texture>			
+			</button>
+			<button x="306" y="127" width="50" height="25" stretch="1" grid_width="1" action="next_char">
+				<text font="letterica16" align="c" vert_align="c">osk_next</text>
+				<texture>ui_inGame2_button</texture>			
+			</button>
+			<button x="357" y="127" width="50" height="25" stretch="1" grid_width="1" action="remove_char">
+				<text font="letterica16" align="c" vert_align="c">osk_backspace</text>
+				<texture>ui_inGame2_button</texture>			
+			</button>
+			<button x="408" y="127" width="101" height="25" stretch="1" grid_width="2" action="commit_changes">
+				<text font="letterica16" align="c" vert_align="c">osk_accept</text>
+				<texture>ui_inGame2_button</texture>			
+			</button>
+		</row>
+	</layout>
+	<!-- Russian lang -->
+	<layout language="russian">
+		<!-- [1][2][3][4][5][6][7][8][9][0] -->
+		<row>
+			<button x="1" y="2" width="50" height="25" stretch="1" grid_width="1" action="none">
+				<text font="letterica16" align="c" vert_align="c">1</text>
+				<texture>ui_inGame2_button</texture>			
+			</button>
+			<button x="52" y="2" width="50" height="25" stretch="1" grid_width="1" action="none">
+				<text font="letterica16" align="c" vert_align="c">2</text>
+				<texture>ui_inGame2_button</texture>			
+			</button>
+			<button x="103" y="2" width="50" height="25" stretch="1" grid_width="1" action="none">
+				<text font="letterica16" align="c" vert_align="c">3</text>
+				<texture>ui_inGame2_button</texture>			
+			</button>
+			<button x="153" y="2" width="50" height="25" stretch="1" grid_width="1" action="none">
+				<text font="letterica16" align="c" vert_align="c">4</text>
+				<texture>ui_inGame2_button</texture>			
+			</button>
+			<button x="204" y="2" width="50" height="25" stretch="1" grid_width="1" action="none">
+				<text font="letterica16" align="c" vert_align="c">5</text>
+				<texture>ui_inGame2_button</texture>			
+			</button>
+			<button x="255" y="2" width="50" height="25" stretch="1" grid_width="1" action="none">
+				<text font="letterica16" align="c" vert_align="c">6</text>
+				<texture>ui_inGame2_button</texture>			
+			</button>
+			<button x="306" y="2" width="50" height="25" stretch="1" grid_width="1" action="none">
+				<text font="letterica16" align="c" vert_align="c">7</text>
+				<texture>ui_inGame2_button</texture>			
+			</button>
+			<button x="357" y="2" width="50" height="25" stretch="1" grid_width="1" action="none">
+				<text font="letterica16" align="c" vert_align="c">8</text>
+				<texture>ui_inGame2_button</texture>			
+			</button>
+			<button x="408" y="2" width="50" height="25" stretch="1" grid_width="1" action="none">
+				<text font="letterica16" align="c" vert_align="c">9</text>
+				<texture>ui_inGame2_button</texture>			
+			</button>
+			<button x="459" y="2" width="50" height="25" stretch="1" grid_width="1" action="none">
+				<text font="letterica16" align="c" vert_align="c">0</text>
+				<texture>ui_inGame2_button</texture>			
+			</button>
+		</row>
+		<!-- [ё]['][,][.][?][!][-][=][х][ъ] -->
+		<row>
+			<button x="1" y="27" width="50" height="25" stretch="1" grid_width="1" action="none">
+				<text font="letterica16" align="c" vert_align="c">ё</text>
+				<text_upper>Ё</text_upper>
+				<texture>ui_inGame2_button</texture>			
+			</button>
+			<button x="52" y="27" width="50" height="25" stretch="1" grid_width="1" action="none">
+				<text font="letterica16" align="c" vert_align="c">'</text>
+				<text_upper>"</text_upper>
+				<texture>ui_inGame2_button</texture>			
+			</button>
+			<button x="103" y="27" width="50" height="25" stretch="1" grid_width="1" action="none">
+				<text font="letterica16" align="c" vert_align="c">,</text>
+				<text_upper>:</text_upper>
+				<texture>ui_inGame2_button</texture>			
+			</button>
+			<button x="153" y="27" width="50" height="25" stretch="1" grid_width="1" action="none">
+				<text font="letterica16" align="c" vert_align="c">.</text>
+				<text_upper>;</text_upper>
+				<texture>ui_inGame2_button</texture>			
+			</button>
+			<button x="204" y="27" width="50" height="25" stretch="1" grid_width="1" action="none">
+				<text font="letterica16" align="c" vert_align="c">/</text>
+				<text_upper>?</text_upper>
+				<texture>ui_inGame2_button</texture>			
+			</button>
+			<button x="255" y="27" width="50" height="25" stretch="1" grid_width="1" action="none">
+				<text font="letterica16" align="c" vert_align="c">!</text>
+				<text_upper>&</text_upper>
+				<texture>ui_inGame2_button</texture>			
+			</button>
+			<button x="306" y="27" width="50" height="25" stretch="1" grid_width="1" action="none">
+				<text font="letterica16" align="c" vert_align="c">-</text>
+				<text_upper>_</text_upper>
+				<texture>ui_inGame2_button</texture>			
+			</button>
+			<button x="357" y="27" width="50" height="25" stretch="1" grid_width="1" action="none">
+				<text font="letterica16" align="c" vert_align="c">=</text>
+				<text_upper>+</text_upper>
+				<texture>ui_inGame2_button</texture>			
+			</button>
+			<button x="408" y="27" width="50" height="25" stretch="1" grid_width="1" action="none">
+				<text font="letterica16" align="c" vert_align="c">х</text>
+				<text_upper>Х</text_upper>
+				<texture>ui_inGame2_button</texture>			
+			</button>
+			<button x="459" y="27" width="50" height="25" stretch="1" grid_width="1" action="none">
+				<text font="letterica16" align="c" vert_align="c">ъ</text>
+				<text_upper>Ъ</text_upper>
+				<texture>ui_inGame2_button</texture>			
+			</button>
+		</row>
+		<!-- [й][ц][у][к][е][н][г][ш][щ][з] -->
+		<row>
+			<button x="1" y="52" width="50" height="25" stretch="1" grid_width="1" action="none">
+				<text font="letterica16" align="c" vert_align="c">й</text>
+				<text_upper>Й</text_upper>
+				<texture>ui_inGame2_button</texture>			
+			</button>
+			<button x="52" y="52" width="50" height="25" stretch="1" grid_width="1" action="none">
+				<text font="letterica16" align="c" vert_align="c">ц</text>
+				<text_upper>Ц</text_upper>
+				<texture>ui_inGame2_button</texture>			
+			</button>
+			<button x="103" y="52" width="50" height="25" stretch="1" grid_width="1" action="none">
+				<text font="letterica16" align="c" vert_align="c">у</text>
+				<text_upper>У</text_upper>
+				<texture>ui_inGame2_button</texture>			
+			</button>
+			<button x="153" y="52" width="50" height="25" stretch="1" grid_width="1" action="none">
+				<text font="letterica16" align="c" vert_align="c">к</text>
+				<text_upper>К</text_upper>
+				<texture>ui_inGame2_button</texture>			
+			</button>
+			<button x="204" y="52" width="50" height="25" stretch="1" grid_width="1" action="none">
+				<text font="letterica16" align="c" vert_align="c">е</text>
+				<text_upper>Е</text_upper>
+				<texture>ui_inGame2_button</texture>			
+			</button>
+			<button x="255" y="52" width="50" height="25" stretch="1" grid_width="1" action="none">
+				<text font="letterica16" align="c" vert_align="c">н</text>
+				<text_upper>Н</text_upper>
+				<texture>ui_inGame2_button</texture>			
+			</button>
+			<button x="306" y="52" width="50" height="25" stretch="1" grid_width="1" action="none">
+				<text font="letterica16" align="c" vert_align="c">г</text>
+				<text_upper>Г</text_upper>
+				<texture>ui_inGame2_button</texture>			
+			</button>
+			<button x="357" y="52" width="50" height="25" stretch="1" grid_width="1" action="none">
+				<text font="letterica16" align="c" vert_align="c">ш</text>
+				<text_upper>Ш</text_upper>
+				<texture>ui_inGame2_button</texture>			
+			</button>
+			<button x="408" y="52" width="50" height="25" stretch="1" grid_width="1" action="none">
+				<text font="letterica16" align="c" vert_align="c">щ</text>
+				<text_upper>Щ</text_upper>
+				<texture>ui_inGame2_button</texture>			
+			</button>
+			<button x="459" y="52" width="50" height="25" stretch="1" grid_width="1" action="none">
+				<text font="letterica16" align="c" vert_align="c">з</text>
+				<text_upper>З</text_upper>
+				<texture>ui_inGame2_button</texture>			
+			</button>
+		</row>
+		<!-- [ф][ы][в][а][п][р][о][л][д][ж] -->
+		<row>
+			<button x="1" y="77" width="50" height="25" stretch="1" grid_width="1" action="none">
+				<text font="letterica16" align="c" vert_align="c">ф</text>
+				<text_upper>Ф</text_upper>
+				<texture>ui_inGame2_button</texture>			
+			</button>
+			<button x="52" y="77" width="50" height="25" stretch="1" grid_width="1" action="none">
+				<text font="letterica16" align="c" vert_align="c">ы</text>
+				<text_upper>Ы</text_upper>
+				<texture>ui_inGame2_button</texture>			
+			</button>
+			<button x="103" y="77" width="50" height="25" stretch="1" grid_width="1" action="none">
+				<text font="letterica16" align="c" vert_align="c">в</text>
+				<text_upper>В</text_upper>
+				<texture>ui_inGame2_button</texture>			
+			</button>
+			<button x="153" y="77" width="50" height="25" stretch="1" grid_width="1" action="none">
+				<text font="letterica16" align="c" vert_align="c">а</text>
+				<text_upper>А</text_upper>
+				<texture>ui_inGame2_button</texture>			
+			</button>
+			<button x="204" y="77" width="50" height="25" stretch="1" grid_width="1" action="none">
+				<text font="letterica16" align="c" vert_align="c">п</text>
+				<text_upper>П</text_upper>
+				<texture>ui_inGame2_button</texture>			
+			</button>
+			<button x="255" y="77" width="50" height="25" stretch="1" grid_width="1" action="none">
+				<text font="letterica16" align="c" vert_align="c">р</text>
+				<text_upper>Р</text_upper>
+				<texture>ui_inGame2_button</texture>			
+			</button>
+			<button x="306" y="77" width="50" height="25" stretch="1" grid_width="1" action="none">
+				<text font="letterica16" align="c" vert_align="c">о</text>
+				<text_upper>О</text_upper>
+				<texture>ui_inGame2_button</texture>			
+			</button>
+			<button x="357" y="77" width="50" height="25" stretch="1" grid_width="1" action="none">
+				<text font="letterica16" align="c" vert_align="c">л</text>
+				<text_upper>Л</text_upper>
+				<texture>ui_inGame2_button</texture>			
+			</button>
+			<button x="408" y="77" width="50" height="25" stretch="1" grid_width="1" action="none">
+				<text font="letterica16" align="c" vert_align="c">д</text>
+				<text_upper>Д</text_upper>
+				<texture>ui_inGame2_button</texture>			
+			</button>
+			<button x="459" y="77" width="50" height="25" stretch="1" grid_width="1" action="none">
+				<text font="letterica16" align="c" vert_align="c">ж</text>
+				<text_upper>Ж</text_upper>
+				<texture>ui_inGame2_button</texture>			
+			</button>
+		</row>
+		<!-- [я][ч][с][м][и][т][ь][б][ю][э] -->
+		<row>
+			<button x="1" y="102" width="50" height="25" stretch="1" grid_width="1" action="none">
+				<text font="letterica16" align="c" vert_align="c">я</text>
+				<text_upper>Я</text_upper>
+				<texture>ui_inGame2_button</texture>			
+			</button>
+			<button x="52" y="102" width="50" height="25" stretch="1" grid_width="1" action="none">
+				<text font="letterica16" align="c" vert_align="c">ч</text>
+				<text_upper>Ч</text_upper>
+				<texture>ui_inGame2_button</texture>			
+			</button>
+			<button x="103" y="102" width="50" height="25" stretch="1" grid_width="1" action="none">
+				<text font="letterica16" align="c" vert_align="c">с</text>
+				<text_upper>С</text_upper>
+				<texture>ui_inGame2_button</texture>			
+			</button>
+			<button x="153" y="102" width="50" height="25" stretch="1" grid_width="1" action="none">
+				<text font="letterica16" align="c" vert_align="c">м</text>
+				<text_upper>М</text_upper>
+				<texture>ui_inGame2_button</texture>			
+			</button>
+			<button x="204" y="102" width="50" height="25" stretch="1" grid_width="1" action="none">
+				<text font="letterica16" align="c" vert_align="c">и</text>
+				<text_upper>И</text_upper>
+				<texture>ui_inGame2_button</texture>			
+			</button>
+			<button x="255" y="102" width="50" height="25" stretch="1" grid_width="1" action="none">
+				<text font="letterica16" align="c" vert_align="c">т</text>
+				<text_upper>Т</text_upper>
+				<texture>ui_inGame2_button</texture>			
+			</button>
+			<button x="306" y="102" width="50" height="25" stretch="1" grid_width="1" action="none">
+				<text font="letterica16" align="c" vert_align="c">ь</text>
+				<text_upper>Ь</text_upper>
+				<texture>ui_inGame2_button</texture>			
+			</button>
+			<button x="357" y="102" width="50" height="25" stretch="1" grid_width="1" action="none">
+				<text font="letterica16" align="c" vert_align="c">б</text>
+				<text_upper>Б</text_upper>
+				<texture>ui_inGame2_button</texture>			
+			</button>
+			<button x="408" y="102" width="50" height="25" stretch="1" grid_width="1" action="none">
+				<text font="letterica16" align="c" vert_align="c">ю</text>
+				<text_upper>Ю</text_upper>
+				<texture>ui_inGame2_button</texture>			
+			</button>
+			<button x="459" y="102" width="50" height="25" stretch="1" grid_width="1" action="none">
+				<text font="letterica16" align="c" vert_align="c">э</text>
+				<text_upper>Э</text_upper>
+				<texture>ui_inGame2_button</texture>			
+			</button>
+		</row>
+		<!-- [Caps][Swap lang][Prev][Space][Next][Backspace][Accept] -->
+		<row>
+			<button x="1" y="127" width="50" height="25" stretch="1" grid_width="1" action="caps_lock">
+				<text font="letterica16" align="c" vert_align="c">osk_caps</text>
+				<texture>ui_inGame2_button</texture>			
+			</button>
+			<button x="52" y="127" width="50" height="25" stretch="1" grid_width="1" action="swap_lang">
+				<text font="letterica16" align="c" vert_align="c">osk_lang</text>
+				<texture>ui_inGame2_button</texture>			
+			</button>
+			<button x="103" y="127" width="50" height="25" stretch="1" grid_width="1" action="prev_char">
+				<text font="letterica16" align="c" vert_align="c">osk_prev</text>
+				<texture>ui_inGame2_button</texture>			
+			</button>
+			<button x="153" y="127" width="152" height="25" stretch="1" grid_width="3" action="space" accel="cY">
+				<text font="letterica16" align="c" vert_align="c">osk_space</text>
+				<texture>ui_inGame2_button</texture>			
+			</button>
+			<button x="306" y="127" width="50" height="25" stretch="1" grid_width="1" action="next_char">
+				<text font="letterica16" align="c" vert_align="c">osk_next</text>
+				<texture>ui_inGame2_button</texture>			
+			</button>
+			<button x="357" y="127" width="50" height="25" stretch="1" grid_width="1" action="remove_char">
+				<text font="letterica16" align="c" vert_align="c">osk_backspace</text>
+				<texture>ui_inGame2_button</texture>			
+			</button>
+			<button x="408" y="127" width="101" height="25" stretch="1" grid_width="2" action="commit_changes">
+				<text font="letterica16" align="c" vert_align="c">osk_accept</text>
+				<texture>ui_inGame2_button</texture>			
+			</button>
+		</row>
+	</layout>
+</w>
