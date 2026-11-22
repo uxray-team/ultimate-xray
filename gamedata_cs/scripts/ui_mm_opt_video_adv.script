@@ -52,7 +52,7 @@ function opt_video_adv:InitControls(x, y, xml, handler)
 	handler:lineFrame(self, all_modes, "st_common_settings")
 
 	handler:addTrack(self, all_modes, "ui_mm_detail_density", "r__detail_density", 0.02, true, "float", false, system_depends.sdVidRestart)
-	handler:addTrack(self, all_modes, "ui_mm_grass_distance", "r__detail_radius", 1, false, "int", true, system_depends.sdNothing)    
+	handler:addTrack(self, all_modes, "ui_mm_grass_distance", "r__detail_radius", 5, false, "int", true, system_depends.sdNothing)    
 	handler:addTrack(self, all_modes, "ui_mm_vis_distance", "rs_vis_distance", 0.1, false, "float", false, system_depends.sdNothing)
 	handler:addTrack(self, all_modes, "ui_mm_geometry_lod", "r__geometry_lod", 0.1, false, "float", false, system_depends.sdNothing)
 

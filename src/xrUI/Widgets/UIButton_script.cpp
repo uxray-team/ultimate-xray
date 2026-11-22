@@ -104,7 +104,15 @@ void CUIButton::script_register(lua_State *L)
 		.def("SetSystemDepends",		&SetSystemDepends_script_track)
 		.def("StepLeft",				&CUITrackBar::StepLeft)
 		.def("StepRight",				&CUITrackBar::StepRight)
-		.def("SetHighlighted",			&CUITrackBar::SetHighlighted),
+		.def("SetHighlighted",			&CUITrackBar::SetHighlighted)
+		.def("GetIValueMin",			&CUITrackBar::GetIValueMin)
+		.def("GetIValueMax",			&CUITrackBar::GetIValueMax)
+		.def("GetFValueMin",			&CUITrackBar::GetFValueMin)
+		.def("GetFValueMax",			&CUITrackBar::GetFValueMax)
+		.def("IsIntMode",				&CUITrackBar::IsIntMode)
+		.def("IsFltMode",				&CUITrackBar::IsFltMode)
+		.def("GetFStep",				&CUITrackBar::GetFStep)
+		.def("GetIStep",				&CUITrackBar::GetIStep),
 
 		class_<CUIArrowStepper, CUIWindow>("CUIArrowStepper")
 		.def(							constructor<>())

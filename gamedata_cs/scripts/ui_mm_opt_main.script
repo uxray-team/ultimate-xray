@@ -763,6 +763,20 @@ function options_dialog:OnElementSetSelected(curTab, eltIndex, on)
 	local caption = focusRecord[1]:TextControl()
 	
 	if on then
+		if elementClass == "CUITrackBar" then
+			local period = 0
+			if element:IsFltMode() then
+				period = (element:GetFValueMax() - element:GetFValueMin()) * element:GetFStep() * 1000
+			elseif element:IsIntMode() then
+				period = (element:GetIValueMax() - element:GetIValueMin()) * element:GetIStep() * 1000
+			end
+			if period > 500 then
+				period = 0
+			end
+			SemiLog("! period: "..period)
+			action_repeaters():ChangePeriod(self, key_bindings.kUI_LEFT, period)
+			action_repeaters():ChangePeriod(self, key_bindings.kUI_RIGHT, period)
+		end
 		caption:SetTextColor(self.selection_text_color)
 		
 		--for advanced video settings, make autoscroll		

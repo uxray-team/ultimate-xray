@@ -51,6 +51,13 @@ public:
 			void	UpdateText				();
 	CUI3tButton*	GetSlider				() { return m_pSlider; }
 
+			float	GetFValueMin			(){return m_f_min;}
+			float	GetFValueMax			(){return m_f_max;}
+			int		GetIValueMin			(){return m_i_min;}
+			int		GetIValueMax			(){return m_i_max;}
+			float	GetFStep				(){return m_f_step;}
+			int		GetIStep				(){return m_i_step;}
+
 // modes code
 			void	SetNumOfSigns			(int num_of_signs) { m_i_num_of_signs = num_of_signs; }
 			void	SetTrackBarMode			(ETrackBarMode mode) { m_mode = mode; }

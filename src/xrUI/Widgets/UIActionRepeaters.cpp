@@ -40,19 +40,6 @@ void CUIActionRepeatersManager::Register(ActionRepeatersOwnerKey owner, int acti
 	ari.wait_for_click = true;
 }
 
-//void CUIActionRepeatersManager::RegisterMultiple(ActionRepeatersOwnerKey owner, xr_vector<int> actionIds, int initial_delay, int period)
-//{
-//	if (initial_delay == 0)
-//		initial_delay = m_defaultInitialDelay;
-//	if (period == 0)
-//		period = m_defaultPeriod;
-//
-//	for (xr_vector<int>::iterator it = actionIds.begin(); it != actionIds.end(); ++it)
-//	{
-//		RegisterActionRepeater(owner, *it, initial_delay, period);
-//	}
-//}
-
 void CUIActionRepeatersManager::Unregister(ActionRepeatersOwnerKey owner, int actionId)
 {
 	if (!IsRegistered(owner, actionId))
@@ -231,4 +218,20 @@ void CUIActionRepeatersManager::OnFrame()
 			}
 		}
 	}
+}
+
+void CUIActionRepeatersManager::ChangeInitialDelay(ActionRepeatersOwnerKey owner, int actionId, int initial_delay)
+{
+	if (!IsRegistered(owner, actionId))
+		return;
+	UIActionRepeatInfo& ari = m_repeatInfosList[owner][actionId];
+	ari.initial_delay = (initial_delay == 0) ? m_defaultInitialDelay : initial_delay;
+}
+
+void CUIActionRepeatersManager::ChangePeriod(ActionRepeatersOwnerKey owner, int actionId, int period)
+{
+	if (!IsRegistered(owner, actionId))
+		return;
+	UIActionRepeatInfo& ari = m_repeatInfosList[owner][actionId];
+	ari.period = (period == 0) ? m_defaultPeriod : period;
 }

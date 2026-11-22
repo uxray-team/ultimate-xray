@@ -29,5 +29,7 @@ void CUIActionRepeatersManager::script_register(lua_State *L)
 			.def("CanRepeatActionNow",	(bool (CUIActionRepeatersManager::*)(CUIActionRepeatersOwner*, int)) &CUIActionRepeatersManager::CanRepeatActionNow)
 			.def("SetActionStarted",	(void (CUIActionRepeatersManager::*)(CUIActionRepeatersOwner*, int)) &CUIActionRepeatersManager::SetActionStarted)
 			.def("IsActionStarted",		(bool (CUIActionRepeatersManager::*)(CUIActionRepeatersOwner*, int)) &CUIActionRepeatersManager::IsActionStarted)
+			.def("ChangeInitialDelay",	(void (CUIActionRepeatersManager::*)(CUIActionRepeatersOwner*, int, int)) &CUIActionRepeatersManager::ChangeInitialDelay)
+			.def("ChangePeriod",		(void (CUIActionRepeatersManager::*)(CUIActionRepeatersOwner*, int, int)) &CUIActionRepeatersManager::ChangePeriod)
 		];
 }

@@ -29,7 +29,6 @@ public:
 	CUIActionRepeatersManager();
 
 	void Register					(ActionRepeatersOwnerKey owner, int actionId, int initial_delay = 0, int period = 0);
-	//void RegisterMultiple			(ActionRepeatersOwnerKey owner, xr_vector<int> actionIds, int initial_delay = 0, int period = 0);
 	void Unregister					(ActionRepeatersOwnerKey owner, int actionId);
 	bool IsRegistered				(ActionRepeatersOwnerKey owner, int actionId) const;
 	void UnregisterOwner			(ActionRepeatersOwnerKey owner);
@@ -43,6 +42,9 @@ public:
 	bool CanRepeatActionNow			(ActionRepeatersOwnerKey owner, int actionId);
 	void SetActionStarted			(ActionRepeatersOwnerKey owner, int actionId);
 	bool IsActionStarted			(ActionRepeatersOwnerKey owner, int actionId);
+
+	void ChangeInitialDelay			(ActionRepeatersOwnerKey owner, int actionId, int initial_delay);
+	void ChangePeriod				(ActionRepeatersOwnerKey owner, int actionId, int period);
 
 	void OnFrame() override;
 
