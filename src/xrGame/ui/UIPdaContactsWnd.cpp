@@ -200,6 +200,48 @@ void CUIPdaContactsWnd::Reset()
 	Reload						();
 }
 
+void CUIPdaContactsWnd::MoveSelection(bool up, bool loop)
+{
+	CUIPdaContactItem* itm = smart_cast<CUIPdaContactItem*>(UIListWnd->GetSelected());
+	if (itm && itm->m_frame_selected)
+	{
+		itm->m_frame_selected->Show(false);
+	}
+	if (up)
+	{
+		if (!UIListWnd->MoveSelectionUp(loop))
+		{
+			if (itm && itm->m_frame_selected)
+			{
+				itm->m_frame_selected->Show(true);
+			}
+			return;
+		}
+	}
+	else
+	{
+		if (!UIListWnd->MoveSelectionDown(loop))
+		{
+			if (itm && itm->m_frame_selected)
+			{
+				itm->m_frame_selected->Show(true);
+			}
+			return;
+		}
+	}
+	GetSoundsSharedInstance()->PlaySwitchSound();
+	itm = smart_cast<CUIPdaContactItem*>(UIListWnd->GetSelected());
+	if (itm && itm->m_frame_selected)
+	{
+		itm->m_frame_selected->Show(true);
+	}
+	if (UIListWnd->GetSelected())
+	{
+		const float barHeight = UIListWnd->ScrollBar() ? UIListWnd->ScrollBar()->GetHeight() : 0.0f;
+		UIListWnd->ScrollToItem(UIListWnd->GetSelected(), iFloor(-barHeight / 2.0f + UIListWnd->GetSelected()->GetWndRect().height() / 2.0f));
+	}
+}
+
 bool CUIPdaContactsWnd::OnGamepadKeyAction(int id, EUIMessages gamepad_action)
 {
 	if (gamepad_action == WINDOW_KEY_PRESSED)
@@ -207,45 +249,13 @@ bool CUIPdaContactsWnd::OnGamepadKeyAction(int id, EUIMessages gamepad_action)
 		if (is_binded(kUI_UP, id))
 		{
 			ActionRepeaters()->SetActionStarted(this, kUI_UP);
-			CUIPdaContactItem* itm = smart_cast<CUIPdaContactItem*>(UIListWnd->GetSelected());
-			if (itm && itm->m_frame_selected)
-			{
-				itm->m_frame_selected->Show(false);
-			}
-			UIListWnd->MoveSelectionUp(true);
-			GetSoundsSharedInstance()->PlaySwitchSound();
-			itm = smart_cast<CUIPdaContactItem*>(UIListWnd->GetSelected());
-			if (itm && itm->m_frame_selected)
-			{
-				itm->m_frame_selected->Show(true);
-			}
-			if (UIListWnd->GetSelected())
-			{
-				const float barHeight = UIListWnd->ScrollBar() ? UIListWnd->ScrollBar()->GetHeight() : 0.0f;
-				UIListWnd->ScrollToItem(UIListWnd->GetSelected(), iFloor(-barHeight / 2.0f + UIListWnd->GetSelected()->GetWndRect().height() / 2.0f));
-			}
+			MoveSelection(true, true);
 			return true;
 		}
 		else if (is_binded(kUI_DOWN, id))
 		{
 			ActionRepeaters()->SetActionStarted(this, kUI_DOWN);
-			CUIPdaContactItem* itm = smart_cast<CUIPdaContactItem*>(UIListWnd->GetSelected());
-			if (itm && itm->m_frame_selected)
-			{
-				itm->m_frame_selected->Show(false);
-			}
-			UIListWnd->MoveSelectionDown(true);
-			GetSoundsSharedInstance()->PlaySwitchSound();
-			itm = smart_cast<CUIPdaContactItem*>(UIListWnd->GetSelected());
-			if (itm && itm->m_frame_selected)
-			{
-				itm->m_frame_selected->Show(true);
-			}
-			if (UIListWnd->GetSelected())
-			{
-				const float barHeight = UIListWnd->ScrollBar() ? UIListWnd->ScrollBar()->GetHeight() : 0.0f;
-				UIListWnd->ScrollToItem(UIListWnd->GetSelected(), iFloor(-barHeight / 2.0f + UIListWnd->GetSelected()->GetWndRect().height() / 2.0f));
-			}
+			MoveSelection(false, true);
 			return true;
 		}
 	}
@@ -259,23 +269,8 @@ bool CUIPdaContactsWnd::OnGamepadKeyHold(int id)
 	{
 		if (ActionRepeaters()->CanRepeatActionNow(this, kUI_UP))
 		{
-			CUIPdaContactItem* itm = smart_cast<CUIPdaContactItem*>(UIListWnd->GetSelected());
-			if (itm && itm->m_frame_selected)
-			{
-				itm->m_frame_selected->Show(false);
-			}
-			UIListWnd->MoveSelectionUp(false);
-			GetSoundsSharedInstance()->PlaySwitchSound();
-			itm = smart_cast<CUIPdaContactItem*>(UIListWnd->GetSelected());
-			if (itm && itm->m_frame_selected)
-			{
-				itm->m_frame_selected->Show(true);
-			}
-			if (UIListWnd->GetSelected())
-			{
-				const float barHeight = UIListWnd->ScrollBar() ? UIListWnd->ScrollBar()->GetHeight() : 0.0f;
-				UIListWnd->ScrollToItem(UIListWnd->GetSelected(), iFloor(-barHeight / 2.0f + UIListWnd->GetSelected()->GetWndRect().height() / 2.0f));
-			}
+			MoveSelection(true, false);
+
 		}
 		return true;
 	}
@@ -283,23 +278,7 @@ bool CUIPdaContactsWnd::OnGamepadKeyHold(int id)
 	{
 		if (ActionRepeaters()->CanRepeatActionNow(this, kUI_DOWN))
 		{
-			CUIPdaContactItem* itm = smart_cast<CUIPdaContactItem*>(UIListWnd->GetSelected());
-			if (itm && itm->m_frame_selected)
-			{
-				itm->m_frame_selected->Show(false);
-			}
-			UIListWnd->MoveSelectionDown(false);
-			GetSoundsSharedInstance()->PlaySwitchSound();
-			itm = smart_cast<CUIPdaContactItem*>(UIListWnd->GetSelected());
-			if (itm && itm->m_frame_selected)
-			{
-				itm->m_frame_selected->Show(true);
-			}
-			if (UIListWnd->GetSelected())
-			{
-				const float barHeight = UIListWnd->ScrollBar() ? UIListWnd->ScrollBar()->GetHeight() : 0.0f;
-				UIListWnd->ScrollToItem(UIListWnd->GetSelected(), iFloor(-barHeight / 2.0f + UIListWnd->GetSelected()->GetWndRect().height() / 2.0f));
-			}
+			MoveSelection(false, false);
 		}
 		return true;
 	}

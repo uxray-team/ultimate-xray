@@ -43,6 +43,8 @@ public:
 	void 						Reload					();
 	void 						UpdateInfo				();
 
+	void						MoveSelection			(bool up, bool loop);
+
 	CUIScrollView*				UIListWnd;
 	CUIScrollView*				UIDetailsWnd;
 	UIHint*						m_hint_wnd;
