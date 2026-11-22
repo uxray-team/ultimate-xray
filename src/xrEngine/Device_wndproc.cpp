@@ -49,6 +49,21 @@ bool CRenderDevice::on_event	(SDL_Event& Event)
 		}
 		case SDL_EVENT_GAMEPAD_BUTTON_DOWN:
 		{
+			bool isShareButtonUsed = GGamepadService->Type == EGamepadType::DualShock4 || GGamepadService->Type == EGamepadType::DualSense;
+			// ignore share button, reserved for future
+			if (isShareButtonUsed)
+			{
+				if (Event.gbutton.button == SDL_GAMEPAD_BUTTON_BACK)
+				{
+					break;
+				}
+				else if (Event.gbutton.button == SDL_GAMEPAD_BUTTON_TOUCHPAD)
+				{
+					pInput->KeyboardButtonUpdate(UXR_GAMEPAD_BACK, true);
+					pInput->SetControllerMode(true);
+					break;
+				}
+			}
 			pInput->KeyboardButtonUpdate(int(Event.gbutton.button) + SDL_SCANCODE_COUNT, true);
 			// DualSense microphone LED toggle
 			if (GGamepadService->Type == EGamepadType::DualSense && 
@@ -61,6 +76,20 @@ bool CRenderDevice::on_event	(SDL_Event& Event)
 		}
 		case SDL_EVENT_GAMEPAD_BUTTON_UP:
 		{
+			bool isShareButtonUsed = GGamepadService->Type == EGamepadType::DualShock4 || GGamepadService->Type == EGamepadType::DualSense;
+			// ignore share button, reserved for future
+			if (isShareButtonUsed)
+			{
+				if (Event.gbutton.button == SDL_GAMEPAD_BUTTON_BACK)
+				{
+					break;
+				}
+				else if (Event.gbutton.button == SDL_GAMEPAD_BUTTON_TOUCHPAD)
+				{
+					pInput->KeyboardButtonUpdate(UXR_GAMEPAD_BACK, false);
+					break;
+				}
+			}
 			pInput->KeyboardButtonUpdate(int(Event.gbutton.button) + SDL_SCANCODE_COUNT, false);
 			break;
 		}

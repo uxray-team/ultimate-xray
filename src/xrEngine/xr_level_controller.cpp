@@ -473,7 +473,6 @@ _keyboard keyboards[] = {
 	{ "cLPADDLE2",				UXR_GAMEPAD_LEFT_PADDLE2,		"Left Paddle 2" },
 	{ "cRPADDLE2",				UXR_GAMEPAD_RIGHT_PADDLE2,		"Right Paddle 2" },
 
-	{ "cTOUCHPAD",				UXR_GAMEPAD_TOUCHPAD,			"Touchpad" },
 	{ "cMISC2",					UXR_GAMEPAD_MISC2,				"Misc 2" },
 	{ "cMISC3",					UXR_GAMEPAD_MISC3,				"Misc 3" },
 	{ "cMISC4",					UXR_GAMEPAD_MISC4,				"Misc 4" },
@@ -792,8 +791,6 @@ const char* GetGamepadSymbol(int dik)
 				return PS4_DPAD_LEFT;
 			case UXR_GAMEPAD_DPAD_RIGHT:
 				return PS4_DPAD_RIGHT;
-			case UXR_GAMEPAD_TOUCHPAD:
-				return PS4_TOUCHPAD;
 			case UXR_GAMEPAD_LTRIGGER:
 				return PS4_L2;
 			case UXR_GAMEPAD_RTRIGGER:
@@ -848,8 +845,6 @@ const char* GetGamepadSymbol(int dik)
 				return PS5_DPAD_LEFT;
 			case UXR_GAMEPAD_DPAD_RIGHT:
 				return PS5_DPAD_RIGHT;
-			case UXR_GAMEPAD_TOUCHPAD:
-				return PS5_TOUCHPAD;
 			case UXR_GAMEPAD_LTRIGGER:
 				return PS5_L2;
 			case UXR_GAMEPAD_RTRIGGER:
@@ -904,8 +899,6 @@ const char* GetGamepadSymbol(int dik)
 			return SWITCH_DPAD_LEFT;
 		case UXR_GAMEPAD_DPAD_RIGHT:
 			return SWITCH_DPAD_RIGHT;
-		case UXR_GAMEPAD_TOUCHPAD:
-			return SWITCH_TOUCHPAD;
 		case UXR_GAMEPAD_LTRIGGER:
 			return SWITCH_LTRIGGER;
 		case UXR_GAMEPAD_RTRIGGER:

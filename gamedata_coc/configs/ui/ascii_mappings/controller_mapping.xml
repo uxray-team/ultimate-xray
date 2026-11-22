@@ -47,7 +47,7 @@
 		<mapping ascii="57381" texture_id="ps4_controller_b"/>
 		<mapping ascii="57382" texture_id="ps4_controller_x"/>
 		<mapping ascii="57383" texture_id="ps4_controller_y"/>
-		<mapping ascii="57384" texture_id="ps4_controller_lmenu"/>
+		<mapping ascii="57384" texture_id="ps4_controller_tpad"/>
 
 		<mapping ascii="57386" texture_id="ps4_controller_rmenu"/>
 		<mapping ascii="57387" texture_id="ps4_controller_lsclick"/>
@@ -66,8 +66,7 @@
 		<mapping ascii="57400" texture_id="ps4_controller_rsv"/>
 		<mapping ascii="57401" texture_id="ps4_controller_ls"/>
 		<mapping ascii="57402" texture_id="ps4_controller_rs"/>
-		<mapping ascii="57403" texture_id="ps4_controller_tpad"/>
-		<!-- 57404-57405 are reserved... use them later? -->
+		<!-- 57403-57405 are reserved... use them later? -->
 		<mapping ascii="57406" texture_id="ps4_controller_lt"/>
 		<mapping ascii="57407" texture_id="ps4_controller_rt"/>
 		<mapping ascii="57408" texture_id="ps4_controller_lsu"/>
@@ -84,7 +83,7 @@
 		<mapping ascii="57417" texture_id="ps5_controller_b"/>
 		<mapping ascii="57418" texture_id="ps5_controller_x"/>
 		<mapping ascii="57419" texture_id="ps5_controller_y"/>
-		<mapping ascii="57420" texture_id="ps5_controller_lmenu"/>
+		<mapping ascii="57420" texture_id="ps5_controller_tpad"/>
 		<!-- 57421 is ignored since it's used for PS button -->
 		<mapping ascii="57422" texture_id="ps5_controller_rmenu"/>
 		<mapping ascii="57423" texture_id="ps5_controller_lsclick"/>
@@ -103,8 +102,7 @@
 		<mapping ascii="57436" texture_id="ps5_controller_rsv"/>
 		<mapping ascii="57437" texture_id="ps5_controller_ls"/>
 		<mapping ascii="57438" texture_id="ps5_controller_rs"/>
-		<mapping ascii="57439" texture_id="ps5_controller_tpad"/>
-		<!-- 57440-57441 are reserved... use them later? -->
+		<!-- 57439-57441 are reserved... use them later? -->
 		<mapping ascii="57442" texture_id="ps5_controller_lt"/>
 		<mapping ascii="57443" texture_id="ps5_controller_rt"/>
 		<mapping ascii="57444" texture_id="ps5_controller_lsu"/>
