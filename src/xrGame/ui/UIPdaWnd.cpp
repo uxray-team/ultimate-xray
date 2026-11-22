@@ -1229,8 +1229,10 @@ bool CUIPdaWnd::OnGamepadKeyHold(int key)
 		{
 			if (ActionRepeaters()->CanRepeatActionNow(this, kUI_TAB_LEFT) && !any_binded_key_for_action_pressed_c(kUI_TAB_RIGHT))
 			{
-				GetSoundsSharedInstance()->PlaySwitchSound();
-				UITabControl->PrevTab();
+				if (UITabControl->PrevTab())
+				{
+					GetSoundsSharedInstance()->PlaySwitchSound();
+				}
 				return true;
 			}
 			break;
@@ -1239,8 +1241,10 @@ bool CUIPdaWnd::OnGamepadKeyHold(int key)
 		{
 			if (ActionRepeaters()->CanRepeatActionNow(this, kUI_TAB_RIGHT) && !any_binded_key_for_action_pressed_c(kUI_TAB_LEFT))
 			{
-				GetSoundsSharedInstance()->PlaySwitchSound();
-				UITabControl->NextTab();
+				if (UITabControl->NextTab())
+				{
+					GetSoundsSharedInstance()->PlaySwitchSound();
+				}
 				return true;
 			}
 			break;
@@ -1249,11 +1253,13 @@ bool CUIPdaWnd::OnGamepadKeyHold(int key)
 		{
 			if (m_pActiveDialog == pUIDiaryWnd && ActionRepeaters()->CanRepeatActionNow(this, kUI_TAB_SECONDARY_LEFT) && !any_binded_key_for_action_pressed_c(kUI_TAB_SECONDARY_RIGHT))
 			{
-				if (!m_uiSounds.Play(EPdaUiSound::Tab, true))
+				if (pUIDiaryWnd->m_FilterTab->PrevTab())
 				{
-					GetSoundsSharedInstance()->PlaySwitchSound();
+					if (!m_uiSounds.Play(EPdaUiSound::Tab, true))
+					{
+						GetSoundsSharedInstance()->PlaySwitchSound();
+					}
 				}
-				pUIDiaryWnd->m_FilterTab->PrevTab();
 				return true;
 			}
 			break;
@@ -1262,11 +1268,13 @@ bool CUIPdaWnd::OnGamepadKeyHold(int key)
 		{
 			if (m_pActiveDialog == pUIDiaryWnd && ActionRepeaters()->CanRepeatActionNow(this, kUI_TAB_SECONDARY_LEFT) && !any_binded_key_for_action_pressed_c(kUI_TAB_SECONDARY_RIGHT))
 			{
-				if (!m_uiSounds.Play(EPdaUiSound::Tab, true))
+				if (pUIDiaryWnd->m_FilterTab->NextTab())
 				{
-					GetSoundsSharedInstance()->PlaySwitchSound();
+					if (!m_uiSounds.Play(EPdaUiSound::Tab, true))
+					{
+						GetSoundsSharedInstance()->PlaySwitchSound();
+					}
 				}
-				pUIDiaryWnd->m_FilterTab->NextTab();
 				return true;
 			}
 			break;

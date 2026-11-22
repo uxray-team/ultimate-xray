@@ -50,8 +50,8 @@ public:
 			void		SetActiveTabByIndex			(u32 index);
 	const	u32			GetTabsCount				() const						{ return (u32)m_TabsArr.size(); }
 
-			void		NextTab						(bool bAllowLoop = false);
-			void		PrevTab						(bool bAllowLoop = false);
+			bool		NextTab						(bool bAllowLoop = false);
+			bool		PrevTab						(bool bAllowLoop = false);
 
 	// Режим клавилатурных акселераторов (вкл/выкл)
 	IC bool				GetAcceleratorsMode			() const						{ return m_bAcceleratorsEnable; }

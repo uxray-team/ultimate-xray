@@ -226,11 +226,11 @@ void CUITabControl::SetActiveTabByIndex(u32 index)
 	SetActiveTab(newBtn->m_btn_id);
 }
 
-void CUITabControl::NextTab(bool bAllowLoop)
+bool CUITabControl::NextTab(bool bAllowLoop)
 {
 	if (m_TabsArr.size() < 2)
 	{
-		return;
+		return false;
 	}
 
 	int nextIdx = GetActiveIndex() + 1;
@@ -242,17 +242,18 @@ void CUITabControl::NextTab(bool bAllowLoop)
 		}
 		else
 		{
-			return;
+			return false;
 		}
 	}
 	SetActiveTabByIndex(nextIdx);
+	return true;
 }
 
-void CUITabControl::PrevTab(bool bAllowLoop)
+bool CUITabControl::PrevTab(bool bAllowLoop)
 {
 	if (m_TabsArr.size() < 2)
 	{
-		return;
+		return false;
 	}
 
 	int nextIdx = GetActiveIndex() - 1;
@@ -264,10 +265,11 @@ void CUITabControl::PrevTab(bool bAllowLoop)
 		}
 		else
 		{
-			return;
+			return false;
 		}
 	}
 	SetActiveTabByIndex(nextIdx);
+	return true;
 }
 
 bool CUITabControl::OnKeyboardAction(int dik, EUIMessages keyboard_action)

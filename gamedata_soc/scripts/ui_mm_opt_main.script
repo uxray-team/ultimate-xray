@@ -418,23 +418,25 @@ function options_dialog:OnGamepadKey(dik, gamepad_action)
 				action_repeaters():SetActionStarted(self, key_bindings.kUI_RIGHT)
 				return true
 			elseif bindUI == key_bindings.kUI_TAB_LEFT then
-				self.tab:PrevTab()
-				sounds_shared.play_switch_sound()
+				if self.tab:PrevTab(true) then
+					sounds_shared.play_switch_sound()
+				end
 				action_repeaters():SetActionStarted(self, key_bindings.kUI_TAB_LEFT)
 				return true
 			elseif bindUI == key_bindings.kUI_TAB_RIGHT then
-				self.tab:NextTab()			
-				sounds_shared.play_switch_sound()
+				if self.tab:NextTab(true) then
+					sounds_shared.play_switch_sound()
+				end
 				action_repeaters():SetActionStarted(self, key_bindings.kUI_TAB_RIGHT)
 				return true
 			end
 			if self.tab:GetActiveId() == "controls" then
 				if bindUI == key_bindings.kUI_TAB_SECONDARY_LEFT then
-					self.tab_input:PrevTab()
+					self.tab_input:PrevTab(true)
 					sounds_shared.play_switch_sound()
 					return true
 				elseif bindUI == key_bindings.kUI_TAB_SECONDARY_RIGHT then
-					self.tab_input:NextTab()			
+					self.tab_input:NextTab(true)			
 					sounds_shared.play_switch_sound()
 					return true
 				end
@@ -811,16 +813,18 @@ function options_dialog:OnGamepadKeyHold(dik)
 	if bindUI == key_bindings.kUI_TAB_LEFT then
 		if action_repeaters():CanRepeatActionNow(self, key_bindings.kUI_TAB_LEFT) 
 		and not any_binded_key_for_action_pressed_c(key_bindings.kUI_TAB_RIGHT) then
-			sounds_shared.play_switch_sound()
-			self.tab:PrevTab()
+			if self.tab:PrevTab() then
+				sounds_shared.play_switch_sound()
+			end
 		end
 		return true
 		
 	elseif bindUI == key_bindings.kUI_TAB_RIGHT then
 		if action_repeaters():CanRepeatActionNow(self, key_bindings.kUI_TAB_RIGHT) 
 		and not any_binded_key_for_action_pressed_c(key_bindings.kUI_TAB_LEFT) then
-			sounds_shared.play_switch_sound()
-			self.tab:NextTab()
+			if self.tab:NextTab() then
+				sounds_shared.play_switch_sound()
+			end
 		end
 		return true
 			
