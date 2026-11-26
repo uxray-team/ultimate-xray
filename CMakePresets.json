@@ -64,7 +64,7 @@
             "cacheVariables": {
                 "IXRAY_UTILS": "OFF",
                 "IXRAY_EDITORS": "OFF",
-                "IXRAY_MP": "OFF",
+                "IXRAY_MP": "ON",
                 "IXRAY_COMPRESSOR_ONLY": "OFF",
                 "IXRAY_PLUGINS": "OFF",
                 "IXRAY_ASAN": "OFF",
