@@ -8,7 +8,6 @@ CUIListItemServer::CUIListItemServer(float height)
 {
 	m_iconPass			= AddIconField(5.0f);
 	m_iconDedicated		= AddIconField(5.0f);
-//	m_iconPunkBuster	= AddIconField(5.0f);
 	m_iconUserPass		= AddIconField(5.0f);
 
 	m_server			= GetTextItem();
@@ -23,35 +22,30 @@ void CUIListItemServer::InitItemServer(LIST_SRV_ITEM& params)
 {
 	float offset = 0.0f;
 
-	float icon_size			= CUITextureMaster::GetTextureHeight("ui_icon_password");
+	float icon_height	= CUITextureMaster::GetTextureHeight("ui_icon_password");
+	float icon_width	= CUITextureMaster::GetTextureWidth("ui_icon_password");
+	icon_width *= UI().get_current_kx();
 
-	icon_size				*= UI().get_current_kx();
 	m_iconPass->SetStretchTexture		(true);
 	m_iconDedicated->SetStretchTexture	(true);
-//	m_iconPunkBuster->SetStretchTexture	(true);
 	m_iconUserPass->SetStretchTexture	(true);
 
-	float icon_y			= (GetHeight()-icon_size)/2.0f;
+	float icon_y			= (GetHeight()-icon_height)/2.0f;
 
 	m_iconPass->SetWndPos	(Fvector2().set(offset, icon_y));
-	m_iconPass->SetWndSize	(Fvector2().set(icon_size,icon_size));
+	m_iconPass->SetWndSize	(Fvector2().set(icon_width, icon_height));
 	m_iconPass->InitTexture	("ui_icon_password");
-	offset					+= icon_size;
+	offset					+= icon_width;
 
 	m_iconDedicated->SetWndPos(Fvector2().set(offset, icon_y));
-	m_iconDedicated->SetWndSize(Fvector2().set(icon_size,icon_size));
+	m_iconDedicated->SetWndSize(Fvector2().set(icon_width, icon_height));
 	m_iconDedicated->InitTexture("ui_icon_dedicated");
-	offset					+= icon_size;
+	offset					+= icon_width;
 	
-	//m_iconPunkBuster->SetWndPos(Fvector2().set(offset, icon_y));
-	//m_iconPunkBuster->SetWndSize(Fvector2().set(icon_size,icon_size));
-	//m_iconPunkBuster->InitTexture("ui_icon_punkbuster");
-	//offset					+= icon_size;
-
 	m_iconUserPass->SetWndPos(Fvector2().set(offset, icon_y));
-	m_iconUserPass->SetWndSize(Fvector2().set(icon_size,icon_size));
+	m_iconUserPass->SetWndSize(Fvector2().set(icon_width, icon_height));
 	m_iconUserPass->InitTexture("ui_icon_punkbuster");
-	offset					+= icon_size;
+	offset					+= icon_width;
 
 
 	m_server->SetWndPos		(Fvector2().set(offset, 0.0f));
@@ -125,7 +119,6 @@ void CUIListItemServer::SetParams(LIST_SRV_ITEM& params)
 
 	m_iconPass->Show		(params.info.icons.pass);
 	m_iconDedicated->Show	(params.info.icons.dedicated);
-//	m_iconPunkBuster->Show	(params.info.icons.punkbuster);
 	m_iconUserPass->Show	(params.info.icons.user_pass);
 
 	SetTAG					(params.info.Index);
