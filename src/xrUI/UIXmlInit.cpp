@@ -292,6 +292,10 @@ bool CUIXmlInit::InitCheck(CUIXml& xml_doc, const char* path, int index, CUIChec
 
 	pWnd->InitCheckButton(pWnd->GetWndPos(),pWnd->GetWndSize(),texture);
 
+	pWnd->SetStateTextColor(pWnd->GetTextColor(), S_Enabled);
+	pWnd->SetStateTextColor(pWnd->GetTextColor(), S_Disabled);
+	pWnd->SetStateTextColor(pWnd->GetTextColor(), S_Touched);
+	pWnd->SetStateTextColor(pWnd->GetTextColor(), S_Highlighted);
 	u32 color;
 	xr_strconcat(buf,path,":text_color:e");
 	if (xml_doc.NavigateToNode(buf,index)){
